@@ -11,7 +11,7 @@ const port = process.env.PORT || 3001;
 (async() =>{
    try {
       //await sequelize.authenticate(); Para produccion
-      console.debug('llamado a sync', await sequelize.sync({ force: false }));
+       await sequelize.sync({ force: false });
       app.listen(port, console.log("Conexion con DB exitosa escuchando el puerto "+port));
    } catch (error) {
       console.log(error);
