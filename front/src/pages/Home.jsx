@@ -8,6 +8,8 @@ function Home() {
         <>
             <NavbarMain />
             <Principal />
+            <Cards />
+            {/* 
             <div className="cards-container"><Cards
                 title="Título de la Tarjeta"
                 text="Este es un texto de ejemplo para la tarjeta."
@@ -29,7 +31,7 @@ function Home() {
                 imageSrc="https://www.adoptagratis.com/wp-content/uploads/2025/10/IMG_1934-400x300.jpeg.webp"
                 buttonLink="#"
                 buttonText="Ir a algún lugar"
-            />
+            /> */}
 
             <Footer />
         </>
