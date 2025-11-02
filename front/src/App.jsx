@@ -1,12 +1,15 @@
-import './App.css'
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home.jsx'
+import "bootstrap/dist/css/bootstrap.min.css";  
 
 function App() {
-
   return (
-      <div>
-        <h1>Proyecto Mascota</h1>
-    </div>
+    <Routes>
+      <Route path="/" element={<Home />} />
+    </Routes>
   )
 }
 
 export default App
+import { useNavigate } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";  
