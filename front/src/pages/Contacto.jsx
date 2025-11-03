@@ -1,7 +1,7 @@
 import React from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 
-function ContactoModal({ show, onHide }) {
+function Contacto({ show, onHide }) {
 return (
     <Modal show={show} onHide={onHide} centered>
     <Modal.Header closeButton>
@@ -27,4 +27,4 @@ return (
 );
 }
 
-export default ContactoModal;
+export default Contacto;

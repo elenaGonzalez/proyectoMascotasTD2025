@@ -45,16 +45,17 @@ const [showContacto, setShowContacto] = useState(false);
             />
 
             <Footer 
-                onLoginClick={() => setShowLogin(true)}
-                onRegistroClick={() => setShowRegistro(true)}
-                onSoporteClick={() => setShowSoporte(true)}
-                onContactoClick={() => setShowContacto(true)}
+            onLoginClick={() => setShowLogin(true)}
+            onRegistroClick={() => setShowRegistro(true)}
+            onSoporteClick={() => setShowSoporte(true)}
+            onContactoClick={() => setShowContacto(true)}
             />
-        
-            <Login show={showLogin} onHide={() => setShowLogin(false)} />
-            <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
-            <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />
-            <Contacto show={showContacto} onHide={() => setShowContacto(false)} />
+
+        <Login show={showLogin} onHide={() => setShowLogin(false)} />
+        <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
+        <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />
+        <Contacto show={showContacto} onHide={() => setShowContacto(false)} />
+            
         </>
     )
 }
