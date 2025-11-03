@@ -9,6 +9,9 @@ function Home() {
         <>
             <NavbarMain />
             <Principal />
+<<<<<<< HEAD
+            <CarruselMascotas />
+
             <div className="cards-container"><Cards
                 title="Título de la Tarjeta"
                 text="Este es un texto de ejemplo para la tarjeta."
@@ -32,6 +35,9 @@ function Home() {
                 buttonText="Ir a algún lugar"
             />
 
+=======
+            <Cards />
+>>>>>>> development
             <Footer />
         </>
     )
