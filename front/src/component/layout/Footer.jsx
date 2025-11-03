@@ -2,17 +2,17 @@ import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
 
-function Footer({ onLoginClick, onRegistroClick }) {
+function Footer({ onLoginClick, onRegistroClick, onSoporteClick, onContactoClick }) {
 return (
     <footer className="bg-dark text-light py-4 mt-5">
     <Container>
-        <Row className="text-center text-md-start">
+        <Row className="justify-content-center text-center text-md-start">
           {/* --- Ayuda --- */}
         <Col md={3} sm={6} className="mb-3">
             <h5>Ayuda</h5>
             <ul className="list-unstyled">
-            <li><a href="#" className="text-light text-decoration-none">Soporte</a></li>
-            <li><a href="#" className="text-light text-decoration-none">Contacto</a></li>
+            <li><a href="#" className="text-light" onClick={onSoporteClick}>Soporte</a></li>
+            <li><a href="#" className="text-light" onClick={onContactoClick}>Contacto</a></li>
             </ul>
         </Col>
 
@@ -26,17 +26,8 @@ return (
             </ul>
         </Col>
 
-          {/* --- Acerca de --- */}
-        <Col md={3} sm={6} className="mb-3">
-            <h5>Acerca de</h5>
-            <ul className="list-unstyled">
-            <li><a href="#" className="text-light text-decoration-none">¿Quiénes somos?</a></li>
-            <li><a href="#" className="text-light text-decoration-none">Acerca de</a></li>
-            </ul>
-        </Col>
-
           {/* --- Cuenta --- */}
-        <Col md={3} sm={6} className="mb-3">
+        <Col md={2} sm={6} className="mb-3">
             <h5>Cuenta</h5>
             <ul className="list-unstyled">
             <li><a href="#" className="text-light" onClick={onRegistroClick}>Crear cuenta</a></li>
