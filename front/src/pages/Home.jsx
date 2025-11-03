@@ -9,8 +9,6 @@ function Home() {
         <>
             <NavbarMain />
             <Principal />
-            <CarruselMascotas />
-
             <div className="cards-container"><Cards
                 title="Título de la Tarjeta"
                 text="Este es un texto de ejemplo para la tarjeta."
