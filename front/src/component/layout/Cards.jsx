@@ -18,7 +18,7 @@ const Cards = () => {
             {cardsData.map((card, index) => (
                 <div key={index}
                     className="card"
-                    style={{ width: 'calc(30% - 1rem)', minWidth: '150px' }}>
+                    style={{ width: 'calc(30% - 1rem)', minWidth: '250px' }}>
 
                     <img
                         className="card-img-top"
@@ -26,11 +26,17 @@ const Cards = () => {
                         alt={card.title} />
 
                     <div className="card-body">
-                        <h5 className="card-title">{card.title}</h5>
+                        <h5 className="dog-name">{card.name}</h5>
                         <p className="card-text">{card.text}</p>
-                        <a href={card.buttonLink} className="btn btn-primary">
-                            {card.buttonText}
-                        </a>
+                        <div className="card-footer">
+                            <div className="dog-age">
+                                <span>🐶 </span> {card.edad}
+                            </div>
+                            <div className="ciudad">{card.ciudad}</div>
+                            <a href="https://wa.me/123456789" className="whatsapp-link">
+                                <img src="https://cdn.freebiesupply.com/images/large/2x/whatsapp-logo-transparent.png" alt="WhatsApp" style={{ width: '35px', height: '35px' }} />
+                            </a>
+                        </div>
                     </div>
                 </div>
             ))}
