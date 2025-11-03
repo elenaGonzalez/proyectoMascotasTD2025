@@ -1,12 +1,21 @@
+import { useState } from 'react'
 import NavbarMain from '../component/layout/Navbar.jsx'
 import Principal from '../component/layout/Principal.jsx'
 import Footer from '../component/layout/Footer.jsx'
 import Cards from '../component/layout/Cards.jsx'
+import Login from '../component/auth/Login.jsx'
+import Registro from '../component/auth/Registro.jsx'
 
 function Home() {
+const [showLogin, setShowLogin] = useState(false)
+const [showRegistro, setShowRegistro] = useState(false)
+
     return (
         <>
-            <NavbarMain />
+            <NavbarMain 
+            onLoginClick={() => setShowLogin(true)}
+            onRegistroClick={() => setShowRegistro(true)}
+            />
             <Principal />
             <div className="cards-container"><Cards
                 title="Título de la Tarjeta"
@@ -31,7 +40,13 @@ function Home() {
                 buttonText="Ir a algún lugar"
             />
 
-            <Footer />
+            <Footer 
+                onLoginClick={() => setShowLogin(true)}
+                onRegistroClick={() => setShowRegistro(true)}
+            />
+        
+            <Login show={showLogin} onHide={() => setShowLogin(false)} />
+            <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
         </>
     )
 }
