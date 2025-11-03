@@ -51,7 +51,7 @@ const putMascotaHandler = async(req, res) => {
     let mascotaUpdate= await putMascotaController(id, nombre, genero, edad, vacunado, raza, foto, ciudad, adoptado, usuarioId);  
     res.send(mascotaUpdate);
   } catch (error) {
-     res.status(201).send({ Error: error.message });
+     res.status(500).send({ Error: error.message });
   }
 };
 
@@ -61,9 +61,10 @@ const deleteMascotaHandler = async(req, res) =>{
       let delete_mascota = await deleteMascotaController(id);
       res.send(delete_mascota);
    } catch (error) {
-      res.status(201).send({Error: error.message});
+      res.status(500).send({Error: error.message});
    }
 }
+
 module.exports = {
  getMascotasActivasHandler,
  postMascotaHandler,
