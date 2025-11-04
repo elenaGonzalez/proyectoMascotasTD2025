@@ -21,7 +21,6 @@ const postMascotaController = async(nombre, genero, edad, vacunado, raza, foto, 
 
 const getMascotaController = async(id)=>{
    const mascota_buscada = await Mascota.findByPk(id);
-   console.log("SOY MASCOTA   ", mascota_buscada);
    
    return mascota_buscada;
 }
