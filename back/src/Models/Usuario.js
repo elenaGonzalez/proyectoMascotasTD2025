@@ -51,7 +51,7 @@ const Usuario = sequelize.define(
 Usuario.hasMany(Mascota);
 Mascota.belongsTo(Usuario);
 
-Usuario.hasOne(Donacion);
+Usuario.hasMany(Donacion);
 Donacion.belongsTo(Usuario);
 
 module.exports = Usuario;

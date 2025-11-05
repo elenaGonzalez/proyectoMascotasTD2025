@@ -5,7 +5,7 @@ const getMascotasActivasController = async() =>{
     return await Mascota.findAll();
 }
 
-const postMascotaController = async(nombre, genero, edad, vacunado, raza, foto, ciudad)=>{
+const postMascotaController = async(nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId)=>{
     const mascota_nueva = await Mascota.create({
         nombre, 
         genero, 
@@ -13,7 +13,8 @@ const postMascotaController = async(nombre, genero, edad, vacunado, raza, foto, 
         vacunado,
         raza,
         foto,
-        ciudad
+        ciudad,
+        usuarioId
     });
     
     return mascota_nueva;
@@ -21,7 +22,6 @@ const postMascotaController = async(nombre, genero, edad, vacunado, raza, foto, 
 
 const getMascotaController = async(id)=>{
    const mascota_buscada = await Mascota.findByPk(id);
-   console.log("SOY MASCOTA   ", mascota_buscada);
    
    return mascota_buscada;
 }
