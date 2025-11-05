@@ -55,7 +55,7 @@ const [showContacto, setShowContacto] = useState(false);
         <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
         <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />
         <Contacto show={showContacto} onHide={() => setShowContacto(false)} />
-            
+
         </>
     )
 }
