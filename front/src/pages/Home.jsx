@@ -9,7 +9,7 @@ function Home() {
         <>
             <NavbarMain />
             <Principal />
-<<<<<<< HEAD
+
             <CarruselMascotas />
 
             <div className="cards-container"><Cards
@@ -34,10 +34,8 @@ function Home() {
                 buttonLink="#"
                 buttonText="Ir a algún lugar"
             />
-
-=======
             <Cards />
->>>>>>> development
+
             <Footer />
         </>
     )
