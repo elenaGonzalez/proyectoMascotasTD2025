@@ -20,9 +20,9 @@ const getMascotasActivasHandler = async(req,res)=>{
 }
 
 const postMascotaHandler = async(req, res) =>{
-   const { nombre, genero, edad, vacunado, raza, foto, ciudad } = req.body;
+   const { nombre, genero, edad, vacunado, raza, foto, ciudad , usuarioId} = req.body;
    try {
-      let nueva_mascota = await postMascotaController(nombre, genero, edad, vacunado, raza, foto, ciudad);
+      let nueva_mascota = await postMascotaController(nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId);
       res.status(200).send(nueva_mascota);
    } catch (error) {
       res.status(500).send("Error al intentar guardar una mascota")

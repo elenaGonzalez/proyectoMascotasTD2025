@@ -25,17 +25,6 @@ const getUsuariosController = async() =>{
     return await Usuario.findAll();
 }
 
-// const getUserByNameController = async(name) =>{
-//     const userByName = await User.findAll({
-//         where:{ name: name }
-//     });
-   
-//    if(!userByName.length){
-//     throw new Error("No se encontro ningun usuario con dicho nombre");
-//    }
-//    return userByName;
-// }
-
 const getUsuarioController = async(id) =>{
    const usuario = await Usuario.findByPk(id);
    if(!usuario){
