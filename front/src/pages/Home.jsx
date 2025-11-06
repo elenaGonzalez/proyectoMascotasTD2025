@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import NavbarMain from '../component/layout/Navbar.jsx'
 import Principal from '../component/layout/Principal.jsx'
 import Footer from '../component/layout/Footer.jsx'
@@ -31,6 +31,13 @@ function Home() {
             .then((response) => response.json())
             .then((data) => setMascotas(data))
     }, []);
+
+const [publicaciones, setPublicaciones] = useState([]);
+  useEffect(()=>{
+fetch('http://localhost:3000/api/publicaciones')
+        .then((response)=> response.json())
+        .then((data)=> setPublicaciones(data))
+  },[]);
 
     return (
         <>

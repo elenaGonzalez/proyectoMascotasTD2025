@@ -5,6 +5,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.use(cors()); 
+
+
 const mainRoute = require('./Routes/mainRoute.js');
 
 app.use('/api', mainRoute);
