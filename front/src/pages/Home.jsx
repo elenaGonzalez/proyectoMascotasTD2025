@@ -25,9 +25,12 @@ useEffect(() => {
     .catch((error) => console.error("Error en el fetch:", error));
 }, []);
 
-
     return (
         <>
+        <h2>Probando publicaciones</h2>
+        {publicaciones.map(
+            p => p.titulo)
+            }
             <NavbarMain 
             onLoginClick={() => setShowLogin(true)}
             onRegistroClick={() => setShowRegistro(true)}
