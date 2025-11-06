@@ -38,8 +38,7 @@ const postUsuarioHandler = async (req, res) => {
 
 const putUsuarioHandler = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { nombre, apellido, telefono } = req.body;
+    const { id, nombre, apellido, telefono } = req.body;
     const actualizar_usuario = await putUsuarioController(id, nombre, apellido, telefono);
     res.status(200).send(actualizar_usuario);
   } catch (error) {
@@ -49,7 +48,7 @@ const putUsuarioHandler = async (req, res) => {
 
 const deleteUsuarioHandler = async (req, res) => {
  try {
-    const { id } = req.params;
+    const { id } = req.body;
     let usuario_eliminar = await deleteUsuarioController(id);
     res.status(200).send(usuario_eliminar);
   } catch (error) {

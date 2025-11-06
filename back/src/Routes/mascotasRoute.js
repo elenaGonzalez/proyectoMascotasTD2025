@@ -12,8 +12,8 @@ const mascotasRoutes = Router();
 mascotasRoutes.get('/', getMascotasActivasHandler);
 mascotasRoutes.get('/:id', getMascotaHandler);
 mascotasRoutes.post('/', postMascotaHandler);
-mascotasRoutes.put('/:id', putMascotaHandler);
-mascotasRoutes.delete('/:id', deleteMascotaHandler);
+mascotasRoutes.put('/', putMascotaHandler);
+mascotasRoutes.delete('/', deleteMascotaHandler);
 
 
 module.exports= mascotasRoutes;
