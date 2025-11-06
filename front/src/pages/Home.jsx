@@ -15,6 +15,8 @@ function Home() {
     const [showContacto, setShowContacto] = useState(false);
 
     /*
+    */
+    /*
     const [publicaciones, setPublicaciones] = useState([]);
     useEffect(() => {
         fetch('http://localhost:3000/api/publicaciones')
