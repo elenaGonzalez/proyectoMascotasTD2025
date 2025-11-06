@@ -15,7 +15,6 @@ const postUsuarioController = async(nombre, apellido, email, contrasena, telefon
   }
 
   const hashPassword = await bcrypt.hash(contrasena, 10);
-  //console.log(hashPassword);
   
   const nuevoUsuario = await Usuario.create({nombre, apellido, email, contrasena: hashPassword, telefono, role});
   return nuevoUsuario;

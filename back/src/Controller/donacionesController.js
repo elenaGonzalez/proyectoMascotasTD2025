@@ -3,7 +3,6 @@ const Usuario = require("../Models/Usuario");
 
 const getDonacionesController = async()=>{
    const donaciones = await Donacion.findAll();
-    console.log("SOy donaciones ", donaciones);
     
    if(donaciones == []){
         return ("No se registran donaciones")
