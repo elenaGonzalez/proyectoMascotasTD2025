@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import NavbarMain from '../component/layout/Navbar.jsx'
 import Principal from '../component/layout/Principal.jsx'
 import Footer from '../component/layout/Footer.jsx'
@@ -14,8 +14,19 @@ const [showRegistro, setShowRegistro] = useState(false)
 const [showSoporte, setShowSoporte] = useState(false)
 const [showContacto, setShowContacto] = useState(false);
 
+const [publicaciones, setPublicaciones] = useState([]);
+  useEffect(()=>{
+fetch('http://localhost:3000/api/publicaciones')
+        .then((response)=> response.json())
+        .then((data)=> setPublicaciones(data))
+  },[]);
+
     return (
         <>
+        <h2>Probando publicaciones</h2>
+           {publicaciones.map(
+            p => p.titulo)
+            }
             <NavbarMain 
             onLoginClick={() => setShowLogin(true)}
             onRegistroClick={() => setShowRegistro(true)}
