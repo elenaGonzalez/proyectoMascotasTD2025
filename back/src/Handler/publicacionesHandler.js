@@ -36,9 +36,33 @@ const postPublicacionHandler = async (req, res) => {
 };
 
 const putPublicacionHandler = async (req, res) => {
-  const {id, titulo,} = req.body;
+  const {
+    id,
+    titulo,
+    descripcion,
+    telefono,
+    nombre,
+    genero,
+    edad,
+    vacunado,
+    raza,
+    foto,
+    ciudad,
+  } = req.body;
     try {
-    let publicaciones = await putPublicacionController(id);
+    let publicaciones = await putPublicacionController(
+    id, 
+    titulo, 
+    descripcion,
+    telefono,
+    nombre,
+    genero,
+    edad,
+    vacunado,
+    raza,
+    foto,
+    ciudad,
+  );
     res.status(200).send(publicaciones);
   } catch (error) {
     res.status(500).send({ Error: error.message });
@@ -46,7 +70,7 @@ const putPublicacionHandler = async (req, res) => {
 };
 
 const deletePublicacionHandler = async (req, res) => {
-    const { id } = req.params;
+  const { id } = req.body;
   try {
     let publicacion_eliminar = await deletePublicacionController(id);
     res.status(200).send(publicacion_eliminar);

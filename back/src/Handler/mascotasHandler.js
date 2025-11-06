@@ -46,8 +46,7 @@ const getMascotaHandler = async(req,res)=>{
 
 const putMascotaHandler = async(req, res) => {
   try {
-    const {id} = req.params;
-    const { nombre, genero, edad, vacunado, raza, foto, ciudad, adoptado, usuarioId } = req.body;
+    const { id, nombre, genero, edad, vacunado, raza, foto, ciudad, adoptado, usuarioId } = req.body;
     let mascotaUpdate= await putMascotaController(id, nombre, genero, edad, vacunado, raza, foto, ciudad, adoptado, usuarioId);  
     res.send(mascotaUpdate);
   } catch (error) {
@@ -57,7 +56,7 @@ const putMascotaHandler = async(req, res) => {
 
 const deleteMascotaHandler = async(req, res) =>{
    try {
-      let {id} = req.params;
+      let {id} = req.body;
       let delete_mascota = await deleteMascotaController(id);
       res.send(delete_mascota);
    } catch (error) {

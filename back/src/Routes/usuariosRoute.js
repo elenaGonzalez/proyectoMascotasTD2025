@@ -14,7 +14,7 @@ const usuariosRoute = Router();
 usuariosRoute.get('/', getUsuariosHandler);
 usuariosRoute.get('/:id', getUsuarioHandler);
 usuariosRoute.post('/', postUsuarioHandler);
-usuariosRoute.put('/:id', putUsuarioHandler);
-usuariosRoute.delete('/:id', deleteUsuarioHandler);
+usuariosRoute.put('/', putUsuarioHandler);
+usuariosRoute.delete('/', deleteUsuarioHandler);
 
 module.exports =  usuariosRoute;
