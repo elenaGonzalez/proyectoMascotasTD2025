@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import NavbarMain from '../component/layout/Navbar.jsx'
 import Principal from '../component/layout/Principal.jsx'
 import Footer from '../component/layout/Footer.jsx'
@@ -13,6 +13,18 @@ const [showLogin, setShowLogin] = useState(false)
 const [showRegistro, setShowRegistro] = useState(false)
 const [showSoporte, setShowSoporte] = useState(false)
 const [showContacto, setShowContacto] = useState(false);
+const [publicaciones, setPublicaciones] = useState([]);
+
+useEffect(() => {
+    fetch("http://localhost:3000/api/publicaciones")
+    .then((response) => {
+        if (!response.ok) throw new Error("Error al obtener las publicaciones");
+        return response.json();
+    })
+    .then((data) => setPublicaciones(data))
+    .catch((error) => console.error("Error en el fetch:", error));
+}, []);
+
 
     return (
         <>
@@ -21,13 +33,7 @@ const [showContacto, setShowContacto] = useState(false);
             onRegistroClick={() => setShowRegistro(true)}
             />
             <Principal />
-            <div className="cards-container"><Cards
-                title="Título de la Tarjeta"
-                text="Este es un texto de ejemplo para la tarjeta."
-                imageSrc="https://www.adoptagratis.com/wp-content/uploads/2025/10/IMG_1934-400x300.jpeg.webp"
-                buttonLink="#"
-                buttonText="Ir a algún lugar"
-            /></div>
+            <div className="cards-container"><Cards publicaciones={publicaciones} /></div>
 
             <Cards
                 title="Título de la Tarjeta"
