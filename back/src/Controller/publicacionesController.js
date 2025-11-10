@@ -12,6 +12,23 @@ const getPublicacionController = async (id) => {
   return publicacion_bus;
 };
 
+const getPublicacionCardsController = async () =>{
+   return await Publicacion.findAll({
+    include: [
+      {
+        model: Mascota,
+        attributes: [
+          "nombre",
+          "foto",
+          "ciudad",
+          "usuarioId",
+        ],
+      },
+    ],
+  });
+};
+
+
 const getPublicacionesController = async () => {
   return await Publicacion.findAll({
     include: [
@@ -44,7 +61,8 @@ const postPublicacionController = async (
   vacunado,
   raza,
   foto,
-  ciudad
+  ciudad,
+  usuarioId
 ) => {
   //deberia guardar el id del usuario que crea la publicacion
 
@@ -128,4 +146,5 @@ module.exports = {
   postPublicacionController,
   putPublicacionController,
   deletePublicacionController,
+  getPublicacionCardsController
 };
