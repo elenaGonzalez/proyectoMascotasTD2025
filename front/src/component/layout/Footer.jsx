@@ -5,7 +5,7 @@ import { FaFacebook, FaInstagram, FaXTwitter } from "react-icons/fa6";
 function Footer({ onLoginClick, onRegistroClick, onSoporteClick, onContactoClick }) {
 return (
     <footer className="bg-dark text-light py-4 mt-5">
-    <Container>
+    <Container fluid className="px-5">
         <Row className="justify-content-center text-center text-md-start">
           {/* --- Ayuda --- */}
         <Col md={3} sm={6} className="mb-3">
