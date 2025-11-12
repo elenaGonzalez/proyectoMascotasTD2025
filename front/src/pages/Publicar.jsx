@@ -28,7 +28,7 @@ function Publicar() {
           backgroundColor: "#f5f7fa",
           minHeight: "100vh",
           padding: "60px 5vw",
-          width: "99vw",          // 🔹 fuerza a ocupar todo el ancho de la ventana
+          width: "99vw",
           margin: "0",
         }}
       >
@@ -43,9 +43,9 @@ function Publicar() {
             </Alert>
           )}
 
-
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Row className="mb-4 mt-3">
+            {/* Categoría y Título */}
+            <Row className="mb-5">
               <Form.Group as={Col} md="6">
                 <Form.Label>Categoría *</Form.Label>
                 <Form.Select required>
@@ -72,19 +72,33 @@ function Publicar() {
               </Form.Group>
             </Row>
 
-            <Row className="mb-4">
-              <Form.Group as={Col} md="6">
+            {/* Ubicación, Imagen y Teléfono */}
+            <Row className="mb-5">
+              <Form.Group as={Col} md="4">
                 <Form.Label>Ubicación *</Form.Label>
                 <Form.Control required type="text" placeholder="Ciudad o barrio" />
               </Form.Group>
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="4">
                 <Form.Label>Imagen del animal *</Form.Label>
                 <Form.Control required type="file" accept="image/*" />
               </Form.Group>
+
+              <Form.Group as={Col} md="4">
+                <Form.Label>Teléfono de contacto *</Form.Label>
+                <Form.Control
+                  required
+                  type="tel"
+                  placeholder="Ej. +54 3777 123456"
+                />
+                <Form.Control.Feedback type="invalid">
+                  Ingresá un número válido
+                </Form.Control.Feedback>
+              </Form.Group>
             </Row>
 
-            <Row className="mb-4">
+            {/* Vacunas, Destetado y Esterilizado */}
+            <Row className="mb-5">
               <Form.Group as={Col} md="4">
                 <Form.Label>Vacunas</Form.Label>
                 <Form.Select>
@@ -114,7 +128,8 @@ function Publicar() {
               </Form.Group>
             </Row>
 
-            <Row className="mb-4">
+            {/* Alimentación, Raza y Sexo */}
+            <Row className="mb-5">
               <Form.Group as={Col} md="4">
                 <Form.Label>Tipo de alimentación</Form.Label>
                 <Form.Select>
@@ -138,10 +153,11 @@ function Publicar() {
               </Form.Group>
             </Row>
 
-            <Row className="mb-4">
+            {/* Edad y Antiparasitario */}
+            <Row className="mb-5">
               <Form.Group as={Col} md="6">
-                <Form.Label>Fecha de nacimiento (Aprox.)</Form.Label>
-                <Form.Control type="date" />
+                <Form.Label>Edad (aproximada)</Form.Label>
+                <Form.Control type="text" placeholder="Ej. 3 meses / 2 años" />
               </Form.Group>
               <Form.Group as={Col} md="6">
                 <Form.Label>Antiparasitario</Form.Label>
@@ -153,7 +169,8 @@ function Publicar() {
               </Form.Group>
             </Row>
 
-            <Form.Group className="mb-4">
+            {/* Aprendizaje sanitario */}
+            <Form.Group className="mb-5">
               <Form.Label>Aprendizaje sanitario</Form.Label>
               <Form.Control
                 type="text"
@@ -161,7 +178,8 @@ function Publicar() {
               />
             </Form.Group>
 
-            <Form.Group className="mb-4">
+            {/* Descripción */}
+            <Form.Group className="mb-5">
               <Form.Label>Descripción *</Form.Label>
               <Form.Control
                 as="textarea"
@@ -174,7 +192,8 @@ function Publicar() {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <div className="text-center mt-4">
+            {/* Botones */}
+            <div className="text-center mt-5">
               <Button type="submit" variant="success" className="me-2 px-4">
                 Publicar Anuncio
               </Button>
@@ -192,4 +211,3 @@ function Publicar() {
 }
 
 export default Publicar;
-
