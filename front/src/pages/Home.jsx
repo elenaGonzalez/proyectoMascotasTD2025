@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState, useEffect } from 'react'
 import NavbarMain from '../component/layout/Navbar.jsx'
 import Principal from '../component/layout/Principal.jsx'
 import Footer from '../component/layout/Footer.jsx'
@@ -13,18 +13,6 @@ function Home() {
     const [showRegistro, setShowRegistro] = useState(false)
     const [showSoporte, setShowSoporte] = useState(false)
     const [showContacto, setShowContacto] = useState(false);
-
-    /*
-    */
-    /*
-    const [publicaciones, setPublicaciones] = useState([]);
-    useEffect(() => {
-        fetch('http://localhost:3000/api/publicaciones')
-            .then((response) => response.json())
-            .then((data) => setPublicaciones(data))
-    }, []);
-    */
-
     const [mascotas, setMascotas] = useState([]);
     useEffect(() => {
         fetch('http://localhost:3000/api/mascotas')
@@ -43,9 +31,6 @@ function Home() {
             <Principal />
 
             <Cards mascotas={mascotas} />
-
-
-
 
             <Footer
                 onLoginClick={() => setShowLogin(true)}
