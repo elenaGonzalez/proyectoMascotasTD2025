@@ -73,17 +73,41 @@ const postPublicacionController = async (
     vacunado,
     raza,
     foto,
-    ciudad
+    ciudad,
+    usuarioId
   );
 
   let publicacion_mascota = await Publicacion.create({
     titulo,
     descripcion,
     telefono,
-    mascotaId: mascota_new.id,
+    mascotaId: mascota_new.id
   });
+   
+  let publicacion_creada = await Publicacion.findByPk(
+    publicacion_mascota.id, 
+    {
+    include: [
+      {
+        model: Mascota,
+        as: "mascota",
+        attributes: [
+          "id",
+          "nombre",
+          "genero",
+          "edad",
+          "vacunado",
+          "raza",
+          "foto",
+          "ciudad",
+          "usuarioId",
+        ],
+      },
+    ],
+  }
+  );
 
-  return publicacion_mascota;
+  return publicacion_creada;
 };
 
 const putPublicacionController = async (id, titulo, descripcion,telefono, mascotaId, nombre, genero, edad, vacunado, raza, foto, ciudad) => {
