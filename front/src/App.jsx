@@ -1,15 +1,21 @@
-import { Routes, Route } from 'react-router-dom'
-import Home from './pages/Home.jsx'
-import "bootstrap/dist/css/bootstrap.min.css";  
+// src/App.jsx
+import { Routes, Route } from 'react-router-dom';
+import "bootstrap/dist/css/bootstrap.min.css";
 
-function App() {
+// ⬇️ Asegurate de que esta ruta coincida con tu estructura real
+import NavbarMain from './component/layout/Navbar.jsx';
+import Home from './pages/Home.jsx';
+
+export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-    </Routes>
-  )
-}
+    <>
+      {/* Navbar con buscador (siempre visible) */}
+      <NavbarMain />
 
-export default App
-import { useNavigate } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";  
+      {/* Contenido con rutas */}
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </>
+  );
+}
