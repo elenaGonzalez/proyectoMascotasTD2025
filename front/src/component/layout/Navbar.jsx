@@ -12,6 +12,7 @@ function NavbarMain() {
 
   return (
     <>
+<<<<<<< HEAD
       <Navbar bg="dark" variant="dark" expand="lg" className="py-2">
         <Container>
           <Navbar.Brand href="/">Mi Proyecto</Navbar.Brand>
@@ -47,6 +48,16 @@ function NavbarMain() {
               >
                 Registrarse
               </Button>
+=======
+    <Navbar bg="dark" variant="dark" expand="lg">
+        <Container fluid>
+        <Navbar.Brand href="/">Mi Proyecto</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="ms-auto">
+            <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
+            <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
+>>>>>>> development
             </Nav>
           </Navbar.Collapse>
         </Container>

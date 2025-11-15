@@ -50,3 +50,19 @@
   color: #888;
 }
 
+.contact-container {
+  padding-bottom: 3rem;
+}
+
+.contact-info p {
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.contact-info strong {
+  color: #0d6efd;
+}
+
+.contact-map iframe {
+  border-radius: 10px;
+}
