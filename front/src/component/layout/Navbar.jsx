@@ -2,11 +2,21 @@ import { useState } from 'react'
 import { Navbar, Container, Nav, Button } from 'react-bootstrap'
 import Login from '../auth/Login.jsx'
 import Registro from '../auth/Registro.jsx'
+import { useDispatch, useSelector } from 'react-redux'
+import { logoutUsuario } from "../../redux/usuarioSlice.js";
 
 function NavbarMain() {
 const [showLogin, setShowLogin] = useState(false)
 const [showRegistro, setShowRegistro] = useState(false)
 
+const dispatch = useDispatch();
+const usuario = useSelector((state) => state.usuario);
+
+const handlerLogout = () =>{
+    dispatch (logoutUsuario({}));
+    console.log("En logout ", usuario.nombre);
+    
+}
 return (
     <>
     <Navbar bg="dark" variant="dark" expand="lg">
@@ -15,7 +25,13 @@ return (
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
+            { !usuario.nombre ?   
             <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
+            : <Button variant='primary'>Perfil {usuario.nombre}</Button>
+            }
+            { usuario.nombre &&
+                <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
+            }
             <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
             </Nav>
         </Navbar.Collapse>

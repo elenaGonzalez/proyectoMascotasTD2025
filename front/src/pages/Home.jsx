@@ -14,6 +14,7 @@ function Home() {
     const [showSoporte, setShowSoporte] = useState(false)
     const [showContacto, setShowContacto] = useState(false);
     const [mascotas, setMascotas] = useState([]);
+
     useEffect(() => {
         fetch('http://localhost:3000/api/mascotas')
             .then((response) => response.json())
