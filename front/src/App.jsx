@@ -1,13 +1,13 @@
 import React from 'react';
 import { Routes, Route } from 'react-router-dom';
-import "bootstrap/dist/css/bootstrap.min.css"; // Se importa una sola vez
+import "bootstrap/dist/css/bootstrap.min.css"; 
 
 // Importaciones de Páginas y Componentes
-import HomeNew from './pages/HomeNew.jsx';
+import HomeNew from './pages/HomeNew.jsx'; // Este es el componente que vamos a usar
 import DetallePublicacionNew from './pages/DetallePublicacionNew.jsx';
 import Publicar from "./pages/Publicar.jsx";
 import NavbarMain from './component/layout/Navbar.jsx';
-import Home from './pages/Home.jsx'; // Ruta original de Home
+// ❌ ELIMINAR LA LÍNEA: import Home from './pages/Home.jsx'; 
 
 // El componente App es el encargado de envolver todas las rutas
 export default function App() {
@@ -17,12 +17,12 @@ export default function App() {
       <NavbarMain />
 
       {/* Contenido con TODAS las rutas */}
-      {/* ⬅️ Aquí incluimos las rutas Home, Detalle y Publicar ⬅️ */}
       <Routes>
-        {/* 1. Ruta principal de la aplicación */}
-        <Route path="/" element={<Home />} /> 
         
-        {/* 2. Rutas del proyecto que estaban flotando */}
+        {/* ⬅️ CRÍTICO: CAMBIAR Home por HomeNew para la ruta principal (/) ⬅️ */}
+        <Route path="/" element={<HomeNew />} /> 
+        
+        {/* 2. Rutas secundarias (Manteniendo HomeNew para la ruta /home si existe) */}
         <Route path="/home" element={<HomeNew />} />
         <Route path="/detalle/publicacion/:id" element={<DetallePublicacionNew />} />
         <Route path="/publicar" element={<Publicar />} />
@@ -30,5 +30,3 @@ export default function App() {
     </>
   );
 }
-
-// ⬅️ Se eliminó la doble definición y exportación que causaba el error.

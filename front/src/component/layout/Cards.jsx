@@ -1,85 +1,36 @@
-<<<<<<< HEAD
 // src/component/layout/Cards.jsx
 import React from 'react';
-import { useSearch } from '../../context/SearchContext.jsx'; // ➕ agregado
-import cardsData from './dataHardcodeada';
+import { useSearch } from '../../context/SearchContext.jsx'; 
+// Asumo que 'dataHardcodeada' es la fuente de datos estática
+import cardsData from './dataHardcodeada'; 
 import './cards.css';
 
+// Función para normalizar texto (quitar acentos, minúsculas)
 const normalize = (text) =>
   (text ?? '')
     .toString()
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, ''); // quita acentos
+    .replace(/[\u0300-\u036f]/g, '');
 
 const Cards = () => {
-  const { searchTerm } = useSearch(); // ➕ agregado
-=======
-import './cards.css';
+  // Obtenemos el término de búsqueda del contexto
+  const { searchTerm } = useSearch();
 
-const Cards = ({ mascotas }) => {
-    // Array de ejemplo con 4 cards
-
->>>>>>> development
-
-  // ➕ Filtrado en vivo sin alterar estructura
+  // Lógica de Filtrado: Solo mantiene la parte de la función que devuelve booleano
   const filteredCards = cardsData.filter((card) => {
-    if (!searchTerm) return true;
+    if (!searchTerm) return true; // Mostrar todo si no hay término de búsqueda
+    
     const q = normalize(searchTerm);
     return (
-<<<<<<< HEAD
       normalize(card.name).includes(q) ||
       normalize(card.text).includes(q) ||
       normalize(card.ciudad).includes(q) ||
       normalize(card.edad?.toString()).includes(q)
-=======
-        <div style={{
-            display: 'flex',
-            flexWrap: 'wrap',
-            gap: '1rem',
-            justifyContent: 'center',
-            padding: '1rem',
-
-        }}>
-
-
-
-            {mascotas.length === 0 ? (<p>No hay mascotas disponibles.</p>) :
-                mascotas.map((masco) => (
-                    <div key={masco.id}
-                        className="card"
-                        style={{ width: 'calc(30% - 1rem)', minWidth: '250px' }}>
-
-                        <img
-                            className="card-img-top"
-                            src={masco.foto}
-                            alt={masco.nombre} />
-
-                        <div className="card-body">
-                            <h5 className="dog-name">{masco.nombre}</h5>
-                            <p className="card-text">{masco.raza}</p>
-                            <div className="card-footer">
-                                <div className="dog-age">
-                                    <span>🐶 </span> {masco.edad}
-                                </div>
-                                <div className="ciudad">{masco.ciudad}</div>
-                                <a href="https://wa.me/123456789" className="whatsapp-link">
-                                    <img src="https://cdn.freebiesupply.com/images/large/2x/whatsapp-logo-transparent.png" alt="WhatsApp" style={{ width: '35px', height: '35px' }} />
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-                ))},
-
-
-
-
-
-        </div>
->>>>>>> development
     );
   });
 
+  // 🚀 RETORNO PRINCIPAL: Renderiza las tarjetas filtradas
   return (
     <div
       style={{
@@ -90,6 +41,7 @@ const Cards = ({ mascotas }) => {
         padding: '1rem',
       }}
     >
+      {/* Mapeo del arreglo filtrado */}
       {filteredCards.map((card, index) => (
         <div
           key={index}
@@ -123,7 +75,7 @@ const Cards = ({ mascotas }) => {
         </div>
       ))}
 
-      {/* ➕ Mensaje si no hay resultados */}
+      {/* Mensaje si no hay resultados */}
       {filteredCards.length === 0 && (
         <div className="text-center my-4">
           <p>No se encontraron resultados para "{searchTerm}".</p>
