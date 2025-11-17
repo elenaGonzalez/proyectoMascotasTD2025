@@ -1,27 +1,42 @@
 // src/component/layout/Navbar.jsx
-import { useState } from 'react';
+
+import React, { useState } from 'react';
 import { Navbar, Container, Nav, Button, Form } from 'react-bootstrap';
-// Importaciones de Modales (Asumiendo que estos archivos existen)
+// Autenticación/Redux
+import { useDispatch, useSelector } from 'react-redux';
+import { logoutUsuario } from "../../redux/usuarioSlice.js"; 
+// Búsqueda
+import { useSearch } from '../../context/SearchContext.jsx'; 
+// Modales
 import Login from '../auth/Login.jsx';
 import Registro from '../auth/Registro.jsx';
-// ⬅️ CRÍTICO: Asegúrese de que este archivo exista en la ruta correcta
-import { useSearch } from '../../context/SearchContext.jsx'; 
 
 function NavbarMain() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegistro, setShowRegistro] = useState(false);
-  // Lógica para el buscador
+  
+  // Lógica del BUSCADOR (Su código)
   const { searchTerm, setSearchTerm } = useSearch(); 
+  
+  // Lógica de AUTENTICACIÓN (Código del compañero)
+  const dispatch = useDispatch();
+  const usuario = useSelector((state) => state.usuario);
+
+  const handlerLogout = () => {
+    dispatch(logoutUsuario({}));
+    console.log("En logout ", usuario.nombre);
+  }
 
   return (
     <>
       <Navbar bg="dark" variant="dark" expand="lg" className="py-2">
-        <Container>
+        <Container fluid> {/* Usamos Container fluid para un mejor layout */}
+          
           {/* Brand/Logo */}
           <Navbar.Brand href="/">Mi Proyecto</Navbar.Brand>
-
-          {/* 🔎 Buscador (MANTENEMOS ESTA FUNCIONALIDAD) */}
-          <div className="flex-grow-1 mx-3" style={{ maxWidth: 700 }}>
+          
+          {/* 🔎 Buscador (Su componente) */}
+          <div className="flex-grow-1 mx-3 d-none d-lg-block" style={{ maxWidth: 700 }}>
             <Form className="d-flex" role="search" onSubmit={(e) => e.preventDefault()}>
               <Form.Control
                 type="search"
@@ -33,31 +48,34 @@ function NavbarMain() {
             </Form>
           </div>
 
-          {/* Toggle + acciones a la derecha */}
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav" className="justify-content-end">
-            <Nav>
-              {/* Botones de Login y Registro */}
-              <Button
-                variant="outline-light"
-                className="me-2 mt-2 mt-lg-0"
-                onClick={() => setShowLogin(true)}
-              >
-                Iniciar sesión
-              </Button>
-              <Button
-                variant="success"
-                className="mt-2 mt-lg-0"
-                onClick={() => setShowRegistro(true)}
-              >
-                Registrarse
-              </Button>
+            <Nav className="ms-auto">
+              
+              {/* LÓGICA CONDICIONAL DE AUTENTICACIÓN (Código del compañero) */}
+              { !usuario.nombre ? 
+                (
+                  // Estado: No Logueado (Muestra Botones Login/Registro)
+                  <>
+                    <Button variant="outline-light" className="me-2 mt-2 mt-lg-0" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
+                    <Button variant="success" className="mt-2 mt-lg-0" onClick={() => setShowRegistro(true)}>Registrarse</Button>
+                  </>
+                )
+                : 
+                (
+                  // Estado: Logueado (Muestra Botón Perfil/Logout)
+                  <>
+                    <Button variant='primary' className="me-2">Perfil {usuario.nombre}</Button>
+                    <Button variant='danger' onClick={handlerLogout}>Logout</Button>
+                  </>
+                )
+              }
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      {/* Modales que se abren con los botones */}
+      {/* Modales */}
       <Login show={showLogin} onHide={() => setShowLogin(false)} />
       <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
     </>

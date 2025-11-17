@@ -1,8 +1,11 @@
 import { Modal, Button, Form } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
 import { useState } from 'react'
+import { useDispatch } from "react-redux"
+import axios from 'axios'
 
 function Registro({ show, onHide }) {
+const dispatch = useDispatch()   
 const [submitSuccess, setSubmitSuccess] = useState(false)
 const { control, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
@@ -16,8 +19,21 @@ const { control, handleSubmit, reset, formState: { errors } } = useForm({
     mode: 'onBlur'
 })
 
-const onSubmit = (data) => {
+const onSubmit = async(data) => {
     console.log('Datos del registro:', data)
+    await axios({
+          method: 'post', 
+          url: "http://localhost:3000/api/auth/registro",
+          data:{
+          nombre: data.nombre,
+          apellido: data.apellido,  
+          email: data.email, 
+          contrasena: data.contraseña,
+          telefono: data.telefono
+          }
+      }).then((res) => console.log(res.data))
+        .catch((err) => console.log(err));
+
     setSubmitSuccess(true)
     reset()
     setTimeout(() => {
