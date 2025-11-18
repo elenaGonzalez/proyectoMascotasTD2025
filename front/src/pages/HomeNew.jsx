@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-// ❌ IMPORTACIÓN DE NAV ES REDUNDANTE AQUÍ, PERO LA MANTENEMOS SI OTROS ARCHIVOS LA USAN:
-import NavbarMain from "../component/layout/Navbar.jsx"; 
+import NavbarMain from "../component/layout/Navbar.jsx"; // Lo mantengo por si otros archivos lo usan
 import Principal from "../component/layout/Principal.jsx";
 import Footer from "../component/layout/Footer.jsx";
 import Login from "../component/auth/Login.jsx";
@@ -12,25 +11,37 @@ import axios from "axios";
 import { getPublicaciones } from "../redux/publicacionesSlice.js";
 import CardNew from "../component/layout/CardNew.jsx";
 import CarruselMascotas from '../component/layout/CarruselMascotas.jsx'; 
+import { useSearch } from '../context/SearchContext.jsx'; // ⬅️ IMPORTACIÓN CLAVE
 
-// Rutas de la API (Base de datos del back-end)
+// Rutas de la API
 const API_URL_PUBLICACIONES = "http://localhost:3000/api/publicaciones";
 const API_URL_MASCOTAS = "http://localhost:3000/api/mascotas";
 
+// Función de normalización (para que la búsqueda funcione sin acentos)
+const normalize = (text) =>
+    (text ?? '')
+        .toString()
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '');
 
 function HomeNew() {
+    // ESTADOS GLOBALES (Redux)
+    const publicaciones = useSelector((state) => state.publicaciones);
+    const dispatch = useDispatch();
+
+    // ESTADOS DE MODAL y CARRUSEL (Su lógica)
     const [showLogin, setShowLogin] = useState(false);
     const [showRegistro, setShowRegistro] = useState(false);
     const [showSoporte, setShowSoporte] = useState(false);
     const [showContacto, setShowContacto] = useState(false);
-    
     const [mascotasCarrusel, setMascotasCarrusel] = useState([]);
     const [loadingCarrusel, setLoadingCarrusel] = useState(true); 
+    
+    // ⬅️ OBTENER EL TÉRMINO DE BÚSQUEDA DEL NAVBAR
+    const { searchTerm } = useSearch(); 
 
-    const publicaciones = useSelector((state) => state.publicaciones);
-    const dispatch = useDispatch();
-
-    // LÓGICA DE DATOS 1: Obtener publicaciones (Lógica del compañero - Redux)
+    // LÓGICA DE DATOS 1: Obtener publicaciones (Redux)
     useEffect(() => {
         axios
             .get(API_URL_PUBLICACIONES)
@@ -38,7 +49,7 @@ function HomeNew() {
             .catch((err) => console.log("Error Redux/Publicaciones:", err));
     }, [dispatch]);
 
-    // LÓGICA DE DATOS 2: Obtener mascotas para el Carrusel (Su lógica)
+    // LÓGICA DE DATOS 2: Obtener mascotas para el Carrusel (Fetch)
     useEffect(() => {
         fetch(API_URL_MASCOTAS)
             .then((response) => response.json())
@@ -52,28 +63,39 @@ function HomeNew() {
             });
     }, []);
 
+    // 🚀 LÓGICA CLAVE: Filtrar las publicaciones antes de renderizar
+    const filteredPublicaciones = publicaciones.filter(publicacion => {
+        // Muestra todo si el término de búsqueda está vacío o es muy corto
+        if (!searchTerm || searchTerm.length < 2) return true; 
+
+        const q = normalize(searchTerm);
+        // El back-end anida los datos, por lo que buscamos en mascota.nombre y ciudad.
+        const nombreMascota = normalize(publicacion.mascota?.nombre);
+        const ciudad = normalize(publicacion.mascota?.ciudad);
+        const titulo = normalize(publicacion.titulo);
+
+        return nombreMascota.includes(q) || ciudad.includes(q) || titulo.includes(q);
+    });
+
     // 🛑 Manejo de estado de carga: Espera a que ambas fuentes de datos carguen
     if (publicaciones.length === 0 || loadingCarrusel) {
         return <div className="text-center my-5">Cargando la aplicación...</div>;
     }
 
 
-    // 🚀 RENDERIZADO FINAL: Se renderizan los componentes de layout UNA SOLA VEZ
+    // 🚀 RENDERIZADO FINAL: Se renderiza el contenido de la página
     return (
         <>
-            {/* ❌ ESTE BLOQUE FUE ELIMINADO: Estaba duplicando el Navbar que viene de App.jsx */}
-            {/* <NavbarMain
-                onLoginClick={() => setShowLogin(true)}
-                onRegistroClick={() => setShowRegistro(true)}
-            />
-            */}
+            {/* 1. Navbar: Se renderiza desde App.jsx, aquí solo manejamos los modales si es necesario */}
+            {/* El Navbar se mantiene aquí para que las funciones de modal puedan usarse,
+                pero debe estar comentado en el return principal. */}
             
             <Principal /> 
             
-            {/* Su Carrusel: Se inserta aquí */}
+            {/* 2. Su Carrusel: Se inserta aquí */}
             <CarruselMascotas mascotas={mascotasCarrusel} /> 
             
-            {/* Div contenedor de las Cards (Lógica del compañero) */}
+            {/* 3. Div contenedor de las Cards (Muestra los datos filtrados) */}
             <div
                 style={{
                     display: "flex",
@@ -83,20 +105,27 @@ function HomeNew() {
                     padding: "1rem",
                 }}
             >
-                {/* Mapeo de Publicaciones (usa Redux) */}
-                {publicaciones.map((publicacion) => (
+                {/* ⬅️ CRÍTICO: Mapeo del arreglo FILTRADO ⬅️ */}
+                {filteredPublicaciones.map((publicacion) => (
                     <CardNew
                         key={publicacion.id}
                         id={publicacion.id}
                         titulo={publicacion.titulo}
                         telefono={publicacion.telefono}
                         fecha_publicacion={publicacion.fecha_publicacion}
-                        nombre={publicacion.mascota.nombre}
+                        nombre={publicacion.mascota?.nombre}
                         mascota_id={publicacion.mascotaId}
-                        foto={publicacion.mascota.foto}
-                        ciudad={publicacion.mascota.ciudad}
+                        foto={publicacion.mascota?.foto}
+                        ciudad={publicacion.mascota?.ciudad}
                     />
                 ))}
+                
+                {/* Mensaje de no encontrado si el filtro es estricto */}
+                {searchTerm && filteredPublicaciones.length === 0 && (
+                    <div className="text-center my-4">
+                        <p>No se encontraron resultados para "{searchTerm}".</p>
+                    </div>
+                )}
             </div>
             
             {/* Footer y Modales: Se renderizan una sola vez */}
