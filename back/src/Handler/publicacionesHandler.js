@@ -8,8 +8,11 @@ const {
 } = require("../Controller/publicacionesController");
 
 const getPublicacionesHandler = async (req, res) => {
+  let limit = req.params.limit;
+  let page = req.params.page - 1;
   try {
-    let publicaciones = await getPublicacionesController();
+    let offset = page * limit;
+    let publicaciones = await getPublicacionesController(offset, limit);
     res.status(200).send(publicaciones);
   } catch (error) {
     res.status(500).send({ Error: error.message });

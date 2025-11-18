@@ -10,7 +10,7 @@ const{
 } = require("../Handler/publicacionesHandler");
 
 const publicacionesRoutes = Router();
-publicacionesRoutes.get('/', getPublicacionesHandler);
+publicacionesRoutes.get('/:page/:limit', getPublicacionesHandler);
 publicacionesRoutes.get('/:id', getPublicacionHandler);
 publicacionesRoutes.post('/', postPublicacionHandler);
 publicacionesRoutes.put('/', putPublicacionHandler);
