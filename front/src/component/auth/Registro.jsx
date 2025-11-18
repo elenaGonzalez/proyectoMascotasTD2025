@@ -22,16 +22,16 @@ const { control, handleSubmit, reset, formState: { errors } } = useForm({
 const onSubmit = async(data) => {
     console.log('Datos del registro:', data)
     await axios({
-          method: 'post', 
-          url: "http://localhost:3000/api/auth/registro",
-          data:{
-          nombre: data.nombre,
-          apellido: data.apellido,  
-          email: data.email, 
-          contrasena: data.contraseña,
-          telefono: data.telefono
-          }
-      }).then((res) => console.log(res.data))
+        method: 'post', 
+        url: "http://localhost:3000/api/auth/registro",
+        data:{
+        nombre: data.nombre,
+        apellido: data.apellido,  
+        email: data.email, 
+        contrasena: data.contraseña,
+        telefono: data.telefono
+        }
+    }).then((res) => console.log(res.data))
         .catch((err) => console.log(err));
 
     setSubmitSuccess(true)

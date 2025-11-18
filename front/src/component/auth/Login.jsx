@@ -6,7 +6,7 @@ import { setUsuario } from "../../redux/usuarioSlice";
 import axios from "axios";
 
 function Login({ show, onHide }) {
-   const dispatch = useDispatch();
+  const dispatch = useDispatch();
     
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const {
@@ -25,7 +25,7 @@ function Login({ show, onHide }) {
 
   const onSubmit = async(data) => {
     console.log("Datos del login:", data);
-     await axios({
+    await axios({
           method: 'post', 
           url: "http://localhost:3000/api/auth/login",
           data:{
