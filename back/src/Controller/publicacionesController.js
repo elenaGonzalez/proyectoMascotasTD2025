@@ -29,8 +29,9 @@ const getPublicacionCardsController = async () =>{
 };
 
 
-const getPublicacionesController = async () => {
-  return await Publicacion.findAll({
+const getPublicacionesController = async (offset, limit) => {
+  
+  return await Publicacion.findAndCountAll({
     include: [
       {
         model: Mascota,
@@ -48,6 +49,8 @@ const getPublicacionesController = async () => {
         ],
       },
     ],
+    offset,
+    limit,
   });
 };
 

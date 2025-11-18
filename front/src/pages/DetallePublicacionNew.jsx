@@ -13,7 +13,7 @@ import Card from 'react-bootstrap/Card';
 function DetallePublicacionNew() {
   const { id } = useParams();
   const publicaciones = useSelector((state) => state.publicaciones);
-  const publicacion = publicaciones.find((m) => m.id == id);
+  const publicacion = publicaciones.rows.find((m) => m.id == id);
 
   const [showLogin, setShowLogin] = useState(false);
   const [showRegistro, setShowRegistro] = useState(false);

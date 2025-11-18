@@ -20,17 +20,20 @@ function HomeNew() {
   const publicaciones = useSelector((state) => state.publicaciones);
 
   const dispatch = useDispatch();
+  const [page, setPage] = useState(2);
+  const total_publicaciones_BD = useSelector((state) => state.publicaciones.count);
+  
 
+  let limit = 3;
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/publicaciones")
+      .get(`http://localhost:3000/api/publicaciones/${page}/${limit}`)
       .then((res) => dispatch(getPublicaciones(res.data)))
       .catch((err) => console.log(err));
   }, [dispatch]);
 
   return (
     <>
-      {console.log(publicaciones)}
       <NavbarMain
         onLoginClick={() => setShowLogin(true)}
         onRegistroClick={() => setShowRegistro(true)}
@@ -45,7 +48,7 @@ function HomeNew() {
           padding: "1rem",
         }}
       >
-        {publicaciones.map((publicacion) => (
+        {publicaciones?.rows && publicaciones.rows.map((publicacion) => (
           <CardNew
             key={publicacion.id}
             id={publicacion.id}
