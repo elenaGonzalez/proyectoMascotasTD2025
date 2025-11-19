@@ -32,7 +32,7 @@ const onSubmit = async(data) => {
           telefono: data.telefono
           }
       }).then((res) => console.log(res.data))
-        .catch((err) => console.log(err));
+        .catch((err) => alert(err.response.data.Error));
 
     setSubmitSuccess(true)
     reset()
