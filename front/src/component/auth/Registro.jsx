@@ -24,15 +24,6 @@ const { control, handleSubmit, reset, formState: { errors } } = useForm({
     mode: 'onBlur'
 })
 
-useEffect(() => {
-    if (showToast) {
-    const t = setTimeout(() => {
-        setShowToast(false)
-        onHide()
-    }, 2000)
-    return () => clearTimeout(t)
-    }
-}, [showToast, onHide])
 
 const onSubmit = async (data) => {
     setIsLoading(true)

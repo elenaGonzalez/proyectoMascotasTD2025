@@ -67,8 +67,8 @@ function Login({ show, onHide }) {
     } catch (err) {
       // Captura mensajes de error del backend
       const errorMsg = err.response?.data?.Error || 
-                       err.response?.data?.message || 
-                       "Email o contraseña incorrectos";
+                      err.response?.data?.message || 
+                      "Email o contraseña incorrectos";
       setErrorMessage(errorMsg);
       console.log(err);
     } finally {
