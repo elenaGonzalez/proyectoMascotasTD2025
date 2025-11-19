@@ -26,13 +26,15 @@ return (
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
             { !usuario.nombre ?   
+            <>
             <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
+            <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
+            </>
             : <Button variant='primary'>Perfil {usuario.nombre}</Button>
             }
             { usuario.nombre &&
                 <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
             }
-            <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
             </Nav>
         </Navbar.Collapse>
         </Container>
