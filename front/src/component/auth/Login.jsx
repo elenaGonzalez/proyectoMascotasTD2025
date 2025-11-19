@@ -32,11 +32,14 @@ function Login({ show, onHide }) {
           email: data.email, 
           contrasena: data.contraseña
           }
-      }).then((res) => dispatch(setUsuario(res.data)))
-        .catch((err) => console.log(err));
+      }).then((res) => 
+      {dispatch(setUsuario(res.data))
+      setSubmitSuccess(true)
+      setSubmitSuccess(true)
+  })
+    .catch((err) =>  alert(err.response.data.Error));
       
-      setSubmitSuccess(true);
-    setSubmitSuccess(true);
+    
     reset();
     setTimeout(() => {
       setSubmitSuccess(false);
