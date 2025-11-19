@@ -129,6 +129,9 @@ function Login({ show, onHide }) {
             Iniciar Sesión
           </Button>
         </Form>
+        <Button variant="link" className="w-100">
+    ¿Olvidaste tu contraseña?
+    </Button>
       </Modal.Body>
     </Modal>
   );
