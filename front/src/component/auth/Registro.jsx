@@ -20,7 +20,6 @@ const { control, handleSubmit, reset, formState: { errors } } = useForm({
 })
 
 const onSubmit = async(data) => {
-    console.log('Datos del registro:', data)
     await axios({
           method: 'post', 
           url: "http://localhost:3000/api/auth/registro",
