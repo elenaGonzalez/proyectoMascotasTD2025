@@ -1,14 +1,14 @@
 import { Modal, Button, Form, Alert, Spinner } from 'react-bootstrap'
 import { useForm, Controller } from 'react-hook-form'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import axios from 'axios'
 
 function Registro({ show, onHide }) {
-
   const [submitSuccess, setSubmitSuccess] = useState(false)
   const [showToast, setShowToast] = useState(false)
   const [errorMessage, setErrorMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
+  const [registeredName, setRegisteredName] = useState("")
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
@@ -22,11 +22,19 @@ function Registro({ show, onHide }) {
     mode: 'onBlur'
   })
 
-  // ✅ ÚNICO onSubmit — bien implementado
+  useEffect(() => {
+    if (showToast) {
+      const t = setTimeout(() => {
+        setShowToast(false)
+        onHide()
+      }, 2000)
+      return () => clearTimeout(t)
+    }
+  }, [showToast, onHide])
+
   const onSubmit = async (data) => {
     setIsLoading(true)
     setErrorMessage("")
-
     try {
       const res = await axios.post("http://localhost:3000/api/auth/registro", {
         nombre: data.nombre,
@@ -36,30 +44,27 @@ function Registro({ show, onHide }) {
         telefono: data.telefono
       })
 
-      console.log(res.data)
-
+      // respuesta OK
+      const nameToShow = res.data?.nombre || data.nombre || ""
+      setRegisteredName(nameToShow)
       setSubmitSuccess(true)
       setShowToast(true)
       reset()
-
     } catch (err) {
-
       const backendMsg =
-        err.response?.data?.Error ||
         err.response?.data?.message ||
+        err.response?.data?.Error ||
         err.response?.data?.error ||
         err.message ||
         "Error en el registro"
-
       setErrorMessage(backendMsg)
       console.error(err)
-
     } finally {
       setIsLoading(false)
     }
   }
 
-  // Estilo del toast flotante
+  // estilos inline para notificación flotante simple
   const toastStyle = {
     position: 'fixed',
     top: 20,
@@ -83,7 +88,7 @@ function Registro({ show, onHide }) {
         <div style={{ fontSize: 18, fontWeight: 700 }}>✓</div>
         <div>
           <div style={{ fontWeight: 700 }}>Registro exitoso</div>
-          <div style={{ fontSize: 13, opacity: 0.95 }}>¡Bienvenido!</div>
+          <div style={{ fontSize: 13, opacity: 0.95 }}>{registeredName ? `Bienvenido ${registeredName}` : 'Registro completado'}</div>
         </div>
       </div>
 
@@ -91,9 +96,8 @@ function Registro({ show, onHide }) {
         <Modal.Header closeButton={!isLoading}>
           <Modal.Title>Registrarse</Modal.Title>
         </Modal.Header>
-
         <Modal.Body>
-
+          {/* Error del servidor */}
           {errorMessage && (
             <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
               <strong>Error</strong>
@@ -101,6 +105,7 @@ function Registro({ show, onHide }) {
             </Alert>
           )}
 
+          {/* Mensaje success dentro del modal (opcional, se duplica con el toast) */}
           {submitSuccess && !showToast && (
             <Alert variant="success">
               ¡Registro exitoso! ✅
@@ -108,8 +113,7 @@ function Registro({ show, onHide }) {
           )}
 
           <Form onSubmit={handleSubmit(onSubmit)}>
-
-            {/* NOMBRE */}
+            {/* Nombre */}
             <Form.Group className="mb-3">
               <Form.Label>Nombre *</Form.Label>
               <Controller
@@ -117,9 +121,9 @@ function Registro({ show, onHide }) {
                 control={control}
                 rules={{
                   required: 'El nombre es obligatorio',
-                  minLength: { value: 2, message: 'Debe tener al menos 2 caracteres' },
-                  maxLength: { value: 50, message: 'No puede exceder 50 caracteres' },
-                  pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo letras y espacios' }
+                  minLength: { value: 2, message: 'El nombre debe tener al menos 2 caracteres' },
+                  maxLength: { value: 50, message: 'El nombre no puede exceder 50 caracteres' },
+                  pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo se permiten letras y espacios' }
                 }}
                 render={({ field }) => (
                   <>
@@ -130,7 +134,7 @@ function Registro({ show, onHide }) {
               />
             </Form.Group>
 
-            {/* APELLIDO */}
+            {/* Apellido */}
             <Form.Group className="mb-3">
               <Form.Label>Apellido *</Form.Label>
               <Controller
@@ -138,9 +142,9 @@ function Registro({ show, onHide }) {
                 control={control}
                 rules={{
                   required: 'El apellido es obligatorio',
-                  minLength: { value: 2, message: 'Debe tener al menos 2 caracteres' },
-                  maxLength: { value: 50, message: 'No puede exceder 50 caracteres' },
-                  pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo letras y espacios' }
+                  minLength: { value: 2, message: 'El apellido debe tener al menos 2 caracteres' },
+                  maxLength: { value: 50, message: 'El apellido no puede exceder 50 caracteres' },
+                  pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo se permiten letras y espacios' }
                 }}
                 render={({ field }) => (
                   <>
@@ -151,7 +155,7 @@ function Registro({ show, onHide }) {
               />
             </Form.Group>
 
-            {/* EMAIL */}
+            {/* Email */}
             <Form.Group className="mb-3">
               <Form.Label>Email *</Form.Label>
               <Controller
@@ -159,7 +163,7 @@ function Registro({ show, onHide }) {
                 control={control}
                 rules={{
                   required: 'El email es obligatorio',
-                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Email inválido' }
+                  pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Ingresá un email válido' }
                 }}
                 render={({ field }) => (
                   <>
@@ -170,7 +174,7 @@ function Registro({ show, onHide }) {
               />
             </Form.Group>
 
-            {/* TELÉFONO */}
+            {/* Teléfono */}
             <Form.Group className="mb-3">
               <Form.Label>Teléfono *</Form.Label>
               <Controller
@@ -178,10 +182,7 @@ function Registro({ show, onHide }) {
                 control={control}
                 rules={{
                   required: 'El teléfono es obligatorio',
-                  pattern: {
-                    value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
-                    message: 'Número de teléfono inválido'
-                  }
+                  pattern: { value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/, message: 'Ingresá un número de teléfono válido' }
                 }}
                 render={({ field }) => (
                   <>
@@ -192,7 +193,7 @@ function Registro({ show, onHide }) {
               />
             </Form.Group>
 
-            {/* CONTRASEÑA */}
+            {/* Contraseña */}
             <Form.Group className="mb-3">
               <Form.Label>Contraseña *</Form.Label>
               <Controller
@@ -200,7 +201,7 @@ function Registro({ show, onHide }) {
                 control={control}
                 rules={{
                   required: 'La contraseña es obligatoria',
-                  minLength: { value: 8, message: 'Mínimo 8 caracteres' },
+                  minLength: { value: 8, message: 'La contraseña debe tener al menos 8 caracteres' },
                   pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, message: 'Debe contener mayúscula, minúscula y número' }
                 }}
                 render={({ field }) => (
@@ -212,7 +213,7 @@ function Registro({ show, onHide }) {
               />
             </Form.Group>
 
-            {/* CONFIRMAR CONTRASEÑA */}
+            {/* Confirmar Contraseña */}
             <Form.Group className="mb-3">
               <Form.Label>Confirmar Contraseña *</Form.Label>
               <Controller
@@ -221,7 +222,8 @@ function Registro({ show, onHide }) {
                 rules={{
                   required: 'Debe confirmar la contraseña',
                   validate: (value) => {
-                    const pass = document.querySelector('input[name="contraseña"]')?.value || ''
+                    const inputs = document.querySelectorAll('input[type="password"]')
+                    const pass = inputs[0]?.value || ''
                     return value === pass || 'Las contraseñas no coinciden'
                   }
                 }}
@@ -235,14 +237,8 @@ function Registro({ show, onHide }) {
             </Form.Group>
 
             <Button type="submit" variant="success" className="w-100" disabled={isLoading}>
-              {isLoading ? (
-                <>
-                  <Spinner as="span" animation="border" size="sm" className="me-2" />
-                  Registrando...
-                </>
-              ) : "Registrarse"}
+              {isLoading ? <><Spinner as="span" animation="border" size="sm" className="me-2" />Registrando...</> : "Registrarse"}
             </Button>
-
           </Form>
         </Modal.Body>
       </Modal>
