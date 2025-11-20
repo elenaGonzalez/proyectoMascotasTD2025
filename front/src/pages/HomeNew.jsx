@@ -73,7 +73,6 @@ function HomeNew() {
 
       {/* PAGINADO */}
       <div style={{ display: "flex", justifyContent: "center", gap: "15px", margin: "25px" }}>
-        
         {/* Botón Anterior */}
       <button
         onClick={() => setPage(page - 1)}
