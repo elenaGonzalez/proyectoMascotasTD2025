@@ -7,50 +7,44 @@ import { logoutUsuario } from "../../redux/usuarioSlice.js";
 import { Link } from 'react-router-dom'
 
 function NavbarMain() {
-const [showLogin, setShowLogin] = useState(false)
-const [showRegistro, setShowRegistro] = useState(false)
+    const [showLogin, setShowLogin] = useState(false)
+    const [showRegistro, setShowRegistro] = useState(false)
 
-const dispatch = useDispatch();
-const usuario = useSelector((state) => state.usuario);
+    const dispatch = useDispatch();
+    const usuario = useSelector((state) => state.usuario);
 
-const handlerLogout = () =>{
-    dispatch (logoutUsuario({}));
-    console.log("En logout ", usuario.nombre);
-    
-}
-return (
-    <>
-    <Navbar bg="dark" variant="dark" expand="lg">
-        <Container fluid>
-        <Link to="/">Mi Proyecto</Link>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-auto">
-            { !usuario.nombre ?   
-            <>
-            <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
-            <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
-            </>
-            : <>
-               <Button variant='primary'>Perfil {usuario.nombre}</Button>
-                 <Button variant='warning'>
-                    <Link to={`/publicar`}>Publicar</Link>
-                </Button>
-               </>
-            }
-            { usuario.nombre &&
-                <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
-            }
-            </Nav>
-        </Navbar.Collapse>
-        </Container>
-    </Navbar>
+    const handlerLogout = () => {
+        dispatch(logoutUsuario({}));
+        console.log("En logout ", usuario.nombre);
+    }
+    return (
+        <>
+            <Navbar bg="dark" variant="dark" expand="lg">
+                <Container fluid>
+                    <Navbar.Brand href="/">Mi Proyecto</Navbar.Brand>
+                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="basic-navbar-nav">
+                        <Nav className="ms-auto">
+                            {!usuario.nombre ?
+                                <>
+                                    <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
+                                    <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
+                                </>
+                                : <Button as={Link} to="/panel" variant='primary'>Perfil {usuario.nombre}</Button>
+                            }
+                            {usuario.nombre &&
+                                <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
+                            }
+                        </Nav>
+                    </Navbar.Collapse>
+                </Container>
+            </Navbar>
 
-      {/* Modales */}
-    <Login show={showLogin} onHide={() => setShowLogin(false)} />
-    <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
-    </>
-)
+            {/* Modales */}
+            <Login show={showLogin} onHide={() => setShowLogin(false)} />
+            <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
+        </>
+    )
 }
 
 export default NavbarMain

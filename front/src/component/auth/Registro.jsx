@@ -6,25 +6,25 @@ import { useDispatch } from "react-redux"
 import axios from 'axios'
 
 function Registro({ show, onHide }) {
-const dispatch = useDispatch()
-const [submitSuccess, setSubmitSuccess] = useState(false)
-const [showToast, setShowToast] = useState(false)
-const [errorMessage, setErrorMessage] = useState("")
-const [isLoading, setIsLoading] = useState(false)
+  const dispatch = useDispatch()
+  const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [showToast, setShowToast] = useState(false)
+  const [errorMessage, setErrorMessage] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
 
-const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
     defaultValues: {
-    nombre: '',
-    apellido: '',
-    email: '',
-    telefono: '',
-    contraseña: '',
-    confirmContraseña: ''
+      nombre: '',
+      apellido: '',
+      email: '',
+      telefono: '',
+      contraseña: '',
+      confirmContraseña: ''
     },
     mode: 'onBlur'
-})
+  })
 
-const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     await axios({
           method: 'post', 
           url: "http://localhost:3000/api/auth/registro",
@@ -55,168 +55,168 @@ const toastStyle = {
     alignItems: 'center'
 }
 
-return (
-    <>
-      {/* Toast flotante */}
-    <div style={toastStyle} aria-live="polite">
-        <div style={{ fontSize: 18, fontWeight: 700 }}>✓</div>
-        <div>
-        <div style={{ fontWeight: 700 }}>Registro exitoso</div>
-          <div style={{ fontSize: 13, opacity: 0.95 }}>Bienvenido { /* opcional mostrar nombre */ }</div>
+    return (
+      <>
+        {/* Toast flotante */}
+        <div style={toastStyle} aria-live="polite">
+          <div style={{ fontSize: 18, fontWeight: 700 }}>✓</div>
+          <div>
+            <div style={{ fontWeight: 700 }}>Registro exitoso</div>
+            <div style={{ fontSize: 13, opacity: 0.95 }}>Bienvenido { /* opcional mostrar nombre */}</div>
+          </div>
         </div>
-    </div>
 
-    <Modal show={show} onHide={onHide} centered backdrop={isLoading ? "static" : true}>
-        <Modal.Header closeButton={!isLoading}>
-        <Modal.Title>Registrarse</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {/* Error del servidor */}
-        {errorMessage && (
-            <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
-            <strong>Error</strong>
-            <div>{errorMessage}</div>
-            </Alert>
-        )}
+        <Modal show={show} onHide={onHide} centered backdrop={isLoading ? "static" : true}>
+          <Modal.Header closeButton={!isLoading}>
+            <Modal.Title>Registrarse</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {/* Error del servidor */}
+            {errorMessage && (
+              <Alert variant="danger" onClose={() => setErrorMessage("")} dismissible>
+                <strong>Error</strong>
+                <div>{errorMessage}</div>
+              </Alert>
+            )}
 
-          {/* Mensaje success dentro del modal (opcional, se duplica con el toast) */}
-        {submitSuccess && !showToast && (
-            <Alert variant="success">
-            ¡Registro exitoso! ✅
-            </Alert>
-        )}
+            {/* Mensaje success dentro del modal (opcional, se duplica con el toast) */}
+            {submitSuccess && !showToast && (
+              <Alert variant="success">
+                ¡Registro exitoso! ✅
+              </Alert>
+            )}
 
-        <Form onSubmit={handleSubmit(onSubmit)}>
-            {/* Nombre */}
-            <Form.Group className="mb-3">
-              <Form.Label>Nombre *</Form.Label>
-            <Controller
-                name="nombre"
-                control={control}
-                rules={{
-                required: 'El nombre es obligatorio',
-                minLength: { value: 2, message: 'El nombre debe tener al menos 2 caracteres' },
-                maxLength: { value: 50, message: 'El nombre no puede exceder 50 caracteres' },
-                pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo se permiten letras y espacios' }
-                }}
-                render={({ field }) => (
-                <>
-                    <Form.Control {...field} type="text" placeholder="Ingresá tu nombre" isInvalid={!!errors.nombre} disabled={isLoading} />
-                    <Form.Control.Feedback type="invalid">{errors.nombre?.message}</Form.Control.Feedback>
-                </>
-                )}
-            />
-            </Form.Group>
+            <Form onSubmit={handleSubmit(onSubmit)}>
+              {/* Nombre */}
+              <Form.Group className="mb-3">
+                <Form.Label>Nombre *</Form.Label>
+                <Controller
+                  name="nombre"
+                  control={control}
+                  rules={{
+                    required: 'El nombre es obligatorio',
+                    minLength: { value: 2, message: 'El nombre debe tener al menos 2 caracteres' },
+                    maxLength: { value: 50, message: 'El nombre no puede exceder 50 caracteres' },
+                    pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo se permiten letras y espacios' }
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control {...field} type="text" placeholder="Ingresá tu nombre" isInvalid={!!errors.nombre} disabled={isLoading} />
+                      <Form.Control.Feedback type="invalid">{errors.nombre?.message}</Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
 
-            {/* Apellido */}
-            <Form.Group className="mb-3">
-              <Form.Label>Apellido *</Form.Label>
-            <Controller
-                name="apellido"
-                control={control}
-                rules={{
-                required: 'El apellido es obligatorio',
-                minLength: { value: 2, message: 'El apellido debe tener al menos 2 caracteres' },
-                maxLength: { value: 50, message: 'El apellido no puede exceder 50 caracteres' },
-                pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo se permiten letras y espacios' }
-                }}
-                render={({ field }) => (
-                <>
-                    <Form.Control {...field} type="text" placeholder="Ingresá tu apellido" isInvalid={!!errors.apellido} disabled={isLoading} />
-                    <Form.Control.Feedback type="invalid">{errors.apellido?.message}</Form.Control.Feedback>
-                </>
-                )}
-            />
-            </Form.Group>
+              {/* Apellido */}
+              <Form.Group className="mb-3">
+                <Form.Label>Apellido *</Form.Label>
+                <Controller
+                  name="apellido"
+                  control={control}
+                  rules={{
+                    required: 'El apellido es obligatorio',
+                    minLength: { value: 2, message: 'El apellido debe tener al menos 2 caracteres' },
+                    maxLength: { value: 50, message: 'El apellido no puede exceder 50 caracteres' },
+                    pattern: { value: /^[a-záéíóúñ\s]+$/i, message: 'Solo se permiten letras y espacios' }
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control {...field} type="text" placeholder="Ingresá tu apellido" isInvalid={!!errors.apellido} disabled={isLoading} />
+                      <Form.Control.Feedback type="invalid">{errors.apellido?.message}</Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
 
-            {/* Email */}
-            <Form.Group className="mb-3">
-              <Form.Label>Email *</Form.Label>
-            <Controller
-                name="email"
-                control={control}
-                rules={{
-                required: 'El email es obligatorio',
-                pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Ingresá un email válido' }
-                }}
-                render={({ field }) => (
-                <>
-                    <Form.Control {...field} type="email" placeholder="Ingresá tu correo" isInvalid={!!errors.email} disabled={isLoading} />
-                    <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
-                </>
-                )}
-            />
-            </Form.Group>
+              {/* Email */}
+              <Form.Group className="mb-3">
+                <Form.Label>Email *</Form.Label>
+                <Controller
+                  name="email"
+                  control={control}
+                  rules={{
+                    required: 'El email es obligatorio',
+                    pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: 'Ingresá un email válido' }
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control {...field} type="email" placeholder="Ingresá tu correo" isInvalid={!!errors.email} disabled={isLoading} />
+                      <Form.Control.Feedback type="invalid">{errors.email?.message}</Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
 
-            {/* Teléfono */}
-            <Form.Group className="mb-3">
-              <Form.Label>Teléfono *</Form.Label>
-            <Controller
-                name="telefono"
-                control={control}
-                rules={{
-                required: 'El teléfono es obligatorio',
-                pattern: { value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/, message: 'Ingresá un número de teléfono válido' }
-                }}
-                render={({ field }) => (
-                <>
-                    <Form.Control {...field} type="tel" placeholder="Ej. +54 3777 123456" isInvalid={!!errors.telefono} disabled={isLoading} />
-                    <Form.Control.Feedback type="invalid">{errors.telefono?.message}</Form.Control.Feedback>
-                </>
-                )}
-            />
-            </Form.Group>
+              {/* Teléfono */}
+              <Form.Group className="mb-3">
+                <Form.Label>Teléfono *</Form.Label>
+                <Controller
+                  name="telefono"
+                  control={control}
+                  rules={{
+                    required: 'El teléfono es obligatorio',
+                    pattern: { value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/, message: 'Ingresá un número de teléfono válido' }
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control {...field} type="tel" placeholder="Ej. +54 3777 123456" isInvalid={!!errors.telefono} disabled={isLoading} />
+                      <Form.Control.Feedback type="invalid">{errors.telefono?.message}</Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
 
-            {/* Contraseña */}
-            <Form.Group className="mb-3">
-              <Form.Label>Contraseña *</Form.Label>
-            <Controller
-                name="contraseña"
-                control={control}
-                rules={{
-                required: 'La contraseña es obligatoria',
-                minLength: { value: 8, message: 'La contraseña debe tener al menos 8 caracteres' },
-                pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, message: 'Debe contener mayúscula, minúscula y número' }
-                }}
-                render={({ field }) => (
-                <>
-                    <Form.Control {...field} type="password" placeholder="Crea una contraseña segura" isInvalid={!!errors.contraseña} disabled={isLoading} />
-                    <Form.Control.Feedback type="invalid">{errors.contraseña?.message}</Form.Control.Feedback>
-                </>
-                )}
-            />
-            </Form.Group>
+              {/* Contraseña */}
+              <Form.Group className="mb-3">
+                <Form.Label>Contraseña *</Form.Label>
+                <Controller
+                  name="contraseña"
+                  control={control}
+                  rules={{
+                    required: 'La contraseña es obligatoria',
+                    minLength: { value: 8, message: 'La contraseña debe tener al menos 8 caracteres' },
+                    pattern: { value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, message: 'Debe contener mayúscula, minúscula y número' }
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control {...field} type="password" placeholder="Crea una contraseña segura" isInvalid={!!errors.contraseña} disabled={isLoading} />
+                      <Form.Control.Feedback type="invalid">{errors.contraseña?.message}</Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
 
-            {/* Confirmar Contraseña */}
-            <Form.Group className="mb-3">
-              <Form.Label>Confirmar Contraseña *</Form.Label>
-            <Controller
-                name="confirmContraseña"
-                control={control}
-                rules={{
-                required: 'Debe confirmar la contraseña',
-                validate: (value) => {
-                    const pass = document.querySelector('input[type="password"]')?.value || ''
-                    return value === pass || 'Las contraseñas no coinciden'
-                }
-                }}
-                render={({ field }) => (
-                <>
-                    <Form.Control {...field} type="password" placeholder="Confirma tu contraseña" isInvalid={!!errors.confirmContraseña} disabled={isLoading} />
-                    <Form.Control.Feedback type="invalid">{errors.confirmContraseña?.message}</Form.Control.Feedback>
-                </>
-                )}
-            />
-            </Form.Group>
+              {/* Confirmar Contraseña */}
+              <Form.Group className="mb-3">
+                <Form.Label>Confirmar Contraseña *</Form.Label>
+                <Controller
+                  name="confirmContraseña"
+                  control={control}
+                  rules={{
+                    required: 'Debe confirmar la contraseña',
+                    validate: (value) => {
+                      const pass = document.querySelector('input[type="password"]')?.value || ''
+                      return value === pass || 'Las contraseñas no coinciden'
+                    }
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control {...field} type="password" placeholder="Confirma tu contraseña" isInvalid={!!errors.confirmContraseña} disabled={isLoading} />
+                      <Form.Control.Feedback type="invalid">{errors.confirmContraseña?.message}</Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
 
-            <Button type="submit" variant="success" className="w-100" disabled={isLoading}>
-            {isLoading ? <><Spinner as="span" animation="border" size="sm" className="me-2" />Registrando...</> : "Registrarse"}
-            </Button>
-        </Form>
-        </Modal.Body>
-    </Modal>
-    </>
-)
-}
+              <Button type="submit" variant="success" className="w-100" disabled={isLoading}>
+                {isLoading ? <><Spinner as="span" animation="border" size="sm" className="me-2" />Registrando...</> : "Registrarse"}
+              </Button>
+            </Form>
+          </Modal.Body>
+        </Modal>
+      </>
+    )
+  }
 
 export default Registro
