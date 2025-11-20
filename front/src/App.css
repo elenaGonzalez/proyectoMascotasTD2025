@@ -1,8 +1,12 @@
 #root {
   max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .logo {
@@ -11,9 +15,11 @@
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
@@ -22,6 +28,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -33,10 +40,29 @@
   }
 }
 
+
+
 .card {
-  padding: 2em;
+  padding: 1rem;
 }
 
 .read-the-docs {
   color: #888;
+}
+
+.contact-container {
+  padding-bottom: 3rem;
+}
+
+.contact-info p {
+  font-size: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.contact-info strong {
+  color: #0d6efd;
+}
+
+.contact-map iframe {
+  border-radius: 10px;
 }
