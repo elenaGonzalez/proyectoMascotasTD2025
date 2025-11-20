@@ -26,10 +26,32 @@ const Mascota = sequelize.define(
    vacunado: {
     type: DataTypes.BOOLEAN,
     required: true,
+    defaultValue: false,
+  },
+  destetado: {
+    type: DataTypes.BOOLEAN,
+    required: true,
+    defaultValue: false,
+  },
+  esterilizado:{
+    type: DataTypes.BOOLEAN,
+    required: true,
+    defaultValue: false,
+  },
+  alimentacion:{
+    type: DataTypes.STRING,
+    required: true,
+    defaultValue: false,
+    },
+  categoria: {
+    type: DataTypes.STRING,
+    enum: ['perro', 'gato', 'otro'],
+    defaultValue: 'otro',
   },
   raza: {
     type: DataTypes.STRING,
     required: true,
+    defaultValue: 'Mestizo',
   },
   foto: {
     type: DataTypes.STRING,
@@ -39,10 +61,18 @@ const Mascota = sequelize.define(
     type: DataTypes.STRING,
     required: true,
   },
-   adoptado: {
+  antiparacitario:{
     type: DataTypes.BOOLEAN,
     defaultValue: false
-   }
+  },
+  aprendizaje:{
+    type: DataTypes.STRING,
+    required: true,
+  },
+  adoptado: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+   },
   },
   {
     timestamps: false,

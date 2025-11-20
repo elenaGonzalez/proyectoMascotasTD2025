@@ -1,20 +1,29 @@
 const Mascota = require("../Models/Mascota");
+const Usuario = require("../Models/Usuario");
 //const Usuario = require("../Models/Usuario");
 
 const getMascotasActivasController = async() =>{
     return await Mascota.findAll();
 }
 
-const postMascotaController = async(nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId)=>{
-    const mascota_nueva = await Mascota.create({
+const postMascotaController = async(nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, antiparacitario, aprendizaje, usuarioId)=>{
+  const user = await Usuario.findOne({usuarioId: usuarioId});  
+  console.info("usuario:", user)
+  const mascota_nueva = await Mascota.create({
         nombre, 
         genero, 
         edad, 
         vacunado,
+        destetado, 
+        esterilizado, 
+        alimentacion,
+        categoria,
         raza,
         foto,
         ciudad,
-        usuarioId
+        antiparacitario,
+        aprendizaje,
+        usuarioId: user.id,
     });
     
     return mascota_nueva;
@@ -26,8 +35,8 @@ const getMascotaController = async(id)=>{
    return mascota_buscada;
 }
 
-const putMascotaController = async(id, nombre, genero, edad, vacunado, raza, foto, ciudad, adoptado, usuarioId) =>{
-  const mascota_actualizada = {nombre, genero, edad, vacunado, raza, foto, ciudad, adoptado, usuarioId};
+const putMascotaController = async(id, nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, adoptado, usuarioId) =>{
+  const mascota_actualizada = {nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, adoptado, usuarioId};
    await Mascota.update( mascota_actualizada, {
         where: { id }
 });

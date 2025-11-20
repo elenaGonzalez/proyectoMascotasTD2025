@@ -4,7 +4,7 @@ import Login from '../auth/Login.jsx'
 import Registro from '../auth/Registro.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUsuario } from "../../redux/usuarioSlice.js";
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
 
 function NavbarMain() {
     const [showLogin, setShowLogin] = useState(false)
@@ -16,9 +16,6 @@ function NavbarMain() {
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
         console.log("En logout ", usuario.nombre);
-
-
-
     }
     return (
         <>
@@ -36,7 +33,10 @@ function NavbarMain() {
                                 : <Button as={Link} to="/panel" variant='primary'>Perfil {usuario.nombre}</Button>
                             }
                             {usuario.nombre &&
+                                <>
+                                <Link to={`/publicar`}><Button variant='primary'>Publicar</Button></Link>
                                 <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
+                                </>
                             }
                         </Nav>
                     </Navbar.Collapse>
