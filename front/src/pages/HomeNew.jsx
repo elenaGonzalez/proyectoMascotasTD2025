@@ -22,7 +22,6 @@ function HomeNew() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(1);
   const total_publicaciones_BD = useSelector((state) => state.publicaciones.count);
-  
 
   const limit = 4;
   // Convertir página lógica a offset real
