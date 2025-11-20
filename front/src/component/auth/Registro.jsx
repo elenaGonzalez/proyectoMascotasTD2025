@@ -37,44 +37,7 @@ const onSubmit = async(data) => {
           }
       }).then((res) => console.log(res.data))
         .catch((err) => alert(err.response.data.Error));
-
-const onSubmit = async (data) => {
-    setIsLoading(true)
-    setErrorMessage("")
-    try {
-    const res = await axios({
-        method: 'post',
-        url: "http://localhost:3000/api/auth/registro",
-        data: {
-        nombre: data.nombre,
-        apellido: data.apellido,
-        email: data.email,
-        contrasena: data.contraseña,
-        telefono: data.telefono
-        }
-    })
-
-      // respuesta OK
-    console.log(res.data)
-    setSubmitSuccess(true)
-    setShowToast(true)
-    reset()
-      // aquí podrías dispatch(setUsuario(...)) si usas redux
-    } catch (err) {
-      // intenta leer distintos formatos de error del backend
-    const backendMsg =
-        err.response?.data?.Error ||
-        err.response?.data?.message ||
-        err.response?.data?.error ||
-        err.message ||
-        "Error en el registro"
-    setErrorMessage(backendMsg)
-    console.error(err)
-    } finally {
-    setIsLoading(false)
     }
-}
-
   // estilos inline para notificación flotante simple
 const toastStyle = {
     position: 'fixed',

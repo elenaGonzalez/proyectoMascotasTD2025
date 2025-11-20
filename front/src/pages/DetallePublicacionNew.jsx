@@ -48,10 +48,14 @@ function DetallePublicacionNew() {
           </blockquote>
           
           <div>------------------------------------------------------</div>
-          <div>Raza : {publicacion.mascota.raza}</div>
+          <div>Raza: {publicacion.mascota.raza == "" ? "sin definir" : publicacion.mascota.raza}</div>
           <div>Edad : {publicacion.mascota.edad}</div>
           <div>Genero : {publicacion.mascota.genero}</div>
+          <div>Categoria : {publicacion.mascota.categoria}</div>
           <div>Vacunado : {publicacion.mascota.vacunado ? "si" : "no"}</div>
+          <div>Destetado : {publicacion.mascota.destetado ? "si" : "no"}</div>
+          <div>Esterilizado : {publicacion.mascota.esterilizado ? "si" : "no"}</div>
+          <div>Aprendizaje : {publicacion.mascota.aprendizaje}</div>
            <div>Ciudad : {publicacion.mascota.ciudad}</div>
         </Card.Text>
       </Card.Body>

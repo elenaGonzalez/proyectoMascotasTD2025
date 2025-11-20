@@ -1,3 +1,4 @@
+const { log } = require("console");
 const {
   getPublicacionController,
   getPublicacionesController,
@@ -19,16 +20,6 @@ const getPublicacionesHandler = async (req, res) => {
   }
 };
 
-const getPublicacionCardsHandler = async (req, res) =>{
-  console.log("En mascota handler ");
-  
-  try {
-    let publicaciones_mascotas = await getPublicacionCardsController();
-    res.status(200).send(publicaciones_mascotas);
-  } catch (error) {
-    res.status(500).send({Error: error.message})
-  }
-}
 
 const getPublicacionHandler = async (req, res) => {
   const { id } = req.params;
@@ -42,8 +33,9 @@ const getPublicacionHandler = async (req, res) => {
 
 const postPublicacionHandler = async (req, res) => {
   try {
-    const {titulo, descripcion, telefono, nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId} = req.body;
-    const publicacion = await postPublicacionController(titulo, descripcion, telefono, nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId);
+    const {titulo, descripcion, telefono, nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, antiparacitario,aprendizaje, usuarioId} = req.body;
+    
+    const publicacion = await postPublicacionController(titulo, descripcion, telefono, nombre, genero, edad, vacunado,  destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, antiparacitario, aprendizaje, usuarioId);
     res.status(200).send(publicacion);
 } catch (error) {
     res.status(500).send({ Error: error.message });
@@ -60,9 +52,14 @@ const putPublicacionHandler = async (req, res) => {
     genero,
     edad,
     vacunado,
+    destetado, 
+    esterilizado, 
+    alimentacion,
     raza,
     foto,
     ciudad,
+    antiparacitario,
+    aprendizaje,
   } = req.body;
     try {
     let publicaciones = await putPublicacionController(
@@ -74,9 +71,14 @@ const putPublicacionHandler = async (req, res) => {
     genero,
     edad,
     vacunado,
+    destetado, 
+    esterilizado, 
+    alimentacion,
     raza,
     foto,
     ciudad,
+    antiparacitario,
+    aprendizaje,
   );
     res.status(200).send(publicaciones);
   } catch (error) {
@@ -100,5 +102,5 @@ module.exports = {
   postPublicacionHandler,
   putPublicacionHandler,
   deletePublicacionHandler,
-  getPublicacionCardsHandler
+  //getPublicacionCardsHandler
 };

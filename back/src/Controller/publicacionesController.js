@@ -5,29 +5,13 @@ const {
 } = require("./mascotasController");
 const Publicacion = require("../Models/Publicacion");
 const Mascota = require("../Models/Mascota");
+const Usuario = require("../Models/Usuario");
 
 const getPublicacionController = async (id) => {
   const publicacion_bus = await Publicacion.findByPk(id);
 
   return publicacion_bus;
 };
-
-const getPublicacionCardsController = async () =>{
-   return await Publicacion.findAll({
-    include: [
-      {
-        model: Mascota,
-        attributes: [
-          "nombre",
-          "foto",
-          "ciudad",
-          "usuarioId",
-        ],
-      },
-    ],
-  });
-};
-
 
 const getPublicacionesController = async (offset, limit) => {
   
@@ -42,9 +26,15 @@ const getPublicacionesController = async (offset, limit) => {
           "genero",
           "edad",
           "vacunado",
+          "destetado", 
+          "esterilizado", 
+          "alimentacion",
+          "categoria",
           "raza",
           "foto",
           "ciudad",
+          "antiparacitario",
+          "aprendizaje",
           "usuarioId",
         ],
       },
@@ -62,21 +52,38 @@ const postPublicacionController = async (
   genero,
   edad,
   vacunado,
+  destetado, 
+  esterilizado, 
+  alimentacion,
+  categoria,
   raza,
   foto,
   ciudad,
+  antiparacitario,
+  aprendizaje,
   usuarioId
 ) => {
-  //deberia guardar el id del usuario que crea la publicacion
+   let usuario = await Usuario.findByPk(usuarioId);
+  
+  if (!usuario) {
+    throw new Error("El usuario no esta registrado");
+  }
+  
 
   let mascota_new = await postMascotaController(
     nombre,
     genero,
     edad,
     vacunado,
+    destetado, 
+    esterilizado, 
+    alimentacion,
+    categoria,
     raza,
     foto,
     ciudad,
+    antiparacitario,
+    aprendizaje,
     usuarioId
   );
 
@@ -100,9 +107,15 @@ const postPublicacionController = async (
           "genero",
           "edad",
           "vacunado",
+          "destetado", 
+          "esterilizado", 
+          "alimentacion",
+          "categoria",
           "raza",
           "foto",
           "ciudad",
+          "antiparacitario",
+          "aprendizaje",
           "usuarioId",
         ],
       },
@@ -113,7 +126,7 @@ const postPublicacionController = async (
   return publicacion_creada;
 };
 
-const putPublicacionController = async (id, titulo, descripcion,telefono, mascotaId, nombre, genero, edad, vacunado, raza, foto, ciudad) => {
+const putPublicacionController = async (id, titulo, descripcion,telefono, mascotaId, nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, raza, foto, ciudad) => {
   const publicacion_actualizada = {
     id,
     titulo,
@@ -131,9 +144,14 @@ const putPublicacionController = async (id, titulo, descripcion,telefono, mascot
     genero,
     edad,
     vacunado,
+    destetado, 
+    esterilizado, 
+    alimentacion,
     raza,
     foto,
-    ciudad
+    ciudad,
+    antiparacitario,
+    aprendizaje
   );
   const actualizado = await Publicacion.findByPk(id, {
     include: [
@@ -145,9 +163,14 @@ const putPublicacionController = async (id, titulo, descripcion,telefono, mascot
           "genero",
           "edad",
           "vacunado",
+          "destetado", 
+          "esterilizado", 
+          "alimentacion",
           "raza",
           "foto",
           "ciudad",
+          "antiparacitario",
+          "aprendizaje",
           "usuarioId",
         ],
       },
@@ -173,5 +196,5 @@ module.exports = {
   postPublicacionController,
   putPublicacionController,
   deletePublicacionController,
-  getPublicacionCardsController
+  //getPublicacionCardsController
 };

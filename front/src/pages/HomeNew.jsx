@@ -20,11 +20,11 @@ function HomeNew() {
   const publicaciones = useSelector((state) => state.publicaciones);
 
   const dispatch = useDispatch();
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(1);
   const total_publicaciones_BD = useSelector((state) => state.publicaciones.count);
   
 
-  let limit = 3;
+  let limit = 12;
   useEffect(() => {
     axios
       .get(`http://localhost:3000/api/publicaciones/${page}/${limit}`)

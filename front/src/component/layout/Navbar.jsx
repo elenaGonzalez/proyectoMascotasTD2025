@@ -4,6 +4,7 @@ import Login from '../auth/Login.jsx'
 import Registro from '../auth/Registro.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUsuario } from "../../redux/usuarioSlice.js";
+import { Link } from 'react-router-dom'
 
 function NavbarMain() {
 const [showLogin, setShowLogin] = useState(false)
@@ -21,7 +22,7 @@ return (
     <>
     <Navbar bg="dark" variant="dark" expand="lg">
         <Container fluid>
-        <Navbar.Brand href="/">Mi Proyecto</Navbar.Brand>
+        <Link to="/">Mi Proyecto</Link>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
@@ -30,7 +31,12 @@ return (
             <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
             <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
             </>
-            : <Button variant='primary'>Perfil {usuario.nombre}</Button>
+            : <>
+               <Button variant='primary'>Perfil {usuario.nombre}</Button>
+                 <Button variant='warning'>
+                    <Link to={`/publicar`}>Publicar</Link>
+                </Button>
+               </>
             }
             { usuario.nombre &&
                 <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
