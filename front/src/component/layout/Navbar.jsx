@@ -33,7 +33,10 @@ function NavbarMain() {
                                 : <Button as={Link} to="/panel" variant='primary'>Perfil {usuario.nombre}</Button>
                             }
                             {usuario.nombre &&
+                                <>
+                                <Link to={`/publicar`}><Button variant='primary'>Publicar</Button></Link>
                                 <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
+                                </>
                             }
                         </Nav>
                     </Navbar.Collapse>
