@@ -23,13 +23,21 @@ function HomeNew() {
   const [page, setPage] = useState(1);
   const total_publicaciones_BD = useSelector((state) => state.publicaciones.count);
 
-  let limit = 12;
+  const limit = 4;
+  // Convertir página lógica a offset real
+  const offset = (page - 1) * limit;
+
+//calcular total de páginas
+  const total = publicaciones.count || 0;
+  const totalPages = Math.ceil(total_publicaciones_BD / limit);
+  const numeroPaginas = Array.from({ length: totalPages }, (_, i) => i + 1);
+
   useEffect(() => {
     axios
       .get(`http://localhost:3000/api/publicaciones/${page}/${limit}`)
       .then((res) => dispatch(getPublicaciones(res.data)))
       .catch((err) => console.log(err));
-  }, [dispatch]);
+  }, [dispatch, offset]);
 
   return (
     <>
@@ -61,6 +69,48 @@ function HomeNew() {
           />
         ))}
       </div>
+
+      {/* PAGINADO */}
+      <div style={{ display: "flex", justifyContent: "center", gap: "15px", margin: "25px" }}>
+        
+        {/* Botón Anterior */}
+      <button
+        onClick={() => setPage(page - 1)}
+        disabled={page === 1}
+        style={{ padding: "8px 15px" }}
+      >
+        ◀ Anterior
+      </button>
+
+  {/* Numeración de páginas */}
+  {numeroPaginas.map((num) => (
+    <button
+      key={num}
+      onClick={() => setPage(num)}
+      style={{
+        padding: "8px 12px",
+        fontWeight: num === page ? "bold" : "normal",
+        backgroundColor: num === page ? "#ddd" : "white",
+        border: "1px solid #ccc",
+        borderRadius: "5px",
+        cursor: "pointer"
+      }}
+    >
+      {num}
+    </button>
+  ))}
+
+  {/* Botón Siguiente */}
+  <button
+    onClick={() => setPage(page + 1)}
+    disabled={page === totalPages}
+    style={{ padding: "8px 15px" }}
+  >
+    Siguiente ▶
+  </button>
+
+</div>
+
       <Footer
         onLoginClick={() => setShowLogin(true)}
         onRegistroClick={() => setShowRegistro(true)}
