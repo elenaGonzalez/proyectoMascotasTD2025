@@ -1,34 +1,85 @@
 import React, { useState } from "react";
-import { Container, Form, Button, Row, Col, Alert, Card } from "react-bootstrap";
+import {
+  Container,
+  Form,
+  Button,
+  Row,
+  Col,
+  Alert,
+  Card,
+} from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
 import NavbarMain from "../component/layout/Navbar.jsx";
 import Footer from "../component/layout/Footer.jsx";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
 function Publicar() {
+  const usuario = useSelector((state) => state.usuario);
+
   const [success, setSuccess] = useState(false);
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+  console.log("Soy usuario id ", usuario.id);
+  
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       categoria: "",
       titulo: "",
-      ubicacion: "",
-      imagen: "",
+      nombre: "",
+      ciudad: "",
+      foto: "",
       telefono: "",
-      vacunas: "",
-      destetado: "",
-      esterilizado: "",
+      vacunado: false,
+      destetado: false,
+      esterilizado: false,
       alimentacion: "",
       raza: "",
-      sexo: "",
+      genero: "",
       edad: "",
-      antiparasitario: "",
+      antiparasitario: false,
       aprendizaje: "",
       descripcion: "",
+      usuarioId: usuario.id
     },
     mode: "onBlur",
   });
 
-  const onSubmit = (data) => {
-    console.log("Datos del formulario:", data);
+  const onSubmit = async (data) => {
+    data.vacunado = data.vacunado.toString == 'true' ? true : false,
+    data.destetado = data.destetado.toString == 'true' ? true : false,
+    
+    data.antiparasitario = data.antiparasitario.toString == 'true' ? true : false,
+     console.log("Soy data en submit ", data);
+    await axios({
+      method: "post",
+      url: "http://localhost:3000/api/publicaciones",
+      data: {
+      nombre: data.nombre,
+      genero: data.genero,
+      edad: data.edad, 
+      vacunado: data.vacunado,
+      destetado: data.destetado,
+      esterilizado: data.esterilizado,
+      alimentacion: data.alimentacion,
+      categoria: data.categoria,
+      raza: data.raza,
+      foto: data.foto,
+      titulo: data.titulo,
+      ciudad: data.ciudad,
+      antiparasitario: data.antiparasitario,
+      aprendizaje: data.aprendizaje,
+      telefono: data.telefono,
+      descripcion: data.descripcion,
+      usuarioId: usuario.id
+      },
+    })
+      .then((res) => alert("Publicacion creada ",res))
+      .catch((err) => console.log(err));
+
     setSuccess(true);
     reset();
     setTimeout(() => setSuccess(false), 5000);
@@ -47,7 +98,10 @@ function Publicar() {
           margin: "0",
         }}
       >
-        <Card className="shadow-lg border-0 p-5 w-100" style={{ maxWidth: "100%" }}>
+        <Card
+          className="shadow-lg border-0 p-5 w-100"
+          style={{ maxWidth: "100%" }}
+        >
           <h2 className="text-center mb-4 text-dark">
             Publicar un animal en adopción
           </h2>
@@ -61,7 +115,7 @@ function Publicar() {
           <Form onSubmit={handleSubmit(onSubmit)}>
             {/* Categoría y Título */}
             <Row className="mb-5">
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="4">
                 <Form.Label>Categoría *</Form.Label>
                 <Controller
                   name="categoria"
@@ -69,14 +123,11 @@ function Publicar() {
                   rules={{ required: "Selecciona una categoría" }}
                   render={({ field }) => (
                     <>
-                      <Form.Select
-                        {...field}
-                        isInvalid={!!errors.categoria}
-                      >
+                      <Form.Select {...field} isInvalid={!!errors.categoria}>
                         <option value="">Selecciona una categoría</option>
-                        <option value="perros">Perros en adopción</option>
-                        <option value="gatos">Gatos en adopción</option>
-                        <option value="otros">Otros animales</option>
+                        <option value="perro">Perros en adopción</option>
+                        <option value="gato">Gatos en adopción</option>
+                        <option value="otro">Otros animales</option>
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         {errors.categoria?.message}
@@ -86,7 +137,7 @@ function Publicar() {
                 />
               </Form.Group>
 
-              <Form.Group as={Col} md="6">
+              <Form.Group as={Col} md="4">
                 <Form.Label>Título *</Form.Label>
                 <Controller
                   name="titulo"
@@ -117,14 +168,48 @@ function Publicar() {
                   )}
                 />
               </Form.Group>
-            </Row>
+            
+            {/* NOMBRE */}
+              <Form.Group as={Col} md="4">
+                <Form.Label>Nombre *</Form.Label>
+                <Controller
+                  name="nombre"
+                  control={control}
+                  rules={{
+                    required: "Este campo es obligatorio",
+                    minLength: {
+                      value: 3,
+                      message: "El Nombre debe tener al menos 3 caracteres",
+                    },
+                    maxLength: {
+                      value: 10,
+                      message: "El nombre no puede exceder 10 caracteres",
+                    },
+                  }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control
+                        {...field}
+                        type="text"
+                        placeholder="Ej. Roki"
+                        isInvalid={!!errors.nombre}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.nombre?.message}
+                      </Form.Control.Feedback>
+                    </>
+                  )}
+                />
+              </Form.Group>
+              </Row>
+
 
             {/* Ubicación, Imagen y Teléfono */}
             <Row className="mb-5">
               <Form.Group as={Col} md="4">
                 <Form.Label>Ubicación *</Form.Label>
                 <Controller
-                  name="ubicacion"
+                  name="ciudad"
                   control={control}
                   rules={{ required: "La ubicación es obligatoria" }}
                   render={({ field }) => (
@@ -133,10 +218,10 @@ function Publicar() {
                         {...field}
                         type="text"
                         placeholder="Ciudad o barrio"
-                        isInvalid={!!errors.ubicacion}
+                        isInvalid={!!errors.ciudad}
                       />
                       <Form.Control.Feedback type="invalid">
-                        {errors.ubicacion?.message}
+                        {errors.ciudad?.message}
                       </Form.Control.Feedback>
                     </>
                   )}
@@ -145,7 +230,7 @@ function Publicar() {
 
               <Form.Group as={Col} md="4">
                 <Form.Label>Imagen del animal *</Form.Label>
-                <Controller
+                {/* <Controller
                   name="imagen"
                   control={control}
                   rules={{
@@ -173,6 +258,25 @@ function Publicar() {
                       </Form.Control.Feedback>
                     </>
                   )}
+                /> */}
+
+                <Controller
+                  name="foto"
+                  control={control}
+                  rules={{ required: "La imagen es obligatoria" }}
+                  render={({ field }) => (
+                    <>
+                      <Form.Control
+                        {...field}
+                        type="text"
+                        placeholder="Url de la Imagen"
+                        isInvalid={!!errors.foto}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {errors.foto?.message}
+                      </Form.Control.Feedback>
+                    </>
+                  )}
                 />
               </Form.Group>
 
@@ -184,7 +288,8 @@ function Publicar() {
                   rules={{
                     required: "El teléfono es obligatorio",
                     pattern: {
-                      value: /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
+                      value:
+                        /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/,
                       message: "Ingresá un número válido",
                     },
                   }}
@@ -210,13 +315,13 @@ function Publicar() {
               <Form.Group as={Col} md="4">
                 <Form.Label>Vacunas</Form.Label>
                 <Controller
-                  name="vacunas"
+                  name="vacunado"
                   control={control}
                   render={({ field }) => (
                     <Form.Select {...field}>
                       <option value="">--</option>
-                      <option value="si">Sí</option>
-                      <option value="no">No</option>
+                      <option value={true}>Sí</option>
+                      <option value= {false}>No</option>
                     </Form.Select>
                   )}
                 />
@@ -230,8 +335,8 @@ function Publicar() {
                   render={({ field }) => (
                     <Form.Select {...field}>
                       <option value="">--</option>
-                      <option value="si">Sí</option>
-                      <option value="no">No</option>
+                      <option value= {true}>Sí</option>
+                      <option value= {false}>No</option>
                     </Form.Select>
                   )}
                 />
@@ -245,13 +350,10 @@ function Publicar() {
                   rules={{ required: "Este campo es obligatorio" }}
                   render={({ field }) => (
                     <>
-                      <Form.Select
-                        {...field}
-                        isInvalid={!!errors.esterilizado}
-                      >
+                      <Form.Select {...field} isInvalid={!!errors.esterilizado}>
                         <option value="">Selecciona una opción</option>
-                        <option value="si">Sí</option>
-                        <option value="no">No</option>
+                        <option value= {true}>Sí</option>
+                        <option value={false}>No</option>
                       </Form.Select>
                       <Form.Control.Feedback type="invalid">
                         {errors.esterilizado?.message}
@@ -286,21 +388,25 @@ function Publicar() {
                   name="raza"
                   control={control}
                   render={({ field }) => (
-                    <Form.Control {...field} type="text" placeholder="Opcional" />
+                    <Form.Control
+                      {...field}
+                      type="text"
+                      placeholder="Opcional"
+                    />
                   )}
                 />
               </Form.Group>
 
               <Form.Group as={Col} md="4">
-                <Form.Label>Sexo</Form.Label>
+                <Form.Label>Genero</Form.Label>
                 <Controller
-                  name="sexo"
+                  name="genero"
                   control={control}
                   render={({ field }) => (
                     <Form.Select {...field}>
                       <option value="">--</option>
-                      <option value="hembra">Hembra</option>
-                      <option value="macho">Macho</option>
+                      <option value="Hembra">Hembra</option>
+                      <option value="Macho">Macho</option>
                     </Form.Select>
                   )}
                 />
@@ -317,7 +423,7 @@ function Publicar() {
                   render={({ field }) => (
                     <Form.Control
                       {...field}
-                      type="text"
+                      type="integer"
                       placeholder="Ej. 3 meses / 2 años"
                     />
                   )}
@@ -332,8 +438,8 @@ function Publicar() {
                   render={({ field }) => (
                     <Form.Select {...field}>
                       <option value="">--</option>
-                      <option value="si">Sí</option>
-                      <option value="no">No</option>
+                      <option value={true}>Sí</option>
+                      <option value={false}>No</option>
                     </Form.Select>
                   )}
                 />
@@ -347,11 +453,17 @@ function Publicar() {
                 name="aprendizaje"
                 control={control}
                 render={({ field }) => (
+                  <>
                   <Form.Control
                     {...field}
                     type="text"
                     placeholder="Ej. Hace sus necesidades afuera"
+                     isInvalid={!!errors.aprendizaje}
                   />
+                   <Form.Control.Feedback type="invalid">
+                      {errors.aprendizaje?.message}
+                    </Form.Control.Feedback>
+                    </>
                 )}
               />
             </Form.Group>

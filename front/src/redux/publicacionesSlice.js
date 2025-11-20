@@ -11,6 +11,6 @@ const publicacionesSlice = createSlice({
 });
 
 
-export const {getPublicaciones, getPublicacion } = publicacionesSlice.actions;
+export const {getPublicaciones} = publicacionesSlice.actions;
 export default publicacionesSlice.reducer;
 

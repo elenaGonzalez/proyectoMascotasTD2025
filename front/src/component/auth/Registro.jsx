@@ -26,71 +26,34 @@ function Registro({ show, onHide }) {
 
   const onSubmit = async (data) => {
     await axios({
-      method: 'post',
-      url: "http://localhost:3000/api/auth/registro",
-      data: {
-        nombre: data.nombre,
-        apellido: data.apellido,
-        email: data.email,
-        contrasena: data.contraseña,
-        telefono: data.telefono
-      }
-    }).then((res) => console.log(res.data))
-      .catch((err) => alert(err.response.data.Error));
-
-    const onSubmit = async (data) => {
-      setIsLoading(true)
-      setErrorMessage("")
-      try {
-        const res = await axios({
-          method: 'post',
+          method: 'post', 
           url: "http://localhost:3000/api/auth/registro",
-          data: {
-            nombre: data.nombre,
-            apellido: data.apellido,
-            email: data.email,
-            contrasena: data.contraseña,
-            telefono: data.telefono
+          data:{
+          nombre: data.nombre,
+          apellido: data.apellido,  
+          email: data.email, 
+          contrasena: data.contraseña,
+          telefono: data.telefono
           }
-        })
-
-        // respuesta OK
-        console.log(res.data)
-        setSubmitSuccess(true)
-        setShowToast(true)
-        reset()
-        // aquí podrías dispatch(setUsuario(...)) si usas redux
-      } catch (err) {
-        // intenta leer distintos formatos de error del backend
-        const backendMsg =
-          err.response?.data?.Error ||
-          err.response?.data?.message ||
-          err.response?.data?.error ||
-          err.message ||
-          "Error en el registro"
-        setErrorMessage(backendMsg)
-        console.error(err)
-      } finally {
-        setIsLoading(false)
-      }
+      }).then((res) => console.log(res.data))
+        .catch((err) => alert(err.response.data.Error));
     }
-
-    // estilos inline para notificación flotante simple
-    const toastStyle = {
-      position: 'fixed',
-      top: 20,
-      right: 20,
-      zIndex: 1050,
-      minWidth: 280,
-      padding: '12px 16px',
-      borderRadius: 10,
-      background: 'linear-gradient(90deg,#10b981,#059669)',
-      color: 'white',
-      boxShadow: '0 8px 30px rgba(5,150,105,0.18)',
-      display: showToast ? 'flex' : 'none',
-      gap: 12,
-      alignItems: 'center'
-    }
+  // estilos inline para notificación flotante simple
+const toastStyle = {
+    position: 'fixed',
+    top: 20,
+    right: 20,
+    zIndex: 1050,
+    minWidth: 280,
+    padding: '12px 16px',
+    borderRadius: 10,
+    background: 'linear-gradient(90deg,#10b981,#059669)',
+    color: 'white',
+    boxShadow: '0 8px 30px rgba(5,150,105,0.18)',
+    display: showToast ? 'flex' : 'none',
+    gap: 12,
+    alignItems: 'center'
+}
 
     return (
       <>
@@ -255,6 +218,5 @@ function Registro({ show, onHide }) {
       </>
     )
   }
-}
 
 export default Registro

@@ -6,7 +6,7 @@ const{
   postPublicacionHandler,
   putPublicacionHandler,
   deletePublicacionHandler,
-  getPublicacionCardsHandler,
+  //getPublicacionCardsHandler,
 } = require("../Handler/publicacionesHandler");
 
 const publicacionesRoutes = Router();
@@ -15,6 +15,6 @@ publicacionesRoutes.get('/:id', getPublicacionHandler);
 publicacionesRoutes.post('/', postPublicacionHandler);
 publicacionesRoutes.put('/', putPublicacionHandler);
 publicacionesRoutes.delete('/', deletePublicacionHandler);
-publicacionesRoutes.get('/mascotas/home', getPublicacionCardsHandler);
+//publicacionesRoutes.get('/mascotas/home', getPublicacionCardsHandler);
 
 module.exports = publicacionesRoutes;
