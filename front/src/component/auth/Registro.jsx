@@ -33,7 +33,7 @@ function Registro({ show, onHide }) {
   }, [showToast, onHide])
 
   const onSubmit = async (data) => {
-    setIsLoading(true)
+    setIsLoading(true) // Indicar que el registro esta en proceso, esto deshabilita el modal para evitar cierres accidentales 
     setErrorMessage("")
     try {
       const res = await axios.post("http://localhost:3000/api/auth/registro", {
