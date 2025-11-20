@@ -22,7 +22,6 @@ function HomeNew() {
   const dispatch = useDispatch();
   const [page, setPage] = useState(2);
   const total_publicaciones_BD = useSelector((state) => state.publicaciones.count);
-  
 
   let limit = 3;
   useEffect(() => {
