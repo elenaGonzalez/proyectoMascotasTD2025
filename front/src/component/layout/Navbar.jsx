@@ -5,6 +5,8 @@ import Registro from '../auth/Registro.jsx'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUsuario } from "../../redux/usuarioSlice.js";
 import { Link } from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
+
 
 function NavbarMain() {
     const [showLogin, setShowLogin] = useState(false)
@@ -15,10 +17,16 @@ function NavbarMain() {
 
     const savedUserId = JSON.parse(localStorage.getItem('usuario'));
 
+const refreshPage = () => {
+    window.location.reload(false); // 'false' reloads from cache, 'true' forces a full refresh from the server
+};
+
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
         localStorage.removeItem('usuario');
         console.log("En logout ", savedUserId);
+        refreshPage();
+        window.location.href = "/";
     }
     return (
         <>
