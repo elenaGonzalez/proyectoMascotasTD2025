@@ -1,12 +1,13 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUsuario } from "../../redux/usuarioSlice";
 import axios from "axios";
 
 function Login({ show, onHide }) {
   const dispatch = useDispatch();
+  const usuario = useSelector((state) => state.usuario);
     
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const {
@@ -22,7 +23,7 @@ function Login({ show, onHide }) {
     },
     mode: "onBlur",
   });
-
+  
   const onSubmit = async(data) => {
     console.log("Datos del login:", data);
     await axios({
@@ -32,7 +33,10 @@ function Login({ show, onHide }) {
           email: data.email, 
           contrasena: data.contraseña
           }
-      }).then((res) => dispatch(setUsuario(res.data)))
+      }).then((res) =>{
+          dispatch(setUsuario(res.data));
+          localStorage.setItem("usuario", JSON.stringify(res.data.id));
+      })
         .catch((err) => console.log(err));
       
       setSubmitSuccess(true);
@@ -43,7 +47,7 @@ function Login({ show, onHide }) {
       onHide();
     }, 1500);
   };
-
+  
   return (
     <Modal show={show} onHide={onHide} centered>
       <Modal.Header closeButton>

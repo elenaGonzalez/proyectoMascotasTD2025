@@ -30,7 +30,7 @@ function NavbarMain() {
                                     <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
                                     <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
                                 </>
-                                : <Button as={Link} to="/panel" variant='primary'>Perfil {usuario.nombre}</Button>
+                                : <Button as={Link} to="/panel/new" variant='primary'>Perfil {usuario.nombre}</Button>
                             }
                             {usuario.nombre &&
                                 <>

@@ -6,6 +6,7 @@ import DetallePublicacionNew from './pages/DetallePublicacionNew.jsx';
 import PanelUsuario from './pages/PanelUsuario.jsx';
 
 import Publicar from "./pages/Publicar.jsx";
+import PanelUsuarioNew from './pages/PanelUsuarioNew.jsx';
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <Route path="/detalle/publicacion/:id" element={<DetallePublicacionNew />} />
       <Route path="/publicar" element={<Publicar />} />
       <Route path="/panel" element={<PanelUsuario />} />
+      <Route path="/panel/new" element={<PanelUsuarioNew />} />
     </Routes>
   )
 }
