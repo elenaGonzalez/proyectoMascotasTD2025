@@ -5,8 +5,24 @@ const {
   postPublicacionController,
   putPublicacionController,
   deletePublicacionController,
-  getPublicacionCardsController
+  postPublicacionesFilterController
 } = require("../Controller/publicacionesController");
+
+const getPublicacionesFilterHandler = async (req, res) => {
+  console.log("en post filter");
+  let limit = req.params.limit;
+  let page = req.params.page - 1;
+  
+  const {categoria, genero, edad , vacunado, destetado, esterilizado} = req.body;
+  try {
+    let offset = page * limit;
+    let publicaciones = await postPublicacionesFilterController(offset, limit, categoria, genero, edad , vacunado, destetado, esterilizado);
+    res.status(200).send(publicaciones);
+  } catch (error) {
+    res.status(500).send({ Error: error.message });
+  }
+};
+
 
 const getPublicacionesHandler = async (req, res) => {
   let limit = req.params.limit;
@@ -102,5 +118,5 @@ module.exports = {
   postPublicacionHandler,
   putPublicacionHandler,
   deletePublicacionHandler,
-  //getPublicacionCardsHandler
+  getPublicacionesFilterHandler 
 };
