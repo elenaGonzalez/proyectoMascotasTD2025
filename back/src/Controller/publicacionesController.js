@@ -26,7 +26,9 @@ const postPublicacionesFilterController = async (
   edad,
   vacunado,
   destetado,
-  esterilizado
+  esterilizado,
+  alimentacion, 
+  antiparacitario
 ) => {
   const mascota_query_options = {
     model: Mascota,
@@ -59,6 +61,31 @@ const postPublicacionesFilterController = async (
   if (genero) {
     mascota_query_options.where.genero = genero;
   }
+
+  if (edad) {
+    mascota_query_options.where.edad = edad;
+  }
+
+  if (vacunado !== undefined) {
+    mascota_query_options.where.vacunado = Boolean(vacunado);
+  }
+
+  if (destetado!== undefined) {
+    mascota_query_options.where.destetado = Boolean(destetado);
+  }
+
+  if (esterilizado!== undefined) {
+    mascota_query_options.where.esterilizado = Boolean(esterilizado);
+  }
+
+  if(alimentacion){
+    mascota_query_options.where.alimentacion = { [Op.like]: `%${alimentacion}%` };;
+  } 
+
+  if(antiparacitario!== undefined){
+    mascota_query_options.where.antiparacitario = Boolean(antiparacitario);
+  }
+
   console.info('Mascota query:', mascota_query_options)
   console.info('limit, offset:', limit, offset)
   return Publicacion.findAndCountAll({
