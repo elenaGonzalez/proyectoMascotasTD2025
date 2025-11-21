@@ -35,7 +35,7 @@ const getUsuarioController = async(id) =>{
       {
         model: Mascota,
         as: "mascotas",
-        required: true,
+        required: false,
         attributes:[
            "id",
           "nombre",
