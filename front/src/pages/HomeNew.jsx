@@ -10,12 +10,16 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getPublicaciones } from "../redux/publicacionesSlice.js";
 import CardNew from "../component/layout/CardNew.jsx";
+import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx";
+
 
 function HomeNew() {
   const [showLogin, setShowLogin] = useState(false);
   const [showRegistro, setShowRegistro] = useState(false);
   const [showSoporte, setShowSoporte] = useState(false);
   const [showContacto, setShowContacto] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+
 
   const publicaciones = useSelector((state) => state.publicaciones);
 
@@ -32,12 +36,32 @@ function HomeNew() {
   const totalPages = Math.ceil(total_publicaciones_BD / limit);
   const numeroPaginas = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3000/api/publicaciones/${page}/${limit}`)
-      .then((res) => dispatch(getPublicaciones(res.data)))
-      .catch((err) => console.log(err));
-  }, [dispatch, offset]);
+// Estado para filtros
+const [filters, setFilters] = useState({});
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const noFilters = Object.values(filters).every(v => v === "" || v === null);
+
+      if (noFilters) {
+        const res = await axios.get(`http://localhost:3000/api/publicaciones/${page}/${limit}`);
+        dispatch(getPublicaciones(res.data));
+      } else {
+        const res = await axios.post(
+          `http://localhost:3000/api/publicaciones/${page}/${limit}/filtro`,
+          filters
+        );
+        dispatch(getPublicaciones(res.data));
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  fetchData();
+}, [page, filters]);
+
 
   return (
     <>
@@ -46,6 +70,25 @@ function HomeNew() {
         onRegistroClick={() => setShowRegistro(true)}
       />
       <Principal />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "20px",
+          paddingRight: "90px"
+        }}>
+        <button
+          onClick={() => setShowFilters((prev) => !prev)}
+          className="btn btn-primary"
+      >
+        {showFilters ? "Ocultar filtros ▲" : "Mostrar filtros ▼"}
+      </button>
+      </div>
+
+{showFilters && (
+  <FiltroPublicaciones onChange={(newFilters) => setFilters(newFilters)} />
+)}
+
       <div
         style={{
           display: "flex",
@@ -72,7 +115,6 @@ function HomeNew() {
 
       {/* PAGINADO */}
       <div style={{ display: "flex", justifyContent: "center", gap: "15px", margin: "25px" }}>
-        
         {/* Botón Anterior */}
       <button
         onClick={() => setPage(page - 1)}

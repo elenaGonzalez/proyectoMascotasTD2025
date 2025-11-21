@@ -1,0 +1,15 @@
+.filtros-container {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    border: 1px solid #ddd;
+}
+
+.filtros-container select,
+.filtros-container input {
+    font-size: 0.9rem;
+}
+
+.filtros-container .btn {
+    font-size: 0.9rem;
+}

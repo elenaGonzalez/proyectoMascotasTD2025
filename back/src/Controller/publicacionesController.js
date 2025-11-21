@@ -12,6 +12,12 @@ const {
   attribute,
 } = require("@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js");
 
+const parseBoolean = (value) => {
+  if (value === true || value === "true" || value === 1 || value === "1") return true;
+  if (value === false || value === "false" || value === 0 || value === "0") return false;
+  return undefined;
+};
+
 const getPublicacionController = async (id) => {
   const publicacion_bus = await Publicacion.findOne({
     where:{
@@ -93,28 +99,22 @@ const postPublicacionesFilterController = async (
     mascota_query_options.where.edad = edad;
   }
 
-  if (vacunado !== undefined) {
-    mascota_query_options.where.vacunado = Boolean(vacunado);
-  }
-
-  if (destetado!== undefined) {
-    mascota_query_options.where.destetado = Boolean(destetado);
-  }
-
-  if (esterilizado!== undefined) {
-    mascota_query_options.where.esterilizado = Boolean(esterilizado);
-  }
-
   if(alimentacion){
     mascota_query_options.where.alimentacion = { [Op.like]: `%${alimentacion}%` };;
   } 
 
-  if(antiparacitario!== undefined){
-    mascota_query_options.where.antiparacitario = Boolean(antiparacitario);
-  }
+const vac = parseBoolean(vacunado);
+  if (vac !== undefined) mascota_query_options.where.vacunado = vac;
 
-  console.info('Mascota query:', mascota_query_options)
-  console.info('limit, offset:', limit, offset)
+  const des = parseBoolean(destetado);
+  if (des !== undefined) mascota_query_options.where.destetado = des;
+
+  const est = parseBoolean(esterilizado);
+  if (est !== undefined) mascota_query_options.where.esterilizado = est;
+
+  const anti = parseBoolean(antiparacitario);
+  if (anti !== undefined) mascota_query_options.where.antiparacitario = anti;
+
   return Publicacion.findAndCountAll({
     include: [mascota_query_options],
     offset,
