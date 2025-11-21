@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import "./cards.css";
+import { Button } from "react-bootstrap";
 
 const CardNew = ({
   id,
@@ -15,23 +16,34 @@ const CardNew = ({
   raza,
   foto,
   ciudad,
-  usuarioId
+  usuarioId,
+  handleDelete
 }) => {
-  const date = new Date(fecha_publicacion);
+  let date;
+  let enlace = "";
+  if(fecha_publicacion) {
+    date = new Date(fecha_publicacion);
+  }
+  if(id){
+    enlace = `/detalle/publicacion/${id}`;
+  }else{
+    enlace = '/panel/new';
+  }
   
   return (
     <div
       className="card"
       style={{ width: "calc(30% - 1rem)", minWidth: "25%", maxWidth: "80%" }}
-    >
-      <Link to={`/detalle/publicacion/${id}`}>
+    >{handleDelete&&
+       <Button className="primary" onClick={()=>handleDelete()}>Marcar a {nombre} como adoptado</Button>
+    }
+      <Link to={enlace}>
         <img className="card-img-top" src={foto} alt={nombre} />
 
         <div className="card-body">
           <h5 className="dog-title">{titulo}</h5>
           <p className="card-text">{raza}</p>
           <p className="card-text">{descripcion}</p>
-         
           {raza && 
           <div>Raza : {raza}</div>}
           {edad &&
@@ -46,7 +58,7 @@ const CardNew = ({
             <div className="dog-age">
               <span>🐶</span>
             </div>
-            <span>{date.toLocaleDateString()}</span>
+            <span>{date?.toLocaleDateString()}</span>
             <div className="ciudad">{ciudad}</div>
           </div>
           </div>

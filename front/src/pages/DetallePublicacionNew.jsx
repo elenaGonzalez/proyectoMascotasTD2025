@@ -55,7 +55,7 @@ function DetallePublicacionNew() {
                 <Card.Title>{publicacion.titulo}</Card.Title>
                 <Card.Text>
                   <blockquote className="blockquote mb-0">
-                    <p>{publicacion.descripcion}</p>
+                    {publicacion.descripcion}
                   </blockquote>
 
                   <div>
