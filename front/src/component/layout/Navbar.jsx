@@ -11,12 +11,14 @@ function NavbarMain() {
     const [showRegistro, setShowRegistro] = useState(false)
 
     const dispatch = useDispatch();
-    const usuario = useSelector((state) => state.usuario);
+    // const usuario = useSelector((state) => state.usuario);
+
+    const savedUserId = JSON.parse(localStorage.getItem('usuario'));
 
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
         localStorage.removeItem('usuario');
-        console.log("En logout ", usuario.nombre);
+        console.log("En logout ", savedUserId);
     }
     return (
         <>
@@ -26,14 +28,14 @@ function NavbarMain() {
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="ms-auto">
-                            {!usuario.nombre ?
+                            {!savedUserId ?
                                 <>
                                     <Button variant="outline-light" className="me-2" onClick={() => setShowLogin(true)}>Iniciar sesión</Button>
                                     <Button variant="success" onClick={() => setShowRegistro(true)}>Registrarse</Button>
                                 </>
-                                : <Button as={Link} to="/panel/new" variant='primary'>Perfil {usuario.nombre}</Button>
+                                : <Button as={Link} to="/panel/new" variant='primary'>Perfil</Button>
                             }
-                            {usuario.nombre &&
+                            {savedUserId &&
                                 <>
                                 <Link to={`/publicar`}><Button variant='primary'>Publicar</Button></Link>
                                 <Button variant='primary' onClick={() => handlerLogout()}>Logout</Button>
