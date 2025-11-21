@@ -13,7 +13,34 @@ const {
 } = require("@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js");
 
 const getPublicacionController = async (id) => {
-  const publicacion_bus = await Publicacion.findByPk(id);
+  const publicacion_bus = await Publicacion.findOne({
+    where:{
+      id,
+    },
+    include: [
+      {
+        model: Mascota,
+        as: "mascota",
+        attributes: [
+          "id",
+          "nombre",
+          "genero",
+          "edad",
+          "vacunado",
+          "destetado",
+          "esterilizado",
+          "alimentacion",
+          "categoria",
+          "raza",
+          "foto",
+          "ciudad",
+          "antiparacitario",
+          "aprendizaje",
+          "usuarioId",
+        ],
+      },
+    ],
+  });
 
   return publicacion_bus;
 };
@@ -94,34 +121,6 @@ const postPublicacionesFilterController = async (
     limit,
     distinct: true,
   });
-
-  //  return Publicacion.findAndCountAll({
-  //  include: [
-  //     {
-  //       model: Mascota,
-  //       as: "mascota",
-  //       attributes: [
-  //         "id",
-  //         "nombre",
-  //         "genero",
-  //         "edad",
-  //         "vacunado",
-  //         "destetado",
-  //         "esterilizado",
-  //         "alimentacion",
-  //         "categoria",
-  //         "raza",
-  //         "foto",
-  //         "ciudad",
-  //         "antiparacitario",
-  //         "aprendizaje",
-  //         "usuarioId",
-  //       ],
-  //     },
-  //   ],
-  //   offset,
-  //   limit,
-  // })
 };
 
 const getPublicacionesController = async (offset, limit) => {
