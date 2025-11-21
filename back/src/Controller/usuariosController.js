@@ -1,4 +1,6 @@
 const Usuario= require('../Models/Usuario');
+const Mascota= require('../Models/Mascota');
+
 const bcrypt = require('bcrypt');
 
 const postUsuarioController = async(nombre, apellido, email, contrasena, telefono, role) =>{
@@ -25,7 +27,38 @@ const getUsuariosController = async() =>{
 }
 
 const getUsuarioController = async(id) =>{
-   const usuario = await Usuario.findByPk(id);
+   const usuario = await Usuario.findOne({
+    where:{
+        id,
+    }, 
+    include: [
+      {
+        model: Mascota,
+        as: "mascotas",
+        required: true,
+        attributes:[
+           "id",
+          "nombre",
+          "genero",
+          "edad",
+          "vacunado",
+          "destetado",
+          "esterilizado",
+          "alimentacion",
+          "categoria",
+          "raza",
+          "foto",
+          "ciudad",
+          "antiparacitario",
+          "aprendizaje",
+          "usuarioId",
+        ],
+      where:{
+        usuarioId:id
+      }
+      },
+    ],
+   });
    if(!usuario){
     throw new Error("No se encontro el usuario buscado");
    }

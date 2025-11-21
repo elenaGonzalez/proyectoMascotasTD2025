@@ -6,6 +6,7 @@ import Login from "../component/auth/Login.jsx";
 import Registro from "../component/auth/Registro.jsx";
 import Soporte from "../component/support/Soporte.jsx";
 import Contacto from "./Contacto.jsx";
+import CardNew from '../component/layout/CardNew.jsx';
 
 function PanelUsuarioNew() {
 
@@ -16,7 +17,6 @@ function PanelUsuarioNew() {
 
 const [datosUsuario, setDatosUsuario] = useState();
 const savedUserId = JSON.parse(localStorage.getItem('usuario'));
-console.log("Soy savedUser Id ", typeof(savedUserId));
 
   useEffect(() => {
 
@@ -29,8 +29,6 @@ console.log("Soy savedUser Id ", typeof(savedUserId));
         .catch(err => setError(err.message));
     }
   }, [savedUserId]);
-
-  console.log("Soy datos del usuario ", datosUsuario);
   
   const [error, setError] = useState(null);
 
@@ -41,6 +39,13 @@ console.log("Soy savedUser Id ", typeof(savedUserId));
     const { name, value } = e.target;
     setEditUser(prev => ({ ...prev, [name]: value }));
   };
+  
+  const handleDelete = async(e) =>{
+     console.log("En handle Delete");
+     
+      alert("Deseas indicar que la mascota fue adoptada?");
+    }
+
 
   const handleSave = async (e) => {
     e.preventDefault();
@@ -51,7 +56,6 @@ console.log("Soy savedUser Id ", typeof(savedUserId));
       apellido: editUser.apellido,
       telefono: editUser.telefono
     };
-
 
     try {
       const res = await fetch('http://localhost:3000/api/usuarios', {
@@ -154,11 +158,28 @@ console.log("Soy savedUser Id ", typeof(savedUserId));
             </Card>
           </Col>
         </Row>
-      </Container>
+        <h5 className='text-center'>Mis Mascotas en adopcion</h5>
+        <div  style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "1rem",
+          justifyContent: "center",
+          padding: "1rem",
+        }}>
+         {datosUsuario?.mascotas?.map(m =>
+         <CardNew 
+          key={m.id}
+         nombre={m.nombre} 
+         edad={m.edad} 
+         genero={m.genero} 
+         foto={m.foto} 
+         handleDelete={handleDelete}/>
+        )}
+        </div>
+        </Container>
 
       {/* Modal de Edición (igual estilo que tu Registro) */}
       <Modal show={showEdit} onHide={() => setShowEdit(false)} centered>
-        {console.log('Modal Edit User:', datosUsuario)}
         <Modal.Header closeButton>
           <Modal.Title>Editar Perfil</Modal.Title>
         </Modal.Header>
