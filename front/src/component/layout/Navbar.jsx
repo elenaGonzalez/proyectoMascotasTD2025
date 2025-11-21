@@ -15,6 +15,7 @@ function NavbarMain() {
 
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
+        localStorage.removeItem('usuario');
         console.log("En logout ", usuario.nombre);
     }
     return (
