@@ -7,14 +7,123 @@ const Publicacion = require("../Models/Publicacion");
 const Mascota = require("../Models/Mascota");
 const Usuario = require("../Models/Usuario");
 
+const { Op } = require("@sequelize/core");
+const {
+  attribute,
+} = require("@sequelize/core/_non-semver-use-at-your-own-risk_/expression-builders/attribute.js");
+
 const getPublicacionController = async (id) => {
-  const publicacion_bus = await Publicacion.findByPk(id);
+  const publicacion_bus = await Publicacion.findOne({
+    where:{
+      id,
+    },
+    include: [
+      {
+        model: Mascota,
+        as: "mascota",
+        attributes: [
+          "id",
+          "nombre",
+          "genero",
+          "edad",
+          "vacunado",
+          "destetado",
+          "esterilizado",
+          "alimentacion",
+          "categoria",
+          "raza",
+          "foto",
+          "ciudad",
+          "antiparacitario",
+          "aprendizaje",
+          "usuarioId",
+        ],
+      },
+    ],
+  });
 
   return publicacion_bus;
 };
 
+const postPublicacionesFilterController = async (
+  offset,
+  limit,
+  categoria,
+  genero,
+  edad,
+  vacunado,
+  destetado,
+  esterilizado,
+  alimentacion, 
+  antiparacitario
+) => {
+  const mascota_query_options = {
+    model: Mascota,
+    as: "mascota",
+    required: true, // Aplica el filtro en el INNER JOIN.
+    attributes: [
+      "id",
+      "nombre",
+      "genero",
+      "edad",
+      "vacunado",
+      "destetado",
+      "esterilizado",
+      "alimentacion",
+      "categoria",
+      "raza",
+      "foto",
+      "ciudad",
+      "antiparacitario",
+      "aprendizaje",
+      "usuarioId",
+    ],
+    where: {},
+  };
+
+  if (categoria) {
+    mascota_query_options.where.categoria = { [Op.like]: `%${categoria}%` };
+  }
+
+  if (genero) {
+    mascota_query_options.where.genero = genero;
+  }
+
+  if (edad) {
+    mascota_query_options.where.edad = edad;
+  }
+
+  if (vacunado !== undefined) {
+    mascota_query_options.where.vacunado = Boolean(vacunado);
+  }
+
+  if (destetado!== undefined) {
+    mascota_query_options.where.destetado = Boolean(destetado);
+  }
+
+  if (esterilizado!== undefined) {
+    mascota_query_options.where.esterilizado = Boolean(esterilizado);
+  }
+
+  if(alimentacion){
+    mascota_query_options.where.alimentacion = { [Op.like]: `%${alimentacion}%` };;
+  } 
+
+  if(antiparacitario!== undefined){
+    mascota_query_options.where.antiparacitario = Boolean(antiparacitario);
+  }
+
+  console.info('Mascota query:', mascota_query_options)
+  console.info('limit, offset:', limit, offset)
+  return Publicacion.findAndCountAll({
+    include: [mascota_query_options],
+    offset,
+    limit,
+    distinct: true,
+  });
+};
+
 const getPublicacionesController = async (offset, limit) => {
-  
   return await Publicacion.findAndCountAll({
     include: [
       {
@@ -26,8 +135,8 @@ const getPublicacionesController = async (offset, limit) => {
           "genero",
           "edad",
           "vacunado",
-          "destetado", 
-          "esterilizado", 
+          "destetado",
+          "esterilizado",
           "alimentacion",
           "categoria",
           "raza",
@@ -52,8 +161,8 @@ const postPublicacionController = async (
   genero,
   edad,
   vacunado,
-  destetado, 
-  esterilizado, 
+  destetado,
+  esterilizado,
   alimentacion,
   categoria,
   raza,
@@ -63,20 +172,19 @@ const postPublicacionController = async (
   aprendizaje,
   usuarioId
 ) => {
-   let usuario = await Usuario.findByPk(usuarioId);
-  
+  let usuario = await Usuario.findByPk(usuarioId);
+
   if (!usuario) {
     throw new Error("El usuario no esta registrado");
   }
-  
 
   let mascota_new = await postMascotaController(
     nombre,
     genero,
     edad,
     vacunado,
-    destetado, 
-    esterilizado, 
+    destetado,
+    esterilizado,
     alimentacion,
     categoria,
     raza,
@@ -91,12 +199,10 @@ const postPublicacionController = async (
     titulo,
     descripcion,
     telefono,
-    mascotaId: mascota_new.id
+    mascotaId: mascota_new.id,
   });
-   
-  let publicacion_creada = await Publicacion.findByPk(
-    publicacion_mascota.id, 
-    {
+
+  let publicacion_creada = await Publicacion.findByPk(publicacion_mascota.id, {
     include: [
       {
         model: Mascota,
@@ -107,8 +213,8 @@ const postPublicacionController = async (
           "genero",
           "edad",
           "vacunado",
-          "destetado", 
-          "esterilizado", 
+          "destetado",
+          "esterilizado",
           "alimentacion",
           "categoria",
           "raza",
@@ -120,18 +226,33 @@ const postPublicacionController = async (
         ],
       },
     ],
-  }
-  );
+  });
 
   return publicacion_creada;
 };
 
-const putPublicacionController = async (id, titulo, descripcion,telefono, mascotaId, nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, raza, foto, ciudad) => {
+const putPublicacionController = async (
+  id,
+  titulo,
+  descripcion,
+  telefono,
+  mascotaId,
+  nombre,
+  genero,
+  edad,
+  vacunado,
+  destetado,
+  esterilizado,
+  alimentacion,
+  raza,
+  foto,
+  ciudad
+) => {
   const publicacion_actualizada = {
     id,
     titulo,
     descripcion,
-    telefono
+    telefono,
   };
   await Publicacion.update(publicacion_actualizada, {
     where: { id },
@@ -144,8 +265,8 @@ const putPublicacionController = async (id, titulo, descripcion,telefono, mascot
     genero,
     edad,
     vacunado,
-    destetado, 
-    esterilizado, 
+    destetado,
+    esterilizado,
     alimentacion,
     raza,
     foto,
@@ -163,8 +284,8 @@ const putPublicacionController = async (id, titulo, descripcion,telefono, mascot
           "genero",
           "edad",
           "vacunado",
-          "destetado", 
-          "esterilizado", 
+          "destetado",
+          "esterilizado",
           "alimentacion",
           "raza",
           "foto",
@@ -183,11 +304,11 @@ const deletePublicacionController = async (id) => {
   const publicacion_eliminar = await Publicacion.findByPk(id);
   await deleteMascotaController(publicacion_eliminar.mascotaId);
   await Publicacion.destroy({
-   where: {
-    id: id
-  }
+    where: {
+      id: id,
+    },
   });
-  return { "mensaje": "Publicacion eliminada" };
+  return { mensaje: "Publicacion eliminada" };
 };
 
 module.exports = {
@@ -196,5 +317,5 @@ module.exports = {
   postPublicacionController,
   putPublicacionController,
   deletePublicacionController,
-  //getPublicacionCardsController
+  postPublicacionesFilterController,
 };
