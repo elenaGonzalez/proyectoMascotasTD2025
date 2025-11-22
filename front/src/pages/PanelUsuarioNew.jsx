@@ -7,6 +7,10 @@ import Registro from "../component/auth/Registro.jsx";
 import Soporte from "../component/support/Soporte.jsx";
 import Contacto from "./Contacto.jsx";
 import CardNew from '../component/layout/CardNew.jsx';
+import axios from 'axios';
+import { useDispatch, useSelector } from "react-redux";
+import { getPublicaciones } from '../redux/publicacionesSlice.js';
+import { useNavigate } from 'react-router-dom';
 
 function PanelUsuarioNew() {
 
@@ -17,6 +21,10 @@ function PanelUsuarioNew() {
 
   const [datosUsuario, setDatosUsuario] = useState();
   const savedUserId = JSON.parse(localStorage.getItem('usuario'));
+  const publicaciones = useSelector((state) => state.publicaciones);
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -28,7 +36,7 @@ function PanelUsuarioNew() {
         })
         .catch(err => setError(err.message));
     }
-  }, [savedUserId]);
+  }, [savedUserId, publicaciones]);
 
   const [error, setError] = useState(null);
 
@@ -40,10 +48,25 @@ function PanelUsuarioNew() {
     setEditUser(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleDelete = async (e) => {
-    console.log("En handle Delete");
+  const handleDelete = async (data) => {
+    console.log("En handle Delete ", data);
+    try {
+        await axios({
+      method: "delete",
+      url: "http://localhost:3000/api/publicaciones",
+      data: {
+      id: data
+      }
+  })
+     
+    let publicaciones_sin_dog = publicaciones.rows.filter(perro =>perro.mascota_id !== data); 
+    setDatosUsuario(datosUsuario?.mascotas?.filter( perro =>perro.id !== data));
+    dispatch(getPublicaciones(publicaciones_sin_dog));
+    navigate("/");
+    } catch (error) {
+      alert(error);
+    }
 
-    alert("Deseas indicar que la mascota fue adoptada?");
   }
 
 
@@ -170,6 +193,7 @@ function PanelUsuarioNew() {
           {datosUsuario?.mascotas?.map(m =>
             <CardNew
               key={m.id}
+              mascota_id = {m.id}
               nombre={m.nombre}
               edad={m.edad}
               genero={m.genero}
