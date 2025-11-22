@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import "./cards.css";
 import { Button } from "react-bootstrap";
 import 'bootstrap/dist/css/bootstrap.min.css'
+import Swal from 'sweetalert2';
 
 
 const CardNew = ({
@@ -71,9 +72,32 @@ const CardNew = ({
 
       </Link>
       {handleDelete &&
-        <Button variant="btn btn-danger rounded-bottom" class="btn btn-danger" onClick={() => handleDelete()}>Marcar a {nombre} como adoptado</Button>
+        <Button variant="btn btn-danger rounded-bottom" class="btn btn-danger" onClick={() => {
+          Swal.fire({
+            title: "¿Estás seguro?",
+            text: "¿Marcar a " + nombre + " como adoptado?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, marcar como adoptado"
+          }).then((result) => {
+            if (result.isConfirmed) {
+              handleDelete();
+              Swal.fire({
+                title: "¡Hecho!",
+                text: nombre + " ha sido marcado como adoptado.",
+                icon: "success"
+              });
+            }
+          });
+        }}>Marcar a {nombre} como adoptado</Button>
       }
     </div>
+
+
+
+
   );
 };
 
