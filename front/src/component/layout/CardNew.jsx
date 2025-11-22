@@ -83,7 +83,7 @@ const CardNew = ({
             confirmButtonText: "Sí, marcar como adoptado"
           }).then((result) => {
             if (result.isConfirmed) {
-              handleDelete();
+              handleDelete(mascota_id);
               Swal.fire({
                 title: "¡Hecho!",
                 text: nombre + " ha sido marcado como adoptado.",

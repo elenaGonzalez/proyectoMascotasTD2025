@@ -300,12 +300,16 @@ const putPublicacionController = async (
   return actualizado;
 };
 
-const deletePublicacionController = async (id) => {
-  const publicacion_eliminar = await Publicacion.findByPk(id);
-  await deleteMascotaController(publicacion_eliminar.mascotaId);
+const deletePublicacionController = async (mascotaId) => {
+  const publicacion_eliminar = await Publicacion.findOne({
+    where:{
+      mascotaId
+    }
+  });
+  await deleteMascotaController(mascotaId);
   await Publicacion.destroy({
     where: {
-      id: id,
+      id: publicacion_eliminar.id,
     },
   });
   return { mensaje: "Publicacion eliminada" };
