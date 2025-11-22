@@ -15,8 +15,8 @@ function PanelUsuarioNew() {
   const [showSoporte, setShowSoporte] = useState(false);
   const [showContacto, setShowContacto] = useState(false);
 
-const [datosUsuario, setDatosUsuario] = useState();
-const savedUserId = JSON.parse(localStorage.getItem('usuario'));
+  const [datosUsuario, setDatosUsuario] = useState();
+  const savedUserId = JSON.parse(localStorage.getItem('usuario'));
 
   useEffect(() => {
 
@@ -29,7 +29,7 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
         .catch(err => setError(err.message));
     }
   }, [savedUserId]);
-  
+
   const [error, setError] = useState(null);
 
   const [showEdit, setShowEdit] = useState(false);
@@ -39,12 +39,12 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
     const { name, value } = e.target;
     setEditUser(prev => ({ ...prev, [name]: value }));
   };
-  
-  const handleDelete = async(e) =>{
-     console.log("En handle Delete");
-     
-      alert("Deseas indicar que la mascota fue adoptada?");
-    }
+
+  const handleDelete = async (e) => {
+    console.log("En handle Delete");
+
+    alert("Deseas indicar que la mascota fue adoptada?");
+  }
 
 
   const handleSave = async (e) => {
@@ -59,7 +59,7 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
 
     try {
       const res = await fetch('http://localhost:3000/api/usuarios', {
-        method: 'PUT', 
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
         },
@@ -74,7 +74,7 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
       const updated = await res.json();
 
       setDatosUsuario(updated);
-      sessionStorage.setItem('usuarioEditandoId', updated.id); 
+      sessionStorage.setItem('usuarioEditandoId', updated.id);
       setShowEdit(false);
       alert('Perfil actualizado correctamente');
     } catch (err) {
@@ -94,7 +94,7 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
 
   return (
     <>
-      <NavbarMain  expand="lg"
+      <NavbarMain expand="lg"
         onLoginClick={() => setShowLogin(true)}
         onRegistroClick={() => setShowRegistro(true)}
       />
@@ -158,25 +158,28 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
             </Card>
           </Col>
         </Row>
+        <br />
         <h5 className='text-center'>Mis Mascotas en adopcion</h5>
-        <div  style={{
+        <div style={{
           display: "flex",
           flexWrap: "wrap",
           gap: "1rem",
           justifyContent: "center",
           padding: "1rem",
         }}>
-         {datosUsuario?.mascotas?.map(m =>
-         <CardNew 
-          key={m.id}
-         nombre={m.nombre} 
-         edad={m.edad} 
-         genero={m.genero} 
-         foto={m.foto} 
-         handleDelete={handleDelete}/>
-        )}
+          {datosUsuario?.mascotas?.map(m =>
+            <CardNew
+              key={m.id}
+              nombre={m.nombre}
+              edad={m.edad}
+              genero={m.genero}
+              foto={m.foto}
+              handleDelete={handleDelete}
+              showFooter={false} />
+
+          )}
         </div>
-        </Container>
+      </Container>
 
       {/* Modal de Edición (igual estilo que tu Registro) */}
       <Modal show={showEdit} onHide={() => setShowEdit(false)} centered>
@@ -225,7 +228,7 @@ const savedUserId = JSON.parse(localStorage.getItem('usuario'));
         </Modal.Body>
       </Modal>
 
-       <Footer
+      <Footer
         onLoginClick={() => setShowLogin(true)}
         onRegistroClick={() => setShowRegistro(true)}
         onSoporteClick={() => setShowSoporte(true)}
