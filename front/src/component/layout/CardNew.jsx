@@ -21,22 +21,20 @@ const CardNew = ({
 }) => {
   let date;
   let enlace = "";
-  if(fecha_publicacion) {
+  if (fecha_publicacion) {
     date = new Date(fecha_publicacion);
   }
-  if(id){
+  if (id) {
     enlace = `/detalle/publicacion/${id}`;
-  }else{
+  } else {
     enlace = '/panel/new';
   }
-  
+
   return (
     <div
       className="card"
       style={{ width: "calc(30% - 1rem)", minWidth: "25%", maxWidth: "80%" }}
-    >{handleDelete&&
-       <Button className="primary" onClick={()=>handleDelete()}>Marcar a {nombre} como adoptado</Button>
-    }
+    >
       <Link to={enlace}>
         <img className="card-img-top" src={foto} alt={nombre} />
 
@@ -44,25 +42,28 @@ const CardNew = ({
           <h5 className="dog-title">{titulo}</h5>
           <p className="card-text">{raza}</p>
           <p className="card-text">{descripcion}</p>
-          {raza && 
-          <div>Raza : {raza}</div>}
+          {raza &&
+            <div>Raza : {raza}</div>}
           {edad &&
-          <div>Edad : {edad}</div>}
+            <div>Edad : {edad}</div>}
           {genero &&
-          <div>Genero : {genero}</div>}
+            <div>Genero : {genero}</div>}
           {vacunado &&
-          <div>Vacunado : {vacunado ? "si" : "no"}</div>}
+            <div>Vacunado : {vacunado ? "si" : "no"}</div>}
           {ciudad &&
-          <div>Ciudad : {ciudad}</div>}
-            <div className="card-footer">
+            <div>Ciudad : {ciudad}</div>}
+          <div className="card-footer">
             <div className="dog-age">
               <span>🐶</span>
             </div>
             <span>{date?.toLocaleDateString()}</span>
             <div className="ciudad">{ciudad}</div>
           </div>
-          </div>
+        </div>
       </Link>
+      {handleDelete &&
+        <Button variant="btn btn-danger" onClick={() => handleDelete()}>Marcar a {nombre} como adoptado</Button>
+      }
     </div>
   );
 };
