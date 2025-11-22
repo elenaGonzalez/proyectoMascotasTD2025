@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import "./cards.css";
 import { Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css'
+
 
 const CardNew = ({
   id,
@@ -17,6 +19,7 @@ const CardNew = ({
   foto,
   ciudad,
   usuarioId,
+  showFooter = true,  // nueva prop
   handleDelete
 }) => {
   let date;
@@ -52,17 +55,23 @@ const CardNew = ({
             <div>Vacunado : {vacunado ? "si" : "no"}</div>}
           {ciudad &&
             <div>Ciudad : {ciudad}</div>}
-          <div className="card-footer">
-            <div className="dog-age">
-              <span>🐶</span>
+
+          {// AGREGO UN PROP AL FOOTER PARA MOSTRARLO O NO
+          }
+          {showFooter && (
+            <div className="card-footer">
+              <div className="dog-age">
+                <span>🐶</span>
+              </div>
+              <span>{date?.toLocaleDateString()}</span>
+              <div className="ciudad">{ciudad}</div>
             </div>
-            <span>{date?.toLocaleDateString()}</span>
-            <div className="ciudad">{ciudad}</div>
-          </div>
+          )}
         </div>
+
       </Link>
       {handleDelete &&
-        <Button variant="btn btn-danger" onClick={() => handleDelete()}>Marcar a {nombre} como adoptado</Button>
+        <Button variant="btn btn-danger rounded-bottom" class="btn btn-danger" onClick={() => handleDelete()}>Marcar a {nombre} como adoptado</Button>
       }
     </div>
   );
