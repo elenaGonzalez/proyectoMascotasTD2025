@@ -51,18 +51,18 @@ function PanelUsuarioNew() {
   const handleDelete = async (data) => {
     console.log("En handle Delete ", data);
     try {
-        await axios({
-      method: "delete",
-      url: "http://localhost:3000/api/publicaciones",
-      data: {
-      id: data
-      }
-  })
-     
-    let publicaciones_sin_dog = publicaciones.rows.filter(perro =>perro.mascota_id !== data); 
-    setDatosUsuario(datosUsuario?.mascotas?.filter( perro =>perro.id !== data));
-    dispatch(getPublicaciones(publicaciones_sin_dog));
-    navigate("/");
+      await axios({
+        method: "delete",
+        url: "http://localhost:3000/api/publicaciones",
+        data: {
+          id: data
+        }
+      })
+
+      let publicaciones_sin_dog = publicaciones.rows.filter(perro => perro.mascota_id !== data);
+      setDatosUsuario(datosUsuario?.mascotas?.filter(perro => perro.id !== data));
+      dispatch(getPublicaciones(publicaciones_sin_dog));
+      navigate("/");
     } catch (error) {
       alert(error);
     }
@@ -183,24 +183,20 @@ function PanelUsuarioNew() {
         </Row>
         <br />
         <h5 className='text-center'>Mis Mascotas en adopcion</h5>
-        <div style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          justifyContent: "center",
-          padding: "1rem",
-        }}>
-          {datosUsuario?.mascotas?.map(m =>
-            <CardNew
-              key={m.id}
-              mascota_id = {m.id}
-              nombre={m.nombre}
-              edad={m.edad}
-              genero={m.genero}
-              foto={m.foto}
-              handleDelete={handleDelete}
-              showFooter={false} />
+        <div className="row justify-content-center w-100 g-3" style={{ padding: "1rem", margin: "0 auto" }}>
 
+          {datosUsuario?.mascotas?.map(m =>
+            <div key={datosUsuario.id} className="col-12 col-sm-6 col-lg-4 d-flex">
+              <CardNew
+                key={m.id}
+                mascota_id={m.id}
+                nombre={m.nombre}
+                edad={m.edad}
+                genero={m.genero}
+                foto={m.foto}
+                handleDelete={handleDelete}
+                showFooter={false} />
+            </div>
           )}
         </div>
       </Container>
