@@ -146,6 +146,16 @@ const getPublicacionesController = async (offset, limit) => {
           "aprendizaje",
           "usuarioId",
         ],
+        include: [
+          {
+            model: Usuario,
+             attributes: [
+               "nombre",
+               "apellido",
+               "email",
+             ]
+          }
+        ]
       },
     ],
     offset,
