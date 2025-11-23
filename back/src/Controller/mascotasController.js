@@ -7,7 +7,7 @@ const getMascotasActivasController = async() =>{
 }
 
 const postMascotaController = async(nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, antiparacitario, aprendizaje, usuarioId)=>{
-  const user = await Usuario.findOne({usuarioId: usuarioId});  
+  const user = await Usuario.findByPk(usuarioId);  
   console.info("usuario:", user)
   const mascota_nueva = await Mascota.create({
         nombre, 
