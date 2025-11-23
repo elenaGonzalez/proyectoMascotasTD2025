@@ -4,6 +4,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { useState, useEffect } from 'react'
 import { useDispatch } from "react-redux"
 import axios from 'axios'
+import Swal from 'sweetalert2'
 
 function Registro({ show, onHide }) {
   const dispatch = useDispatch()
@@ -24,20 +25,40 @@ function Registro({ show, onHide }) {
     mode: 'onBlur'
   })
 
-  const onSubmit = async (data) => {
-    await axios({
-          method: 'post', 
-          url: "http://localhost:3000/api/auth/registro",
-          data:{
-          nombre: data.nombre,
-          apellido: data.apellido,  
-          email: data.email, 
-          contrasena: data.contraseña,
-          telefono: data.telefono
-          }
-      }).then((res) => console.log(res.data))
-        .catch((err) => alert(err.response.data.Error));
-    }
+const onSubmit = async (data) => {
+  try {
+    const res = await axios.post(
+      "http://localhost:3000/api/auth/registro",
+      {
+        nombre: data.nombre,
+        apellido: data.apellido,
+        email: data.email,
+        contrasena: data.contraseña,
+        telefono: data.telefono,
+      }
+    );
+
+    Swal.fire({
+      title: `¡Bienvenido ${res.data.nombre}! 🎉`,
+      text: "Tu cuenta fue creada con éxito.",
+      icon: "success",
+      draggable: true,
+    });
+
+    reset();
+    onHide();
+
+  } catch (error) {
+    const msg = error.response?.data?.Error || "Error en el servidor";
+
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: msg,   // <-- si el correo está en uso: "Usuario ya registrado"
+    });
+  }
+};
+
   // estilos inline para notificación flotante simple
 const toastStyle = {
     position: 'fixed',
