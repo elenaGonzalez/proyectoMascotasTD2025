@@ -45,10 +45,10 @@ const loginController = async (email, contrasena) => {
     expiresIn: "1h",
   });
 
-  let { nombre, apellido, role } = usuario;
+  let { id, nombre, apellido, role } = usuario;
 
 
-  return {message : "Login " , token, nombre, apellido, role};
+  return {message : "Login " , token, id, nombre, apellido, role};
 };
 
 module.exports = {

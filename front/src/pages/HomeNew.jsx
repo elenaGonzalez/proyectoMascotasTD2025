@@ -1,23 +1,18 @@
-import React, { useEffect, useState } from "react";
-import NavbarMain from "../component/layout/Navbar.jsx"; // Lo mantengo por si otros archivos lo usan
-import Principal from "../component/layout/Principal.jsx";
-import Footer from "../component/layout/Footer.jsx";
-import Login from "../component/auth/Login.jsx";
-import Registro from "../component/auth/Registro.jsx";
-import Soporte from "../component/support/Soporte.jsx";
-import Contacto from "../pages/Contacto.jsx";
+import React, { useState, useEffect } from "react";
+// ... (Otras importaciones)
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getPublicaciones } from "../redux/publicacionesSlice.js";
 import CardNew from "../component/layout/CardNew.jsx";
 import CarruselMascotas from '../component/layout/CarruselMascotas.jsx'; 
-import { useSearch } from '../context/SearchContext.jsx'; // ⬅️ IMPORTACIÓN CLAVE
+import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx"; // ⬅️ Nuevo componente del compañero
+import { useSearch } from '../../context/SearchContext.jsx'; // ⬅️ SU IMPORTACIÓN
 
-// Rutas de la API
+// Rutas de la API (Mantener ambas)
 const API_URL_PUBLICACIONES = "http://localhost:3000/api/publicaciones";
 const API_URL_MASCOTAS = "http://localhost:3000/api/mascotas";
 
-// Función de normalización (para que la búsqueda funcione sin acentos)
+// Función de normalización (Su código, para la búsqueda local)
 const normalize = (text) =>
     (text ?? '')
         .toString()
@@ -25,31 +20,54 @@ const normalize = (text) =>
         .normalize('NFD')
         .replace(/[\u0300-\u036f]/g, '');
 
-function HomeNew() {
-    // ESTADOS GLOBALES (Redux)
-    const publicaciones = useSelector((state) => state.publicaciones);
-    const dispatch = useDispatch();
 
-    // ESTADOS DE MODAL y CARRUSEL (Su lógica)
+function HomeNew() {
+    // ⬅️ HOOKS DE MODAL (DE SU CÓDIGO)
     const [showLogin, setShowLogin] = useState(false);
     const [showRegistro, setShowRegistro] = useState(false);
     const [showSoporte, setShowSoporte] = useState(false);
     const [showContacto, setShowContacto] = useState(false);
+    
+    // ⬅️ HOOKS DE CARRUSEL (SU CÓDIGO)
     const [mascotasCarrusel, setMascotasCarrusel] = useState([]);
     const [loadingCarrusel, setLoadingCarrusel] = useState(true); 
+
+    // ⬅️ HOOKS Y ESTADOS DEL COMPAÑERO (PAGINACIÓN / FILTROS / REDUX)
+    const [showFilters, setShowFilters] = useState(false);
+    const [page, setPage] = useState(1);
+    const [filters, setFilters] = useState({});
     
-    // ⬅️ OBTENER EL TÉRMINO DE BÚSQUEDA DEL NAVBAR
-    const { searchTerm } = useSearch(); 
+    const dispatch = useDispatch();
+    const publicaciones = useSelector((state) => state.publicaciones.rows) || []; // Usar .rows
+    const total_publicaciones_BD = useSelector((state) => state.publicaciones.count) || 0;
+    const { searchTerm } = useSearch(); // ⬅️ SU BUSCADOR
+    
+    const limit = 6;
+    const totalPages = Math.ceil(total_publicaciones_BD / limit);
+    const numeroPaginas = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-    // LÓGICA DE DATOS 1: Obtener publicaciones (Redux)
+    // ⬅️ LÓGICA DE DATOS 1: Obtener PUBLICACIONES PAGINADAS/FILTRADAS (CÓDIGO DEL COMPAÑERO)
     useEffect(() => {
-        axios
-            .get(API_URL_PUBLICACIONES)
-            .then((res) => dispatch(getPublicaciones(res.data)))
-            .catch((err) => console.log("Error Redux/Publicaciones:", err));
-    }, [dispatch]);
+        const fetchData = async () => {
+            try {
+                // Lógica de filtros avanzada del compañero (omite el fetch si no hay filtros)
+                const noFilters = Object.values(filters).every(v => v === "" || v === null);
 
-    // LÓGICA DE DATOS 2: Obtener mascotas para el Carrusel (Fetch)
+                let res;
+                if (noFilters) {
+                     res = await axios.get(`http://localhost:3000/api/publicaciones/${page}/${limit}`);
+                } else {
+                     res = await axios.post(`http://localhost:3000/api/publicaciones/${page}/${limit}/filtro`, filters);
+                }
+                dispatch(getPublicaciones(res.data));
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        fetchData();
+    }, [page, filters, dispatch]); // Dependencias: Si cambia la página o el filtro, se vuelve a cargar
+
+    // ⬅️ LÓGICA DE DATOS 2: Obtener mascotas para el CARRUSEL (SU CÓDIGO)
     useEffect(() => {
         fetch(API_URL_MASCOTAS)
             .then((response) => response.json())
@@ -63,13 +81,12 @@ function HomeNew() {
             });
     }, []);
 
-    // 🚀 LÓGICA CLAVE: Filtrar las publicaciones antes de renderizar
+    // 🚀 LÓGICA CLAVE: APLICAR EL BUSCADOR (FILTRO LOCAL)
+    // Filtra las publicaciones que YA fueron paginadas/filtradas por el backend.
     const filteredPublicaciones = publicaciones.filter(publicacion => {
-        // Muestra todo si el término de búsqueda está vacío o es muy corto
         if (!searchTerm || searchTerm.length < 2) return true; 
 
         const q = normalize(searchTerm);
-        // El back-end anida los datos, por lo que buscamos en mascota.nombre y ciudad.
         const nombreMascota = normalize(publicacion.mascota?.nombre);
         const ciudad = normalize(publicacion.mascota?.ciudad);
         const titulo = normalize(publicacion.titulo);
@@ -77,7 +94,7 @@ function HomeNew() {
         return nombreMascota.includes(q) || ciudad.includes(q) || titulo.includes(q);
     });
 
-    // 🛑 Manejo de estado de carga: Espera a que ambas fuentes de datos carguen
+    // 🛑 Manejo de estado de carga
     if (publicaciones.length === 0 || loadingCarrusel) {
         return <div className="text-center my-5">Cargando la aplicación...</div>;
     }
@@ -86,49 +103,84 @@ function HomeNew() {
     // 🚀 RENDERIZADO FINAL: Se renderiza el contenido de la página
     return (
         <>
-            {/* 1. Navbar: Se renderiza desde App.jsx, aquí solo manejamos los modales si es necesario */}
-            {/* El Navbar se mantiene aquí para que las funciones de modal puedan usarse,
-                pero debe estar comentado en el return principal. */}
+            {/* El NavbarMain se renderiza en App.jsx */}
             
             <Principal /> 
+            
+            {/* Botón de Filtros del compañero */}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginTop: "20px",
+                    paddingRight: "90px"
+                }}>
+                <button
+                    onClick={() => setShowFilters((prev) => !prev)}
+                    className="btn btn-primary"
+                >
+                    {showFilters ? "Ocultar filtros ▲" : "Mostrar filtros ▼"}
+                </button>
+            </div>
+            
+            {showFilters && (
+                <FiltroPublicaciones onChange={(newFilters) => setFilters(newFilters)} />
+            )}
             
             {/* 2. Su Carrusel: Se inserta aquí */}
             <CarruselMascotas mascotas={mascotasCarrusel} /> 
             
-            {/* 3. Div contenedor de las Cards (Muestra los datos filtrados) */}
-            <div
-                style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "1rem",
-                    justifyContent: "center",
-                    padding: "1rem",
-                }}
-            >
-                {/* ⬅️ CRÍTICO: Mapeo del arreglo FILTRADO ⬅️ */}
+            {/* 3. Cards Paginaadas/Filtradas (Muestra los datos filtrados localmente) */}
+            <div className="row w-100 g-3" style={{ padding: "1rem", margin: "0 auto" }}>
+
                 {filteredPublicaciones.map((publicacion) => (
-                    <CardNew
-                        key={publicacion.id}
-                        id={publicacion.id}
-                        titulo={publicacion.titulo}
-                        telefono={publicacion.telefono}
-                        fecha_publicacion={publicacion.fecha_publicacion}
-                        nombre={publicacion.mascota?.nombre}
-                        mascota_id={publicacion.mascotaId}
-                        foto={publicacion.mascota?.foto}
-                        ciudad={publicacion.mascota?.ciudad}
-                    />
-                ))}
-                
-                {/* Mensaje de no encontrado si el filtro es estricto */}
-                {searchTerm && filteredPublicaciones.length === 0 && (
-                    <div className="text-center my-4">
-                        <p>No se encontraron resultados para "{searchTerm}".</p>
+                    <div key={publicacion.id} className="col-12 col-sm-6 col-lg-4 d-flex">
+                        <CardNew
+                            key={publicacion.id}
+                            id={publicacion.id}
+                            titulo={publicacion.titulo}
+                            telefono={publicacion.telefono}
+                            fecha_publicacion={publicacion.fecha_publicacion}
+                            nombre={publicacion.mascota?.nombre}
+                            mascota_id={publicacion.mascotaId}
+                            foto={publicacion.mascota?.foto}
+                            ciudad={publicacion.mascota?.ciudad}
+                        />
                     </div>
-                )}
+                ))}
             </div>
-            
-            {/* Footer y Modales: Se renderizan una sola vez */}
+
+            {/* PAGINADO (Lógica del compañero) */}
+            <div style={{ display: "flex", justifyContent: "center", gap: "15px", margin: "25px" }}>
+                {/* Botón Anterior */}
+                <button onClick={() => setPage(page - 1)} disabled={page === 1} style={{ padding: "8px 15px" }}>
+                    ◀ Anterior
+                </button>
+
+                {/* Numeración de páginas */}
+                {numeroPaginas.map((num) => (
+                    <button
+                        key={num}
+                        onClick={() => setPage(num)}
+                        style={{
+                            padding: "8px 12px",
+                            fontWeight: num === page ? "bold" : "normal",
+                            backgroundColor: num === page ? "#ddd" : "white",
+                            border: "1px solid #ccc",
+                            borderRadius: "5px",
+                            cursor: "pointer"
+                        }}
+                    >
+                        {num}
+                    </button>
+                ))}
+
+                {/* Botón Siguiente */}
+                <button onClick={() => setPage(page + 1)} disabled={page === totalPages} style={{ padding: "8px 15px" }}>
+                    Siguiente ▶
+                </button>
+            </div>
+
             <Footer
                 onLoginClick={() => setShowLogin(true)}
                 onRegistroClick={() => setShowRegistro(true)}
@@ -136,6 +188,7 @@ function HomeNew() {
                 onContactoClick={() => setShowContacto(true)}
             />
 
+            {/* Modales */}
             <Login show={showLogin} onHide={() => setShowLogin(false)} />
             <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
             <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />

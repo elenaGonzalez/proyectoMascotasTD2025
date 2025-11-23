@@ -1,31 +1,40 @@
+const { log } = require("console");
 const {
   getPublicacionController,
   getPublicacionesController,
   postPublicacionController,
   putPublicacionController,
   deletePublicacionController,
-  getPublicacionCardsController
+  postPublicacionesFilterController
 } = require("../Controller/publicacionesController");
 
-const getPublicacionesHandler = async (req, res) => {
+const getPublicacionesFilterHandler = async (req, res) => {
+  let limit = req.params.limit;
+  let page = req.params.page - 1;
+  
+  const {categoria, genero, edad , vacunado, destetado, esterilizado, alimentacion, antiparacitario} = req.body;
   try {
-    let publicaciones = await getPublicacionesController();
+    let offset = page * limit;
+    let publicaciones = await postPublicacionesFilterController(offset, limit, categoria, genero, edad , vacunado, destetado, esterilizado, alimentacion, antiparacitario);
     res.status(200).send(publicaciones);
   } catch (error) {
     res.status(500).send({ Error: error.message });
   }
 };
 
-const getPublicacionCardsHandler = async (req, res) =>{
-  console.log("En mascota handler ");
-  
+
+const getPublicacionesHandler = async (req, res) => {
+  let limit = req.params.limit;
+  let page = req.params.page - 1;
   try {
-    let publicaciones_mascotas = await getPublicacionCardsController();
-    res.status(200).send(publicaciones_mascotas);
+    let offset = page * limit;
+    let publicaciones = await getPublicacionesController(offset, limit);
+    res.status(200).send(publicaciones);
   } catch (error) {
-    res.status(500).send({Error: error.message})
+    res.status(500).send({ Error: error.message });
   }
-}
+};
+
 
 const getPublicacionHandler = async (req, res) => {
   const { id } = req.params;
@@ -39,8 +48,9 @@ const getPublicacionHandler = async (req, res) => {
 
 const postPublicacionHandler = async (req, res) => {
   try {
-    const {titulo, descripcion, telefono, nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId} = req.body;
-    const publicacion = await postPublicacionController(titulo, descripcion, telefono, nombre, genero, edad, vacunado, raza, foto, ciudad, usuarioId);
+    const {titulo, descripcion, telefono, nombre, genero, edad, vacunado, destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, antiparacitario,aprendizaje, usuarioId} = req.body;
+    
+    const publicacion = await postPublicacionController(titulo, descripcion, telefono, nombre, genero, edad, vacunado,  destetado, esterilizado, alimentacion, categoria, raza, foto, ciudad, antiparacitario, aprendizaje, usuarioId);
     res.status(200).send(publicacion);
 } catch (error) {
     res.status(500).send({ Error: error.message });
@@ -57,9 +67,14 @@ const putPublicacionHandler = async (req, res) => {
     genero,
     edad,
     vacunado,
+    destetado, 
+    esterilizado, 
+    alimentacion,
     raza,
     foto,
     ciudad,
+    antiparacitario,
+    aprendizaje,
   } = req.body;
     try {
     let publicaciones = await putPublicacionController(
@@ -71,9 +86,14 @@ const putPublicacionHandler = async (req, res) => {
     genero,
     edad,
     vacunado,
+    destetado, 
+    esterilizado, 
+    alimentacion,
     raza,
     foto,
     ciudad,
+    antiparacitario,
+    aprendizaje,
   );
     res.status(200).send(publicaciones);
   } catch (error) {
@@ -97,5 +117,5 @@ module.exports = {
   postPublicacionHandler,
   putPublicacionHandler,
   deletePublicacionHandler,
-  getPublicacionCardsHandler
+  getPublicacionesFilterHandler 
 };

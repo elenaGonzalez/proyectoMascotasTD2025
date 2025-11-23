@@ -1,14 +1,13 @@
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm, Controller } from "react-hook-form";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setUsuario } from "../../redux/usuarioSlice";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function Login({ show, onHide }) {
-   const dispatch = useDispatch();
-    
-  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const dispatch = useDispatch();
+
   const {
     control,
     handleSubmit,
@@ -23,25 +22,43 @@ function Login({ show, onHide }) {
     mode: "onBlur",
   });
 
-  const onSubmit = async(data) => {
-    console.log("Datos del login:", data);
-     await axios({
-          method: 'post', 
-          url: "http://localhost:3000/api/auth/login",
-          data:{
-          email: data.email, 
-          contrasena: data.contraseña
-          }
-      }).then((res) => dispatch(setUsuario(res.data)))
-        .catch((err) => console.log(err));
-      
-      setSubmitSuccess(true);
-    setSubmitSuccess(true);
-    reset();
-    setTimeout(() => {
-      setSubmitSuccess(false);
+  const onSubmit = async (data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/api/auth/login",
+        {
+          email: data.email,
+          contrasena: data.contraseña,
+        }
+      );
+
+      // Guardar en Redux
+      dispatch(setUsuario(res.data));
+
+      // Guardar en localStorage
+      localStorage.setItem("usuario", JSON.stringify(res.data.id))
+
+      // SweetAlert de bienvenida
+      Swal.fire({
+        title: `¡Bienvenido ${res.data.nombre}!`,
+        icon: "success",
+        draggable: true,
+      });
+
+      reset();
       onHide();
-    }, 1500);
+
+    } catch (error) {
+      // Obtenemos el mensaje del backend
+      const msg = error.response?.data?.Error || "Error en el servidor";
+
+      // SweetAlert de error
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: msg,
+      });
+    }
   };
 
   return (
@@ -49,12 +66,8 @@ function Login({ show, onHide }) {
       <Modal.Header closeButton>
         <Modal.Title>Iniciar Sesión</Modal.Title>
       </Modal.Header>
+
       <Modal.Body>
-        {submitSuccess && (
-          <div className="alert alert-success" role="alert">
-            ¡Bienvenido! ✅
-          </div>
-        )}
         <Form onSubmit={handleSubmit(onSubmit)}>
           {/* Email */}
           <Form.Group className="mb-3">
@@ -114,7 +127,6 @@ function Login({ show, onHide }) {
             />
           </Form.Group>
 
-          {/* Recuérdame */}
           <Form.Group className="mb-3">
             <Controller
               name="recuerdame"
@@ -129,6 +141,10 @@ function Login({ show, onHide }) {
             Iniciar Sesión
           </Button>
         </Form>
+
+        <Button variant="link" className="w-100">
+          ¿Olvidaste tu contraseña?
+        </Button>
       </Modal.Body>
     </Modal>
   );
