@@ -35,10 +35,7 @@ const CardNew = ({
   }
 
   return (
-    <div
-      className="card"
-      style={{ width: "calc(30% - 1rem)", minWidth: "25%", maxWidth: "80%" }}
-    >
+    <div className="card w-100 h-100" >
       <Link to={enlace}>
         <img className="card-img-top" src={foto} alt={nombre} />
 
