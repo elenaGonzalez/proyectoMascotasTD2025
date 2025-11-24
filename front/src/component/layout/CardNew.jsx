@@ -81,7 +81,7 @@ const CardNew = ({
 
       </Link>
       {handleDelete &&
-        <Button variant="btn btn-danger rounded-bottom" class="btn btn-danger" onClick={() => {
+        <Button variant="btn btn-danger rounded-bottom" className="btn btn-danger" onClick={() => {
           Swal.fire({
             title: "¿Estás seguro?",
             text: "¿Marcar a " + nombre + " como adoptado?",
