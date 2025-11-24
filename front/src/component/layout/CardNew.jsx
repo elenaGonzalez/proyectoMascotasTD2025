@@ -37,7 +37,19 @@ const CardNew = ({
   return (
     <div className="card w-100 h-100" >
       <Link to={enlace}>
-        <img className="card-img-top" src={foto} alt={nombre} />
+        <img
+        className="card-img-top"
+        src={foto}
+        alt={nombre}
+        style={{
+          width: "100%",
+          height: "350px",          // Acá ajustamos según el diseño cuando es alto se ve mas grande
+          objectFit: "cover",       // RECORTA la imagen sin deformarla
+          objectPosition: "center", // centra el recorte
+          borderTopLeftRadius: "0.25rem",
+          borderTopRightRadius: "0.25rem"
+        }}
+        />
 
         <div className="card-body">
           <h5 className="dog-title">{titulo}</h5>
