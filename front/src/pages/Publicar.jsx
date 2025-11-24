@@ -290,163 +290,213 @@ export default function Publicar() {
                             </Form.Group>
                         </Row>
 
-                        {/* Vacunas, Destetado y Esterilizado */}
-                        <Row className="mb-5">
-                            <Form.Group as={Col} md="4">
-                                <Form.Label>Vacunas</Form.Label>
-                                <Controller
-                                    name="vacunado"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Select {...field}>
-                                            <option value="">--</option>
-                                            <option value="true">Sí</option>
-                                            <option value="false">No</option>
-                                        </Form.Select>
-                                    )}
-                                />
-                            </Form.Group>
+{/* Vacunas, Destetado y Esterilizado */}
+<Row className="mb-5">
 
-                            <Form.Group as={Col} md="4">
-                                <Form.Label>Destetado</Form.Label>
-                                <Controller
-                                    name="destetado"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Select {...field}>
-                                            <option value="">--</option>
-                                            <option value="true">Sí</option>
-                                            <option value="false">No</option>
-                                        </Form.Select>
-                                    )}
-                                />
-                            </Form.Group>
+    <Form.Group as={Col} md="4">
+        <Form.Label>Vacunas *</Form.Label>
+        <Controller
+            name="vacunado"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
+                <>
+                    <Form.Select {...field} isInvalid={!!errors.vacunado}>
+                        <option value="">Selecciona una opción</option>
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.vacunado?.message}
+                    </Form.Control.Feedback>
+                </>
+            )}
+        />
+    </Form.Group>
 
-                            <Form.Group as={Col} md="4">
-                                <Form.Label>Esterilizado *</Form.Label>
-                                <Controller
-                                    name="esterilizado"
-                                    control={control}
-                                    rules={{ required: "Este campo es obligatorio" }}
-                                    render={({ field }) => (
-                                        <>
-                                            <Form.Select {...field} isInvalid={!!errors.esterilizado}>
-                                                <option value="">Selecciona una opción</option>
-                                                <option value="true">Sí</option>
-                                                <option value="false">No</option>
-                                            </Form.Select>
-                                            <Form.Control.Feedback type="invalid">
-                                                {errors.esterilizado?.message}
-                                            </Form.Control.Feedback>
-                                        </>
-                                    )}
-                                />
-                            </Form.Group>
-                        </Row>
+    <Form.Group as={Col} md="4">
+        <Form.Label>Destetado *</Form.Label>
+        <Controller
+            name="destetado"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
+                <>
+                    <Form.Select {...field} isInvalid={!!errors.destetado}>
+                        <option value="">Selecciona una opción</option>
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.destetado?.message}
+                    </Form.Control.Feedback>
+                </>
+            )}
+        />
+    </Form.Group>
+
+    <Form.Group as={Col} md="4">
+        <Form.Label>Esterilizado *</Form.Label>
+        <Controller
+            name="esterilizado"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
+                <>
+                    <Form.Select {...field} isInvalid={!!errors.esterilizado}>
+                        <option value="">Selecciona una opción</option>
+                        <option value="true">Sí</option>
+                        <option value="false">No</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.esterilizado?.message}
+                    </Form.Control.Feedback>
+                </>
+            )}
+        />
+    </Form.Group>
+
+</Row>
+
 
                         {/* Alimentación, Raza y Sexo */}
-                        <Row className="mb-5">
-                            <Form.Group as={Col} md="4">
-                                <Form.Label>Tipo de alimentación</Form.Label>
-                                <Controller
-                                    name="alimentacion"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Select {...field}>
-                                            <option value="">--</option>
-                                            <option value="blanda">Comida blanda</option>
-                                            <option value="leche">Leche materna</option>
-                                            <option value="pellet">Pellet</option>
-                                        </Form.Select>
-                                    )}
-                                />
-                            </Form.Group>
+<Row className="mb-5">
+    <Form.Group as={Col} md="4">
+        <Form.Label>Tipo de alimentación *</Form.Label>
+        <Controller
+            name="alimentacion"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
+                <>
+                    <Form.Select {...field} isInvalid={!!errors.alimentacion}>
+                        <option value="">Selecciona una opción</option>
+                        <option value="blanda">Comida blanda</option>
+                        <option value="leche">Leche materna</option>
+                        <option value="pellet">Pellet</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.alimentacion?.message}
+                    </Form.Control.Feedback>
+                </>
+            )}
+        />
+    </Form.Group>
 
-                            <Form.Group as={Col} md="4">
-                                <Form.Label>Raza</Form.Label>
-                                <Controller
-                                    name="raza"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Control
-                                            {...field}
-                                            type="text"
-                                            placeholder="Opcional"
-                                        />
-                                    )}
-                                />
-                            </Form.Group>
+    <Form.Group as={Col} md="4">
+        <Form.Label>Raza *</Form.Label>
+        <Controller
+            name="raza"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
+                <>
+                    <Form.Control
+                        {...field}
+                        type="text"
+                        placeholder="Ej. Mestizo"
+                        isInvalid={!!errors.raza}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                        {errors.raza?.message}
+                    </Form.Control.Feedback>
+                </>
+            )}
+        />
+    </Form.Group>
 
-                            <Form.Group as={Col} md="4">
-                                <Form.Label>Genero</Form.Label>
-                                <Controller
-                                    name="genero"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Select {...field}>
-                                            <option value="">--</option>
-                                            <option value="Hembra">Hembra</option>
-                                            <option value="Macho">Macho</option>
-                                        </Form.Select>
-                                    )}
-                                />
-                            </Form.Group>
-                        </Row>
+    <Form.Group as={Col} md="4">
+        <Form.Label>Genero *</Form.Label>
+        <Controller
+            name="genero"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
+                <>
+                    <Form.Select {...field} isInvalid={!!errors.genero}>
+                        <option value="">Selecciona una opción</option>
+                        <option value="Hembra">Hembra</option>
+                        <option value="Macho">Macho</option>
+                    </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.genero?.message}
+                    </Form.Control.Feedback>
+                </>
+            )}
+        />
+    </Form.Group>
+</Row>
+
+
 
                         {/* Edad y Antiparasitario */}
-                        <Row className="mb-5">
-                            <Form.Group as={Col} md="6">
-                                <Form.Label>Edad (aproximada)</Form.Label>
-                                <Controller
-                                    name="edad"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Control
-                                            {...field}
-                                            type="text" // Cambiado de integer a text
-                                            placeholder="Ej. 3 meses / 2 años"
-                                        />
-                                    )}
-                                />
-                            </Form.Group>
+                        <Form.Group as={Col} md="4">
+    <Form.Label>Edad (aproximada) *</Form.Label>
+    <Controller
+        name="edad"
+        control={control}
+        rules={{ required: "Este campo es obligatorio" }}
+        render={({ field }) => (
+            <>
+                <Form.Control
+                    {...field}
+                    type="number"
+                    placeholder="años"
+                    isInvalid={!!errors.edad}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {errors.edad?.message}
+                </Form.Control.Feedback>
+            </>
+        )}
+    />
+</Form.Group>
 
-                            <Form.Group as={Col} md="6">
-                                <Form.Label>Antiparasitario</Form.Label>
-                                <Controller
-                                    name="antiparasitario"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Form.Select {...field}>
-                                            <option value="">--</option>
-                                            <option value="true">Sí</option>
-                                            <option value="false">No</option>
-                                        </Form.Select>
-                                    )}
-                                />
-                            </Form.Group>
-                        </Row>
+
+                            <Form.Group as={Col} md="4">
+    <Form.Label>Antiparasitario *</Form.Label>
+    <Controller
+        name="antiparasitario"
+        control={control}
+        rules={{ required: "Este campo es obligatorio" }}
+        render={({ field }) => (
+            <>
+                <Form.Select {...field} isInvalid={!!errors.antiparasitario}>
+                    <option value="">Selecciona una opción</option>
+                    <option value="true">Sí</option>
+                    <option value="false">No</option>
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                    {errors.antiparasitario?.message}
+                </Form.Control.Feedback>
+            </>
+        )}
+    />
+</Form.Group>
 
                         {/* Aprendizaje sanitario */}
                         <Form.Group className="mb-5">
-                            <Form.Label>Aprendizaje sanitario</Form.Label>
-                            <Controller
-                                name="aprendizaje"
-                                control={control}
-                                render={({ field }) => (
-                                    <>
-                                        <Form.Control
-                                            {...field}
-                                            type="text"
-                                            placeholder="Ej. Hace sus necesidades afuera"
-                                            isInvalid={!!errors.aprendizaje}
-                                        />
-                                        <Form.Control.Feedback type="invalid">
-                                            {errors.aprendizaje?.message}
-                                        </Form.Control.Feedback>
-                                    </>
-                                )}
-                            />
-                        </Form.Group>
+    <Form.Label>Aprendizaje sanitario *</Form.Label>
+    <Controller
+        name="aprendizaje"
+        control={control}
+        rules={{ required: "Este campo es obligatorio" }}
+        render={({ field }) => (
+            <>
+                <Form.Control
+                    {...field}
+                    type="text"
+                    placeholder="Ej. Hace sus necesidades afuera"
+                    isInvalid={!!errors.aprendizaje}
+                />
+                <Form.Control.Feedback type="invalid">
+                    {errors.aprendizaje?.message}
+                </Form.Control.Feedback>
+            </>
+        )}
+    />
+</Form.Group>
+
 
                         {/* Descripción */}
                         <Form.Group className="mb-5">

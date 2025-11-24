@@ -8,6 +8,7 @@ import { useSearch } from '../../context/SearchContext.jsx';
 import Login from '../auth/Login.jsx';
 import Registro from '../auth/Registro.jsx';
 import "./Navbar.css";
+import { jwtDecode } from "jwt-decode";
 
 function NavbarMain() {
 
@@ -18,16 +19,21 @@ function NavbarMain() {
 
     const savedUserId = JSON.parse(localStorage.getItem("usuario"));
 
+    const savedUserToken = JSON.parse(localStorage.getItem('token'));
+
     // === Estado para ocultar/mostrar navbar ===
     const [hideNavbar, setHideNavbar] = useState(false);
     const [lastScroll, setLastScroll] = useState(0);
 
+    const [isAdmin, setIsAdmin] = useState(false);
+
     // === Logout ===
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
-        localStorage.removeItem("usuario");
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('token');
         window.location.href = "/";
-    };
+    }
 
     // === Detectar Scroll ===
     useEffect(() => {
@@ -47,6 +53,22 @@ function NavbarMain() {
         return () => window.removeEventListener("scroll", handleScroll);
 
     }, [lastScroll]);
+
+    // token admin 
+    useEffect(() => {
+    if (savedUserToken) {
+        try {
+            const decoded = jwtDecode(savedUserToken);
+            if (decoded.role === "admin") {
+                setIsAdmin(true);
+            }
+        } catch (error) {
+            console.error("Error al decodificar token:", error);
+        }
+    }
+}, [savedUserToken]);
+
+console.log("es admin?", isAdmin)
 
     return (
         <>
@@ -109,6 +131,12 @@ function NavbarMain() {
                                             Perfil
                                         </Button>
                                     </Link>
+
+                                    {isAdmin && (
+                                        <Link to="/panel/admin">
+                                            <Button variant="outline-primary" className="nav-btn me-2">Admin</Button>
+                                        </Link>
+                                    )}
 
                                     <Link to="/publicar">
                                         <Button variant="primary" className="nav-btn me-2">
