@@ -37,6 +37,7 @@ function Login({ show, onHide }) {
 
       // Guardar en localStorage
       localStorage.setItem("usuario", JSON.stringify(res.data.id))
+      localStorage.setItem('token', JSON.stringify(res.data.token));
 
       // SweetAlert de bienvenida
       Swal.fire({

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { jwtDecode } from 'jwt-decode';
 import {
     Container,
     Form,
@@ -14,48 +15,53 @@ import axios from "axios";
 
 // ❌ Se eliminaron las importaciones duplicadas de NavbarMain y Footer.
 
-function Publicar() {
+export default function Publicar() {
     const usuario = useSelector((state) => state.usuario);
 
-    const [success, setSuccess] = useState(false);
-    
-    // Desestructuración del hook useForm (limpia y concisa)
-    const {
-        control,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm({
-        defaultValues: {
-            categoria: "",
-            titulo: "",
-            nombre: "",
-            ciudad: "",
-            foto: "",
-            telefono: "",
-            vacunado: "", // Usar string vacío para Select
-            destetado: "", // Usar string vacío para Select
-            esterilizado: "", // Usar string vacío para Select
-            alimentacion: "",
-            raza: "",
-            genero: "",
-            edad: "",
-            antiparasitario: "", // Usar string vacío para Select
-            aprendizaje: "",
-            descripcion: "",
-            usuarioId: usuario.id,
-        },
-        mode: "onBlur",
-    });
+  const [success, setSuccess] = useState(false);
+  
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      categoria: "",
+      titulo: "",
+      nombre: "",
+      ciudad: "",
+      foto: "",
+      telefono: "",
+      vacunado: "",
+      destetado: "",
+      esterilizado: "",
+      alimentacion: "",
+      raza: "",
+      genero: "",
+      edad: "",
+      antiparasitario: "",
+      aprendizaje: "",
+      descripcion: "",
+      usuarioId: ""
+    },
+    mode: "onBlur",
+  });
 
     const onSubmit = async (data) => {
         // ⬅️ CORRECCIÓN DE LÓGICA: Convertir strings "true"/"false" a booleanos
+        let decodedTokenUsu;
+    const token = localStorage.getItem('token'); 
+    if(token){
+        decodedTokenUsu = jwtDecode(localStorage.getItem('token'))
+    } 
+    let id_usuario = decodedTokenUsu.id;
+
         data.vacunado = data.vacunado === "true";
         data.destetado = data.destetado === "true";
         data.esterilizado = data.esterilizado === "true";
         data.antiparasitario = data.antiparasitario === "true";
         
-        console.log("Soy data en submit ", data);
 
         await axios({
             method: "post",
@@ -78,10 +84,10 @@ function Publicar() {
                 aprendizaje: data.aprendizaje,
                 telefono: data.telefono,
                 descripcion: data.descripcion,
-                usuarioId: usuario.id,
+                usuarioId: id_usuario,
             },
         })
-            .then((res) => alert("Publicacion creada ", res)) // ⚠️ NOTE: Usar SweetAlert en lugar de alert()
+            .then((res) => console.log("Publicacion creada ", res)) // ⚠️ NOTE: Usar SweetAlert en lugar de alert()
             .catch((err) => console.log(err));
 
         setSuccess(true);
@@ -499,5 +505,4 @@ function Publicar() {
         </div>
     );
 }
-
-export default Publicar;
+//}
