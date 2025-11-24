@@ -1,87 +1,102 @@
 // src/component/layout/Navbar.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Container, Nav, Button, Form } from 'react-bootstrap';
-
-// Autenticación/Redux (Código del compañero)
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logoutUsuario } from "../../redux/usuarioSlice.js"; 
 import { Link } from 'react-router-dom';
-
-// Búsqueda (su código original)
-import { useSearch } from '../../context/SearchContext.jsx'; 
-
-// Modales
+import { useSearch } from '../../context/SearchContext.jsx';
 import Login from '../auth/Login.jsx';
 import Registro from '../auth/Registro.jsx';
+import "./Navbar.css";
 
 function NavbarMain() {
 
     const [showLogin, setShowLogin] = useState(false);
     const [showRegistro, setShowRegistro] = useState(false);
-
-    // Buscador
     const { searchTerm, setSearchTerm } = useSearch(); 
-    
-    // Autenticación
     const dispatch = useDispatch();
-    const usuario = useSelector((state) => state.usuario);
 
-    // Persistencia LocalStorage (código del compañero)
-    const savedUserId = JSON.parse(localStorage.getItem('usuario'));
-    const savedUserToken = JSON.parse(localStorage.getItem('token'));
+    const savedUserId = JSON.parse(localStorage.getItem("usuario"));
 
-    const refreshPage = () => {
-        window.location.reload(false);
-    };
+    // === Estado para ocultar/mostrar navbar ===
+    const [hideNavbar, setHideNavbar] = useState(false);
+    const [lastScroll, setLastScroll] = useState(0);
 
+    // === Logout ===
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
-        localStorage.removeItem('usuario');
-        localStorage.removeItem('token');
-        refreshPage();
-        window.location.href = "/"; 
+        localStorage.removeItem("usuario");
+        window.location.href = "/";
     };
+
+    // === Detectar Scroll ===
+    useEffect(() => {
+        const handleScroll = () => {
+            let currentScroll = window.scrollY;
+
+            if (currentScroll > lastScroll && currentScroll > 60) {
+                setHideNavbar(true);     // bajar → ocultar
+            } else {
+                setHideNavbar(false);    // subir → mostrar
+            }
+
+            setLastScroll(currentScroll);
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+
+    }, [lastScroll]);
 
     return (
         <>
-            <Navbar bg="dark" variant="dark" expand="lg">
+            <Navbar 
+                expand="lg" 
+                className={`custom-navbar ${hideNavbar ? "navbar-hidden" : ""}`}
+            >
                 <Container fluid>
 
-                    {/* Marca / Logo */}
-                    <Link to="/"><Navbar.Brand>Mi Proyecto</Navbar.Brand></Link>
+                    {/* LOGO + NOMBRE */}
+                    <Link to="/" className="navbar-logo">
+                        <img 
+                            src="/logoadopcion.png"
+                            alt="Logo"
+                            className="logo-img"
+                        />
+                        <span className="logo-text">TuAmigoFiel</span>
+                    </Link>
 
-                    {/* Buscador */}
-                    <div className="flex-grow-1 mx-3 d-none d-lg-block" style={{ maxWidth: 700 }}>
-                        <Form className="d-flex" role="search" onSubmit={(e) => e.preventDefault()}>
-                            <Form.Control
-                                type="search"
-                                placeholder="Buscar mascota, ciudad, raza..."
-                                aria-label="Buscar"
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                            />
-                        </Form>
-                    </div>
+                    <Navbar.Toggle aria-controls="menu" />
 
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                    <Navbar.Collapse id="menu">
 
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="ms-auto">
+                        {/* Buscador */}
+                        <div className="search-container d-none d-lg-block mx-lg-4">
+                            <Form onSubmit={(e) => e.preventDefault()}>
+                                <Form.Control
+                                    type="search"
+                                    placeholder="Buscar mascota, ciudad, raza..."
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="search-input"
+                                />
+                            </Form>
+                        </div>
 
-                            {/* NO LOGUEADO */}
+                        <Nav className="ms-auto align-items-center">
                             {!savedUserId ? (
                                 <>
-                                    <Button 
-                                        variant="outline-light" 
-                                        className="me-2 mt-2 mt-lg-0"
+                                    <Button
+                                        variant="outline-light"
+                                        className="nav-btn me-2"
                                         onClick={() => setShowLogin(true)}
                                     >
                                         Iniciar sesión
                                     </Button>
 
-                                    <Button 
-                                        variant="success" 
-                                        className="mt-2 mt-lg-0"
+                                    <Button
+                                        variant="success"
+                                        className="nav-btn"
                                         onClick={() => setShowRegistro(true)}
                                     >
                                         Registrarse
@@ -89,50 +104,31 @@ function NavbarMain() {
                                 </>
                             ) : (
                                 <>
-                                    {/* Perfil */}
-                                    <Button 
-                                        as={Link} 
-                                        to="/panel/new" 
-                                        variant="primary" 
-                                        className="me-2"
-                                    >
-                                        Perfil
-                                    </Button>
+                                    <Link to="/panel/new">
+                                        <Button variant="outline-primary" className="nav-btn me-2">
+                                            Perfil
+                                        </Button>
+                                    </Link>
 
-                                    {/* Publicar */}
                                     <Link to="/publicar">
-                                        <Button 
-                                            variant="primary" 
-                                            className="me-2"
-                                        >
+                                        <Button variant="primary" className="nav-btn me-2">
                                             Publicar
                                         </Button>
                                     </Link>
 
-                                    {/* Logout */}
-                                    <Button 
-                                        variant="danger"
-                                        onClick={handlerLogout}
-                                    >
+                                    <Button variant="danger" className="nav-btn" onClick={handlerLogout}>
                                         Logout
                                     </Button>
                                 </>
                             )}
                         </Nav>
+
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
 
-            {/* Modales */}
-            <Login 
-                show={showLogin} 
-                onHide={() => setShowLogin(false)} 
-            />
-
-            <Registro 
-                show={showRegistro} 
-                onHide={() => setShowRegistro(false)} 
-            />
+            <Login show={showLogin} onHide={() => setShowLogin(false)} />
+            <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
         </>
     );
 }
