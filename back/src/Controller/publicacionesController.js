@@ -20,9 +20,7 @@ const parseBoolean = (value) => {
 
 const getPublicacionController = async (id) => {
   const publicacion_bus = await Publicacion.findOne({
-    where:{
-      id,
-    },
+    where: { id },
     include: [
       {
         model: Mascota,
@@ -44,6 +42,12 @@ const getPublicacionController = async (id) => {
           "aprendizaje",
           "usuarioId",
         ],
+        include: [
+          {
+            model: Usuario,
+            attributes: ["nombre", "apellido", "email", "telefono"]
+          }
+        ]
       },
     ],
   });

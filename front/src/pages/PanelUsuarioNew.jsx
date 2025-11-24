@@ -116,11 +116,6 @@ function PanelUsuarioNew() {
 
   return (
     <>
-      <NavbarMain expand="lg"
-        onLoginClick={() => setShowLogin(true)}
-        onRegistroClick={() => setShowRegistro(true)}
-      />
-
       <Container className="my-5">
         <Row className="justify-content-center">
           <Col lg={8} md={10}>
