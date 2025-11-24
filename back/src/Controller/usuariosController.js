@@ -3,6 +3,34 @@ const Mascota= require('../Models/Mascota');
 
 const bcrypt = require('bcrypt');
 
+
+const postUsuarioCambioRolController = async(id, role) =>{
+const buscar_usuario= await Usuario.findByPk(id);
+  if (!buscar_usuario) {
+        throw new Error("Debes pasar un id")
+    }
+    buscar_usuario.role = role;
+    await buscar_usuario.save();
+ 
+   const usuario_new_rol = await Usuario.findByPk(id);
+   
+   return usuario_new_rol;
+}
+
+const postUsuarioCambioStatusController = async(id, activo)=>{
+  const busco_usuario= await Usuario.findByPk(id);
+  if (!busco_usuario) {
+        throw new Error("Debes pasar un id")
+    }
+    busco_usuario.activo = activo;
+    await busco_usuario.save();
+ 
+   const usuario_cambiado = await Usuario.findByPk(id);
+   
+   return usuario_cambiado;
+
+}
+
 const postUsuarioController = async(nombre, apellido, email, contrasena, telefono, role) =>{
     if (!nombre || !apellido || !email || !contrasena || !telefono) {
         throw new Error("Los datos estan incompletos")
@@ -93,5 +121,7 @@ module.exports={
      getUsuariosController,
      deleteUsuarioController,
      getUsuarioController,
-     putUsuarioController
+     putUsuarioController,
+     postUsuarioCambioStatusController,
+     postUsuarioCambioRolController
 }

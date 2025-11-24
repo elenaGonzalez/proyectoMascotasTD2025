@@ -28,6 +28,7 @@ function NavbarMain() {
 
     // Persistencia LocalStorage (código del compañero)
     const savedUserId = JSON.parse(localStorage.getItem('usuario'));
+    const savedUserToken = JSON.parse(localStorage.getItem('token'));
 
     const refreshPage = () => {
         window.location.reload(false);
@@ -36,6 +37,7 @@ function NavbarMain() {
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
         localStorage.removeItem('usuario');
+        localStorage.removeItem('token');
         refreshPage();
         window.location.href = "/"; 
     };
