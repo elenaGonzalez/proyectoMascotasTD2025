@@ -16,6 +16,7 @@ function NavbarMain() {
     // const usuario = useSelector((state) => state.usuario);
 
     const savedUserId = JSON.parse(localStorage.getItem('usuario'));
+    const savedUserToken = JSON.parse(localStorage.getItem('token'));
 
 const refreshPage = () => {
     window.location.reload(false); // 'false' reloads from cache, 'true' forces a full refresh from the server
@@ -24,7 +25,7 @@ const refreshPage = () => {
     const handlerLogout = () => {
         dispatch(logoutUsuario({}));
         localStorage.removeItem('usuario');
-        console.log("En logout ", savedUserId);
+        localStorage.removeItem('token');
         refreshPage();
         window.location.href = "/";
     }

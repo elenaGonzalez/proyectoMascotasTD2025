@@ -18,7 +18,6 @@ function Publicar() {
   const usuario = useSelector((state) => state.usuario);
 
   const [success, setSuccess] = useState(false);
-  console.log("Soy usuario id ", usuario.id);
   
   const {
     control,
@@ -53,7 +52,6 @@ function Publicar() {
     data.destetado = data.destetado.toString == 'true' ? true : false,
     
     data.antiparasitario = data.antiparasitario.toString == 'true' ? true : false,
-     console.log("Soy data en submit ", data);
     await axios({
       method: "post",
       url: "http://localhost:3000/api/publicaciones",
@@ -77,7 +75,7 @@ function Publicar() {
       usuarioId: usuario.id
       },
     })
-      .then((res) => alert("Publicacion creada ",res))
+      .then((res) => console.log("Publicacion creada ",res))
       .catch((err) => console.log(err));
 
     setSuccess(true);

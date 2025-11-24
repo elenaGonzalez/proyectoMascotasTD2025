@@ -49,7 +49,6 @@ function PanelUsuarioNew() {
   };
 
   const handleDelete = async (data) => {
-    console.log("En handle Delete ", data);
     try {
       await axios({
         method: "delete",

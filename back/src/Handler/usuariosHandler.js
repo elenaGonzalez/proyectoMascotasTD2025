@@ -3,8 +3,30 @@ const {
   getUsuariosController,
   postUsuarioController,
   deleteUsuarioController,
-  putUsuarioController
+  putUsuarioController,
+  postUsuarioCambioStatusController,
+  postUsuarioCambioRolController
 } = require("../Controller/usuariosController");
+
+const postUsuarioCambioRolHandler = async(req, res) =>{
+   const { id, role } = req.body;
+  try {
+    const usuario_cambiado = await postUsuarioCambioRolController(id, role);
+    res.status(200).send(usuario_cambiado);
+  } catch (error) {
+    res.status(500).send({ Error: error.message });
+  }
+}
+
+const postReactivarUsuarioHandler = async(req, res) =>{
+  const { id, activo } = req.body;
+  try {
+    const usuario_cambia_status = await postUsuarioCambioStatusController(id, activo);
+    res.status(200).send(usuario_cambia_status);
+  } catch (error) {
+    res.status(500).send({ Error: error.message });
+  }
+}
 
 const getUsuarioHandler = async (req, res) => {
   const { id } = req.params;
@@ -62,4 +84,6 @@ module.exports = {
   postUsuarioHandler,
   putUsuarioHandler,
   deleteUsuarioHandler,
+  postReactivarUsuarioHandler,
+  postUsuarioCambioRolHandler
 };
