@@ -292,7 +292,6 @@ export default function Publicar() {
 
 {/* Vacunas, Destetado y Esterilizado */}
 <Row className="mb-5">
-
     <Form.Group as={Col} md="4">
         <Form.Label>Vacunas *</Form.Label>
         <Controller
@@ -427,16 +426,15 @@ export default function Publicar() {
     </Form.Group>
 </Row>
 
-
-
-                        {/* Edad y Antiparasitario */}
-                        <Form.Group as={Col} md="4">
-    <Form.Label>Edad (aproximada) *</Form.Label>
-    <Controller
-        name="edad"
-        control={control}
-        rules={{ required: "Este campo es obligatorio" }}
-        render={({ field }) => (
+                {/* Edad y Antiparasitario */}
+<Row className="mb-5">
+    <Form.Group as={Col} md="6">
+        <Form.Label>Edad (aproximada) *</Form.Label>
+        <Controller
+            name="edad"
+            control={control}
+            rules={{ required: "Este campo es obligatorio" }}
+            render={({ field }) => (
             <>
                 <Form.Control
                     {...field}
@@ -453,7 +451,7 @@ export default function Publicar() {
 </Form.Group>
 
 
-                            <Form.Group as={Col} md="4">
+<Form.Group as={Col} md="6">
     <Form.Label>Antiparasitario *</Form.Label>
     <Controller
         name="antiparasitario"
@@ -473,9 +471,10 @@ export default function Publicar() {
         )}
     />
 </Form.Group>
+</Row>
 
-                        {/* Aprendizaje sanitario */}
-                        <Form.Group className="mb-5">
+                {/* Aprendizaje sanitario */}
+<Form.Group className="mb-5">
     <Form.Label>Aprendizaje sanitario *</Form.Label>
     <Controller
         name="aprendizaje"
