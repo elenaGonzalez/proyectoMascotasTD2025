@@ -1,0 +1,120 @@
+/* Colores base */
+.color-soft-blue { background-color: #e6f7ff; }
+.color-soft-green { background-color: #f6ffed; }
+.color-soft-pink { background-color: #fff0f6; }
+
+/* Contenedor principal */
+.carrusel-mascotas-root {
+  border-radius: 12px;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
+  background: #fff;
+}
+
+/* --- Fondo de huellitas ajustado al tamaño exacto del slide --- */
+.carousel-slide-content {
+  position: relative;
+  padding: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 420px;
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.carousel-slide-content::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("https://img.freepik.com/vector-gratis/patron-huella-gato-o-perro-sobre-fondo-blanco_1017-58411.jpg?semt=ais_hybrid&w=740&q=80");
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 180px auto; /* ajustado para proporción simétrica */
+  opacity: 0.15;
+  filter: saturate(0.9) contrast(1.1);
+  mix-blend-mode: multiply;
+}
+
+/* Imagen circular */
+.pet-circle-image {
+  width: min(360px, 40vw);
+  max-width: 400px;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.12);
+  border: 6px solid rgba(255,255,255,0.95);
+  position: relative;
+  z-index: 1;
+}
+
+/* Nombre bajo la imagen */
+.pet-name {
+  color: #1f6fb6;
+  font-weight: 600;
+  margin: 0;
+  font-size: 1.05rem;
+  z-index: 1;
+  position: relative;
+}
+
+/* Texto descriptivo */
+.text-terracota { color: #d06308; }
+
+/* Datos */
+.pet-data p {
+  color: #2b2b2b;
+  font-size: 0.98rem;
+  z-index: 1;
+  position: relative;
+}
+
+/* Botones */
+.whatsapp-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+  z-index: 1;
+  position: relative;
+}
+
+.ver-mas-btn {
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.12);
+  z-index: 1;
+  position: relative;
+}
+
+/* --- Responsividad --- */
+@media (max-width: 991.98px) {
+  .carousel-slide-content {
+    flex-direction: column;
+    text-align: center;
+    padding: 20px;
+  }
+  .pet-circle-image {
+    width: min(300px, 50vw);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .carousel-slide-content {
+    padding: 16px;
+  }
+  .pet-circle-image {
+    width: min(220px, 70vw);
+  }
+  .pet-name {
+    font-size: 1rem;
+  }
+}

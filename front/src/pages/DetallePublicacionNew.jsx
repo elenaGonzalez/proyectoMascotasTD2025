@@ -77,10 +77,6 @@ function DetallePublicacionNew() {
 
   return (
     <>
-      <NavbarMain
-        onLoginClick={() => setShowLogin(true)}
-        onRegistroClick={() => setShowRegistro(true)}
-      />
 
 <div
   style={{
@@ -196,4 +192,3 @@ function DetallePublicacionNew() {
 }
 
 export default DetallePublicacionNew;
-
