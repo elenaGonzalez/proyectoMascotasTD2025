@@ -128,7 +128,10 @@ function HomeNew() {
       {/* El NavbarMain se renderiza en App.jsx */}
       <Principal />
 
-      {/* Botón de Filtros del compañero */}
+      {/* 2. Su Carrusel: Se inserta aquí */}
+      <CarruselMascotas mascotas={mascotasCarrusel} />
+
+            {/* Botón de Filtros del compañero */}
       <div
         style={{
           display: "flex",
@@ -148,9 +151,6 @@ function HomeNew() {
       {showFilters && (
         <FiltroPublicaciones onChange={(newFilters) => setFilters(newFilters)} />
       )}
-
-      {/* 2. Su Carrusel: Se inserta aquí */}
-      <CarruselMascotas mascotas={mascotasCarrusel} />
 
       {/* 3. Cards Paginadas/Filtradas (Muestra los datos filtrados localmente) */}
       <div
