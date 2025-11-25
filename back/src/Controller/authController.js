@@ -38,7 +38,7 @@ const loginController = async (email, contrasena) => {
   }
   
     if(!usuario.activo){
-      throw new Error("El usuario esta bloqueado.Contacta al administrador");
+      throw new Error("El usuario esta bloqueado. Contacta al administrador.");
     }
   const passMatch = await bcrypt.compare(contrasena, usuario.contrasena);
   if (!passMatch) {
