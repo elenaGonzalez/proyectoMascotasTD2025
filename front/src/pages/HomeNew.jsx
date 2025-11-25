@@ -111,16 +111,9 @@ function HomeNew() {
     const titulo = normalize(publicacion.titulo);
 
     return (
-      nombreMascota.includes(q) ||
-      ciudad.includes(q) ||
-      titulo.includes(q)
+      nombreMascota.includes(q) || ciudad.includes(q) || titulo.includes(q)
     );
   });
-
-  // 🛑 Manejo de estado de carga
-  if (publicaciones.length === 0 || loadingCarrusel) {
-    return <div className="text-center my-5">Cargando la aplicación...</div>;
-  }
 
   // 🚀 RENDERIZADO FINAL: Se renderiza el contenido de la página
   return (
@@ -131,26 +124,35 @@ function HomeNew() {
       {/* 2. Su Carrusel: Se inserta aquí */}
       <CarruselMascotas mascotas={mascotasCarrusel} />
 
-{/* Texto informativo sobre adopciones */}
-<div
-  style={{
-    textAlign: "center",
-    marginTop: "40px",
-    marginBottom: "10px",
-    padding: "0 20px",
-  }}
->
-  <h2 style={{ fontWeight: "700" }}>
-    Todos estos animales en adopción necesitan una familia
-  </h2>
+      {/* Texto informativo sobre adopciones */}
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "40px",
+          marginBottom: "10px",
+          padding: "0 20px",
+        }}
+      >
+        <h2 style={{ fontWeight: "700" }}>
+          Todos estos animales en adopción necesitan una familia
+        </h2>
 
-  <p style={{ fontSize: "15px", color: "#555", maxWidth: "700px", margin: "10px auto" }}>
-    Consulta la ficha de los animales en adopción para conocerlos mejor.<br />
-    También puedes: <strong>Filtrar por Categoria, genero, edad y más.</strong>
-  </p>
-</div>
+        <p
+          style={{
+            fontSize: "15px",
+            color: "#555",
+            maxWidth: "700px",
+            margin: "10px auto",
+          }}
+        >
+          Consulta la ficha de los animales en adopción para conocerlos mejor.
+          <br />
+          También puedes:{" "}
+          <strong>Filtrar por Categoria, genero, edad y más.</strong>
+        </p>
+      </div>
 
-            {/* Botón de Filtros del compañero */}
+      {/* Botón de Filtros del compañero */}
       <div
         style={{
           display: "flex",
@@ -168,7 +170,9 @@ function HomeNew() {
       </div>
 
       {showFilters && (
-        <FiltroPublicaciones onChange={(newFilters) => setFilters(newFilters)} />
+        <FiltroPublicaciones
+          onChange={(newFilters) => setFilters(newFilters)}
+        />
       )}
 
       {/* 3. Cards Paginadas/Filtradas (Muestra los datos filtrados localmente) */}
@@ -176,24 +180,31 @@ function HomeNew() {
         className="row w-100 g-3"
         style={{ padding: "1rem", margin: "0 auto" }}
       >
-        {filteredPublicaciones.map((publicacion) => (
-          <div
-            key={publicacion.id}
-            className="col-12 col-sm-6 col-lg-4 d-flex"
-          >
-            <CardNew
+        {filteredPublicaciones.length > 0 ? (
+          filteredPublicaciones?.map((publicacion) => (
+            <div
               key={publicacion.id}
-              id={publicacion.id}
-              titulo={publicacion.titulo}
-              telefono={publicacion.telefono}
-              fecha_publicacion={publicacion.fecha_publicacion}
-              nombre={publicacion.mascota?.nombre}
-              mascota_id={publicacion.mascotaId}
-              foto={publicacion.mascota?.foto}
-              ciudad={publicacion.mascota?.ciudad}
-            />
+              className="col-12 col-sm-6 col-lg-4 d-flex"
+            >
+              <CardNew
+                key={publicacion.id}
+                id={publicacion.id}
+                titulo={publicacion.titulo}
+                telefono={publicacion.telefono}
+                fecha_publicacion={publicacion.fecha_publicacion}
+                nombre={publicacion.mascota?.nombre}
+                mascota_id={publicacion.mascotaId}
+                foto={publicacion.mascota?.foto}
+                ciudad={publicacion.mascota?.ciudad}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="text-center my-5">
+            <h3>No se encontraron resultados</h3>
+            <p>Prueba ajustando los filtros o la búsqueda.</p>
           </div>
-        ))}
+        )}
       </div>
 
       {/* PAGINADO (Lógica del compañero) */}
