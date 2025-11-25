@@ -38,7 +38,6 @@ function NavbarMain() {
         dispatch(logoutUsuario({}));
         localStorage.removeItem('usuario');
         localStorage.removeItem('token');
-        refreshPage();
         window.location.href = "/"; 
     };
 

@@ -2,6 +2,7 @@ const {
   loginController,
   registroController,
 } = require("../Controller/authController");
+const Usuario = require("../Models/Usuario");
 
 const registroHandler = async (req, res) => {
   try {
