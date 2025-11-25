@@ -131,6 +131,25 @@ function HomeNew() {
       {/* 2. Su Carrusel: Se inserta aquí */}
       <CarruselMascotas mascotas={mascotasCarrusel} />
 
+{/* Texto informativo sobre adopciones */}
+<div
+  style={{
+    textAlign: "center",
+    marginTop: "40px",
+    marginBottom: "10px",
+    padding: "0 20px",
+  }}
+>
+  <h2 style={{ fontWeight: "700" }}>
+    Todos estos animales en adopción necesitan una familia
+  </h2>
+
+  <p style={{ fontSize: "15px", color: "#555", maxWidth: "700px", margin: "10px auto" }}>
+    Consulta la ficha de los animales en adopción para conocerlos mejor.<br />
+    También puedes: <strong>Filtrar por Categoria, genero, edad y más.</strong>
+  </p>
+</div>
+
             {/* Botón de Filtros del compañero */}
       <div
         style={{

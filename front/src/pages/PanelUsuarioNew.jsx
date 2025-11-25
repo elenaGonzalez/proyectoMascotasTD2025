@@ -63,7 +63,7 @@ function PanelUsuarioNew() {
       dispatch(getPublicaciones(publicaciones_sin_dog));
       navigate("/");
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
 
   }

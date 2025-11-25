@@ -8,6 +8,7 @@ import Table from 'react-bootstrap/Table';
 import Footer from '../component/layout/Footer';
 import { Button } from 'react-bootstrap';
 import Container from 'react-bootstrap/Container';
+import { Link } from 'react-router-dom';
 
 const PanelAdmin = () =>{
      const [admin_token, setToken] = useState({
@@ -64,47 +65,111 @@ const PanelAdmin = () =>{
       dispatch(setUsuarios(resp.data));
     }
 
-    return(
-        <div>
-         <Container>
-        <h1>Panel de Admin</h1>
-        <h3>Lista de Usuarios</h3>
-          <Table responsive="sm">
-        <thead>
-          <tr className='text-center'>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Rol</th>
-            <th>Activo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-         <tbody className='text-center'>
-        {usuarios && usuarios?.map(usuario => (
-            <tr key={usuario.id}>
-            <td>{usuario.nombre}</td>
-            <td>{usuario.apellido}</td>
-            <td>{usuario.role}</td>
-            <td>{usuario.activo == true ? "activo" : "inactivo"}</td>
-            <td>
-              <>
-              <Button variant="danger" onClick={() => handlerBajaLogica(usuario.id, !usuario.activo)}>
-                {usuario.activo ? "Desactivar" : "Reactivar"}
-            </Button>
-            <Button variant="success" onClick={() => handlerCambioRol(usuario.id, usuario.role == "usuario" ? "admin" : "usuario")}>
-                {usuario.role == "usuario" ? "Promover" : "Degradar"}
-            </Button>
-            </>
-            </td>
-            </tr>
-        ))}
-        </tbody>
+return (
+  <div style={{ background: "#f5f7fa", minHeight: "100vh", paddingTop: "30px" }}>
+    <Container>
 
-        </Table>
-        <Footer />
-        </Container>
+      {/* HEADER */}
+      <div className="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h2 className="fw-bold">Panel de Administración</h2>
+          <p className="text-muted">Gestión de usuarios registrados</p>
         </div>
-    )
+
+        <Link to="/panel/publicaciones">
+          <Button variant="outline-primary">Ver Publicaciones</Button>
+        </Link>
+      </div>
+
+      {/* CARD CONTENEDORA */}
+      <div
+        style={{
+          background: "white",
+          borderRadius: "12px",
+          padding: "25px",
+          boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+        }}
+      >
+        <h4 className="mb-3">Lista de Usuarios</h4>
+
+        <Table responsive="sm" bordered hover className="text-center align-middle">
+          <thead className="table-dark">
+            <tr>
+              <th>Nombre</th>
+              <th>Apellido</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {usuarios?.map((usuario) => (
+              <tr key={usuario.id}>
+                <td className="fw-semibold">{usuario.nombre}</td>
+                <td>{usuario.apellido}</td>
+
+                {/* ROL */}
+                <td>
+                  {usuario.role === "admin" ? (
+                    <span className="badge bg-primary">Admin</span>
+                  ) : (
+                    <span className="badge bg-secondary">Usuario</span>
+                  )}
+                </td>
+
+                {/* ESTADO */}
+                <td>
+                  {usuario.activo ? (
+                    <span className="badge bg-success">Activo</span>
+                  ) : (
+                    <span className="badge bg-danger">Inactivo</span>
+                  )}
+                </td>
+
+                {/* ACCIONES */}
+                <td>
+                  <div className="d-flex justify-content-center gap-2">
+
+                    {/* Botón Activar/Desactivar */}
+                    <Button
+                      variant={usuario.activo ? "danger" : "success"}
+                      size="sm"
+                      onClick={() =>
+                        handlerBajaLogica(usuario.id, !usuario.activo)
+                      }
+                    >
+                      {usuario.activo ? "Desactivar" : "Reactivar"}
+                    </Button>
+
+                    {/* Botón Promover/Degradar */}
+                    <Button
+                      variant="warning"
+                      size="sm"
+                      onClick={() =>
+                        handlerCambioRol(
+                          usuario.id,
+                          usuario.role === "usuario" ? "admin" : "usuario"
+                        )
+                      }
+                    >
+                      {usuario.role === "usuario" ? "Promover" : "Degradar"}
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+
+      <div className="mt-5">
+        <Footer />
+      </div>
+    </Container>
+  </div>
+);
+
   }
 
   export default PanelAdmin;
