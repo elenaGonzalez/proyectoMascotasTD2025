@@ -18,6 +18,16 @@ const parseBoolean = (value) => {
   return undefined;
 };
 
+
+const getPublicacionPorMascotaController = async(mascotaId)=>{
+ const publicacion_masco = await Publicacion.findOne({
+    where: { 
+      mascotaId
+    }
+  });
+  return publicacion_masco;
+}
+
 const  postCambiarStatusPublicacionController = async (id, disponible) =>{
   const buscar_publicacion= await Publicacion.findByPk(id);
   if (!buscar_publicacion) {
@@ -393,5 +403,6 @@ module.exports = {
   deletePublicacionController,
   postPublicacionesFilterController,
   postCambiarStatusPublicacionController,
-  getPublicacionesParaAdminController
+  getPublicacionesParaAdminController,
+  getPublicacionPorMascotaController
 };

@@ -8,12 +8,14 @@ const{
   deletePublicacionHandler,
   getPublicacionesFilterHandler,
   postCambiarStatusPublicacionHandler,
-  getPublicacionesParaAdminHandler
+  getPublicacionesParaAdminHandler,
+  getPublicacionPorMascotaHandler
 } = require("../Handler/publicacionesHandler");
 
 const publicacionesRoutes = Router();
 publicacionesRoutes.get('/:page/:limit', getPublicacionesHandler);
 publicacionesRoutes.get('/:id', getPublicacionHandler);
+publicacionesRoutes.get('/mascota/publicada/:mascotaId', getPublicacionPorMascotaHandler);
 publicacionesRoutes.post('/admin/:page/:limit', getPublicacionesParaAdminHandler);
 publicacionesRoutes.post('/', postPublicacionHandler);
 publicacionesRoutes.put('/', putPublicacionHandler);

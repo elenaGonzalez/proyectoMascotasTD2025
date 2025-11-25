@@ -7,9 +7,23 @@ const {
   deletePublicacionController,
   postPublicacionesFilterController,
   postCambiarStatusPublicacionController,
-  getPublicacionesParaAdminController
+  getPublicacionesParaAdminController,
+  getPublicacionPorMascotaController
 } = require("../Controller/publicacionesController");
 
+const getPublicacionPorMascotaHandler = async(req, res) => {
+   const { mascotaId } = req.params;
+   console.log("en mascota handler x publi");
+   
+  try {
+    let publicacion_mascota = await getPublicacionPorMascotaController(mascotaId);
+    console.log(publicacion_mascota);
+    
+    res.status(200).send(publicacion_mascota);
+  } catch (error) {
+    res.status(500).send({ Error: error.message });
+  }
+}
 
 const getPublicacionesParaAdminHandler = async(req, res) =>{
   let limit = req.params.limit;
@@ -145,4 +159,5 @@ module.exports = {
   getPublicacionesFilterHandler,
   postCambiarStatusPublicacionHandler,
   getPublicacionesParaAdminHandler, 
+  getPublicacionPorMascotaHandler
 };
