@@ -11,6 +11,7 @@ import axios from 'axios';
 import { useDispatch, useSelector } from "react-redux";
 import { getPublicaciones } from '../redux/publicacionesSlice.js';
 import { useNavigate } from 'react-router-dom';
+import Swal from "sweetalert2";
 
 function PanelUsuarioNew() {
 
@@ -98,11 +99,30 @@ function PanelUsuarioNew() {
       setDatosUsuario(updated);
       sessionStorage.setItem('usuarioEditandoId', updated.id);
       setShowEdit(false);
-      alert('Perfil actualizado correctamente');
+    //Agrega sweetAlert y trae nuevamente las mascotas
+     Swal.fire({
+             title: `¡Perfil actualizado correctamente!`,
+             icon: "success",
+             draggable: true,
+           }).then(
+             fetch(`http://localhost:3000/api/usuarios/${savedUserId}`)
+            .then(res => res.json())
+             .then(data => {setDatosUsuario(data)}
+            ).catch(err => setError(err.message))
+           )
     } catch (err) {
       console.error('Error guardando usuario:', err);
-      alert('Error guardando usuario: ' + (err.message || err));
-    }
+     Swal.fire({
+             title: `¡Perfil actualizado correctamente!`,
+             icon: "success",
+             draggable: true,
+           }).then(
+             fetch(`http://localhost:3000/api/usuarios/${savedUserId}`)
+            .then(res => res.json())
+             .then(data => {setDatosUsuario(data)}
+            ).catch(err => setError(err.message))
+           )
+    } 
   };
 
   const handleOpenEdit = () => {
