@@ -1,23 +1,30 @@
 import React, { useState, useEffect } from "react";
-import Principal from "../component/layout/Principal.jsx";
-import Footer from "../component/layout/Footer.jsx";
-import Login from "../component/auth/Login.jsx";
-import Registro from "../component/auth/Registro.jsx";
-import Soporte from "../component/support/Soporte.jsx";
-import Contacto from "../pages/Contacto.jsx";
+// ... (Otras importaciones)
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getPublicaciones } from "../redux/publicacionesSlice.js";
 import CardNew from "../component/layout/CardNew.jsx";
 import CarruselMascotas from "../component/layout/CarruselMascotas.jsx";
-import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx";
-import { useSearch } from "../context/SearchContext.jsx";
+import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx"; // ⬅️ Nuevo componente del compañero
+import { useSearch } from "../context/SearchContext.jsx"; // ⬅️ SU IMPORTACIÓN
+
+// 🔹 Nuevo: Principal (tu componente de bienvenida)
+import Principal from "../component/layout/Principal.jsx";
+
+// 🔹 Nuevo: Footer (el que te falta ahora mismo)
+import Footer from "../component/layout/Footer.jsx";
+
+// 🔹 (Si estos no están importados todavía arriba, agregalos también con la ruta correcta)
+import Login from "../component/auth/Login.jsx";
+import Registro from "../component/auth/Registro.jsx";
+import Soporte from "../component/support/Soporte.jsx";
+import Contacto from "./Contacto.jsx";
 
 // Rutas de la API (Mantener ambas)
 const API_URL_PUBLICACIONES = "http://localhost:3000/api/publicaciones";
 const API_URL_MASCOTAS = "http://localhost:3000/api/mascotas";
 
-// Función de normalización (para búsqueda sin acentos)
+// Función de normalización (Su código, para la búsqueda local)
 const normalize = (text) =>
   (text ?? "")
     .toString()
@@ -26,61 +33,49 @@ const normalize = (text) =>
     .replace(/[\u0300-\u036f]/g, "");
 
 function HomeNew() {
-  // ESTADOS DE MODAL y CARRUSEL
+  // ⬅️ HOOKS DE MODAL (DE SU CÓDIGO)
   const [showLogin, setShowLogin] = useState(false);
   const [showRegistro, setShowRegistro] = useState(false);
   const [showSoporte, setShowSoporte] = useState(false);
   const [showContacto, setShowContacto] = useState(false);
+
+  // ⬅️ HOOKS DE CARRUSEL (SU CÓDIGO)
   const [mascotasCarrusel, setMascotasCarrusel] = useState([]);
   const [loadingCarrusel, setLoadingCarrusel] = useState(true);
 
-  // PAGINACIÓN / FILTROS / REDUX
+  // ⬅️ HOOKS Y ESTADOS DEL COMPAÑERO (PAGINACIÓN / FILTROS / REDUX)
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({});
 
   const dispatch = useDispatch();
-  const publicaciones = useSelector((state) => state.publicaciones.rows) || [];
+  const publicaciones = useSelector((state) => state.publicaciones.rows) || []; // Usar .rows
   const total_publicaciones_BD =
     useSelector((state) => state.publicaciones.count) || 0;
-
-  const { searchTerm } = useSearch(); // término del buscador global
+  const { searchTerm } = useSearch(); // ⬅️ SU BUSCADOR
 
   const limit = 6;
   const totalPages = Math.ceil(total_publicaciones_BD / limit);
   const numeroPaginas = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  // 👉 NUEVO: estados para la búsqueda global
-  const [searchResults, setSearchResults] = useState(null);
-  const [searchLoading, setSearchLoading] = useState(false);
-
-  const isSearching = searchTerm && searchTerm.length >= 2;
-
-  // LÓGICA DE DATOS 1: Obtener PUBLICACIONES PAGINADAS/FILTRADAS (modo normal)
+  // ⬅️ LÓGICA DE DATOS 1: Obtener PUBLICACIONES PAGINADAS/FILTRADAS (CÓDIGO DEL COMPAÑERO)
   useEffect(() => {
-    // Si estamos buscando globalmente, dejamos que esta parte siga solo para mantener Redux,
-    // pero la lista que se muestra será searchResults cuando isSearching === true
     const fetchData = async () => {
       try {
-        const currentFilters = {
-          ...filters,
-          // 👇 Ojo: acá ya NO dependemos de que el backend use searchTerm
-          // searchTerm: searchTerm || "",
-        };
-
-        const hasActiveFilters = Object.values(currentFilters).some(
-          (v) => v !== "" && v !== null
+        // Lógica de filtros avanzada del compañero (omite el fetch si no hay filtros)
+        const noFilters = Object.values(filters).every(
+          (v) => v === "" || v === null
         );
 
         let res;
-        if (!hasActiveFilters) {
+        if (noFilters) {
           res = await axios.get(
-            `${API_URL_PUBLICACIONES}/${page}/${limit}`
+            `http://localhost:3000/api/publicaciones/${page}/${limit}`
           );
         } else {
           res = await axios.post(
-            `${API_URL_PUBLICACIONES}/${page}/${limit}/filtro`,
-            currentFilters
+            `http://localhost:3000/api/publicaciones/${page}/${limit}/filtro`,
+            filters
           );
         }
         dispatch(getPublicaciones(res.data));
@@ -89,9 +84,9 @@ function HomeNew() {
       }
     };
     fetchData();
-  }, [page, filters, dispatch]); // 👈 ya no depende de searchTerm
+  }, [page, filters, dispatch]); // Dependencias: Si cambia la página o el filtro, se vuelve a cargar
 
-  // LÓGICA DE DATOS 2: Obtener mascotas para el CARRUSEL
+  // ⬅️ LÓGICA DE DATOS 2: Obtener mascotas para el CARRUSEL (SU CÓDIGO)
   useEffect(() => {
     fetch(API_URL_MASCOTAS)
       .then((response) => response.json())
@@ -105,106 +100,31 @@ function HomeNew() {
       });
   }, []);
 
-  // 🚀 NUEVO: BÚSQUEDA GLOBAL SOLO DESDE EL FRONT
-  useEffect(() => {
-    // Si no hay búsqueda o es muy corta, limpiamos resultados y listo
-    if (!isSearching) {
-      setSearchResults(null);
-      setSearchLoading(false);
-      return;
-    }
+  // 🚀 LÓGICA CLAVE: APLICAR EL BUSCADOR (FILTRO LOCAL)
+  // Filtra las publicaciones que YA fueron paginadas/filtradas por el backend.
+  const filteredPublicaciones = publicaciones.filter((publicacion) => {
+    if (!searchTerm || searchTerm.length < 2) return true;
 
-    const fetchAllAndFilter = async () => {
-      try {
-        setSearchLoading(true);
+    const q = normalize(searchTerm);
+    const nombreMascota = normalize(publicacion.mascota?.nombre);
+    const ciudad = normalize(publicacion.mascota?.ciudad);
+    const titulo = normalize(publicacion.titulo);
 
-        // 1️⃣ Traemos la primera página para saber cuántas hay
-        const firstRes = await axios.get(
-          `${API_URL_PUBLICACIONES}/1/${limit}`
-        );
-        const { rows: firstRows, count } = firstRes.data;
+    return (
+      nombreMascota.includes(q) || ciudad.includes(q) || titulo.includes(q)
+    );
+  });
 
-        let all = [...firstRows];
-        const totalPagesFromServer = Math.ceil(count / limit);
-
-        // 2️⃣ Traemos el resto de las páginas
-        for (let p = 2; p <= totalPagesFromServer; p++) {
-          const resp = await axios.get(
-            `${API_URL_PUBLICACIONES}/${p}/${limit}`
-          );
-          all = all.concat(resp.data.rows);
-        }
-
-        // 3️⃣ Filtramos localmente todas las publicaciones
-        const q = normalize(searchTerm);
-        const filtered = all.filter((publicacion) => {
-          const nombreMascota = normalize(publicacion.mascota?.nombre);
-          const ciudad = normalize(publicacion.mascota?.ciudad);
-          const titulo = normalize(publicacion.titulo);
-
-          return (
-            nombreMascota.includes(q) ||
-            ciudad.includes(q) ||
-            titulo.includes(q)
-          );
-        });
-
-        setSearchResults(filtered);
-      } catch (err) {
-        console.log("Error en búsqueda global:", err);
-      } finally {
-        setSearchLoading(false);
-      }
-    };
-
-    fetchAllAndFilter();
-  }, [isSearching, searchTerm]); // se ejecuta cuando cambia el texto del buscador
-
-  // 🛑 Manejo de estado de carga
-  if ((publicaciones.length === 0 && !isSearching) || loadingCarrusel) {
-    return <div className="text-center my-5">Cargando la aplicación...</div>;
-  }
-
-  // 👀 Lista que se va a renderizar:
-  // - si hay búsqueda (isSearching) y ya tenemos resultados ⇒ usamos searchResults
-  // - si no hay búsqueda ⇒ usamos las publicaciones paginadas normales
-  const listToRender =
-    isSearching && !searchLoading && searchResults !== null
-      ? searchResults
-      : !isSearching
-      ? publicaciones
-      : []; // mientras está cargando la búsqueda, mostramos vacío o un loader
-
-  // 🚀 RENDERIZADO FINAL
+  // 🚀 RENDERIZADO FINAL: Se renderiza el contenido de la página
   return (
     <>
+      {/* El NavbarMain se renderiza en App.jsx */}
       <Principal />
 
-      {/* Botón de Filtros del compañero */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginTop: "20px",
-          paddingRight: "90px",
-        }}
-      >
-        <button
-          onClick={() => setShowFilters((prev) => !prev)}
-          className="btn btn-primary"
-        >
-          {showFilters ? "Ocultar filtros ▲" : "Mostrar filtros ▼"}
-        </button>
-      </div>
-
-      {showFilters && (
-        <FiltroPublicaciones onChange={(newFilters) => setFilters(newFilters)} />
-      )}
-
-      {/* Carrusel */}
+      {/* 2. Su Carrusel: Se inserta aquí */}
       <CarruselMascotas mascotas={mascotasCarrusel} />
 
-      {/* Texto informativo */}
+      {/* Texto informativo sobre adopciones */}
       <div
         style={{
           textAlign: "center",
@@ -232,91 +152,106 @@ function HomeNew() {
         </p>
       </div>
 
-      {/* Si estamos buscando, mostrar estado de búsqueda */}
-      {isSearching && (
-        <div style={{ textAlign: "center", marginTop: "10px" }}>
-          {searchLoading ? (
-            <span>Buscando coincidencias para &quot;{searchTerm}&quot;...</span>
-          ) : (
-            <span>
-              Mostrando {listToRender.length} resultado
-              {listToRender.length !== 1 && "s"} para &quot;{searchTerm}&quot;
-            </span>
-          )}
-        </div>
+      {/* Botón de Filtros del compañero */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginTop: "20px",
+          paddingRight: "90px",
+        }}
+      >
+        <button
+          onClick={() => setShowFilters((prev) => !prev)}
+          className="btn btn-primary"
+        >
+          {showFilters ? "Ocultar filtros ▲" : "Mostrar filtros ▼"}
+        </button>
+      </div>
+
+      {showFilters && (
+        <FiltroPublicaciones
+          onChange={(newFilters) => setFilters(newFilters)}
+        />
       )}
 
-      {/* Cards (paginadas en modo normal, todas juntas en modo búsqueda) */}
+      {/* 3. Cards Paginadas/Filtradas (Muestra los datos filtrados localmente) */}
       <div
         className="row w-100 g-3"
         style={{ padding: "1rem", margin: "0 auto" }}
       >
-        {listToRender.map((publicacion) => (
-          <div
-            key={publicacion.id}
-            className="col-12 col-sm-6 col-lg-4 d-flex"
-          >
-            <CardNew
-              id={publicacion.id}
-              titulo={publicacion.titulo}
-              telefono={publicacion.telefono}
-              fecha_publicacion={publicacion.fecha_publicacion}
-              nombre={publicacion.mascota?.nombre}
-              mascota_id={publicacion.mascotaId}
-              foto={publicacion.mascota?.foto}
-              ciudad={publicacion.mascota?.ciudad}
-            />
+        {filteredPublicaciones.length > 0 ? (
+          filteredPublicaciones?.map((publicacion) => (
+            <div
+              key={publicacion.id}
+              className="col-12 col-sm-6 col-lg-4 d-flex"
+            >
+              <CardNew
+                key={publicacion.id}
+                id={publicacion.id}
+                titulo={publicacion.titulo}
+                telefono={publicacion.telefono}
+                fecha_publicacion={publicacion.fecha_publicacion}
+                nombre={publicacion.mascota?.nombre}
+                mascota_id={publicacion.mascotaId}
+                foto={publicacion.mascota?.foto}
+                ciudad={publicacion.mascota?.ciudad}
+              />
+            </div>
+          ))
+        ) : (
+          <div className="text-center my-5">
+            <h3>No se encontraron resultados</h3>
+            <p>Prueba ajustando los filtros o la búsqueda.</p>
           </div>
-        ))}
+        )}
       </div>
 
-      {/* PAGINADO: solo se muestra cuando NO hay búsqueda */}
-      {!isSearching && (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            gap: "15px",
-            margin: "25px",
-          }}
+      {/* PAGINADO (Lógica del compañero) */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "15px",
+          margin: "25px",
+        }}
+      >
+        {/* Botón Anterior */}
+        <button
+          onClick={() => setPage(page - 1)}
+          disabled={page === 1}
+          style={{ padding: "8px 15px" }}
         >
-          {/* Botón Anterior */}
-          <button
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-            style={{ padding: "8px 15px" }}
-          >
-            ◀ Anterior
-          </button>
+          ◀ Anterior
+        </button>
 
-          {/* Numeración de páginas */}
-          {numeroPaginas.map((num) => (
-            <button
-              key={num}
-              onClick={() => setPage(num)}
-              style={{
-                padding: "8px 12px",
-                fontWeight: num === page ? "bold" : "normal",
-                backgroundColor: num === page ? "#ddd" : "white",
-                border: "1px solid #ccc",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
-            >
-              {num}
-            </button>
-          ))}
-
-          {/* Botón Siguiente */}
+        {/* Numeración de páginas */}
+        {numeroPaginas.map((num) => (
           <button
-            onClick={() => setPage(page + 1)}
-            disabled={page === totalPages}
-            style={{ padding: "8px 15px" }}
+            key={num}
+            onClick={() => setPage(num)}
+            style={{
+              padding: "8px 12px",
+              fontWeight: num === page ? "bold" : "normal",
+              backgroundColor: num === page ? "#ddd" : "white",
+              border: "1px solid #ccc",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
           >
-            Siguiente ▶
+            {num}
           </button>
-        </div>
-      )}
+        ))}
+
+        {/* Botón Siguiente */}
+        <button
+          onClick={() => setPage(page + 1)}
+          disabled={page === totalPages}
+          style={{ padding: "8px 15px" }}
+        >
+          Siguiente ▶
+        </button>
+      </div>
 
       <Footer
         onLoginClick={() => setShowLogin(true)}
@@ -325,6 +260,7 @@ function HomeNew() {
         onContactoClick={() => setShowContacto(true)}
       />
 
+      {/* Modales */}
       <Login show={showLogin} onHide={() => setShowLogin(false)} />
       <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
       <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />
