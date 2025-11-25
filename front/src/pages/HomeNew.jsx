@@ -1,30 +1,23 @@
 import React, { useState, useEffect } from "react";
-// ... (Otras importaciones)
+import Principal from "../component/layout/Principal.jsx";
+import Footer from "../component/layout/Footer.jsx";
+import Login from "../component/auth/Login.jsx";
+import Registro from "../component/auth/Registro.jsx";
+import Soporte from "../component/support/Soporte.jsx";
+import Contacto from "../pages/Contacto.jsx";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { getPublicaciones } from "../redux/publicacionesSlice.js";
 import CardNew from "../component/layout/CardNew.jsx";
 import CarruselMascotas from "../component/layout/CarruselMascotas.jsx";
-import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx"; // ⬅️ Nuevo componente del compañero
-import { useSearch } from "../context/SearchContext.jsx"; // ⬅️ SU IMPORTACIÓN
-
-// 🔹 Nuevo: Principal (tu componente de bienvenida)
-import Principal from "../component/layout/Principal.jsx";
-
-// 🔹 Nuevo: Footer (el que te falta ahora mismo)
-import Footer from "../component/layout/Footer.jsx";
-
-// 🔹 (Si estos no están importados todavía arriba, agregalos también con la ruta correcta)
-import Login from "../component/auth/Login.jsx";
-import Registro from "../component/auth/Registro.jsx";
-import Soporte from "../component/support/Soporte.jsx";
-import Contacto from "./Contacto.jsx";
+import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx";
+import { useSearch } from "../context/SearchContext.jsx";
 
 // Rutas de la API (Mantener ambas)
 const API_URL_PUBLICACIONES = "http://localhost:3000/api/publicaciones";
 const API_URL_MASCOTAS = "http://localhost:3000/api/mascotas";
 
-// Función de normalización (Su código, para la búsqueda local)
+// Función de normalización (para búsqueda sin acentos)
 const normalize = (text) =>
   (text ?? "")
     .toString()
@@ -33,49 +26,61 @@ const normalize = (text) =>
     .replace(/[\u0300-\u036f]/g, "");
 
 function HomeNew() {
-  // ⬅️ HOOKS DE MODAL (DE SU CÓDIGO)
+  // ESTADOS DE MODAL y CARRUSEL
   const [showLogin, setShowLogin] = useState(false);
   const [showRegistro, setShowRegistro] = useState(false);
   const [showSoporte, setShowSoporte] = useState(false);
   const [showContacto, setShowContacto] = useState(false);
-
-  // ⬅️ HOOKS DE CARRUSEL (SU CÓDIGO)
   const [mascotasCarrusel, setMascotasCarrusel] = useState([]);
   const [loadingCarrusel, setLoadingCarrusel] = useState(true);
 
-  // ⬅️ HOOKS Y ESTADOS DEL COMPAÑERO (PAGINACIÓN / FILTROS / REDUX)
+  // PAGINACIÓN / FILTROS / REDUX
   const [showFilters, setShowFilters] = useState(false);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState({});
 
   const dispatch = useDispatch();
-  const publicaciones = useSelector((state) => state.publicaciones.rows) || []; // Usar .rows
+  const publicaciones = useSelector((state) => state.publicaciones.rows) || [];
   const total_publicaciones_BD =
     useSelector((state) => state.publicaciones.count) || 0;
-  const { searchTerm } = useSearch(); // ⬅️ SU BUSCADOR
+
+  const { searchTerm } = useSearch(); // término del buscador global
 
   const limit = 6;
   const totalPages = Math.ceil(total_publicaciones_BD / limit);
   const numeroPaginas = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-  // ⬅️ LÓGICA DE DATOS 1: Obtener PUBLICACIONES PAGINADAS/FILTRADAS (CÓDIGO DEL COMPAÑERO)
+  // 👉 NUEVO: estados para la búsqueda global
+  const [searchResults, setSearchResults] = useState(null);
+  const [searchLoading, setSearchLoading] = useState(false);
+
+  const isSearching = searchTerm && searchTerm.length >= 2;
+
+  // LÓGICA DE DATOS 1: Obtener PUBLICACIONES PAGINADAS/FILTRADAS (modo normal)
   useEffect(() => {
+    // Si estamos buscando globalmente, dejamos que esta parte siga solo para mantener Redux,
+    // pero la lista que se muestra será searchResults cuando isSearching === true
     const fetchData = async () => {
       try {
-        // Lógica de filtros avanzada del compañero (omite el fetch si no hay filtros)
-        const noFilters = Object.values(filters).every(
-          (v) => v === "" || v === null
+        const currentFilters = {
+          ...filters,
+          // 👇 Ojo: acá ya NO dependemos de que el backend use searchTerm
+          // searchTerm: searchTerm || "",
+        };
+
+        const hasActiveFilters = Object.values(currentFilters).some(
+          (v) => v !== "" && v !== null
         );
 
         let res;
-        if (noFilters) {
+        if (!hasActiveFilters) {
           res = await axios.get(
-            `http://localhost:3000/api/publicaciones/${page}/${limit}`
+            `${API_URL_PUBLICACIONES}/${page}/${limit}`
           );
         } else {
           res = await axios.post(
-            `http://localhost:3000/api/publicaciones/${page}/${limit}/filtro`,
-            filters
+            `${API_URL_PUBLICACIONES}/${page}/${limit}/filtro`,
+            currentFilters
           );
         }
         dispatch(getPublicaciones(res.data));
@@ -84,9 +89,9 @@ function HomeNew() {
       }
     };
     fetchData();
-  }, [page, filters, dispatch]); // Dependencias: Si cambia la página o el filtro, se vuelve a cargar
+  }, [page, filters, dispatch]); // 👈 ya no depende de searchTerm
 
-  // ⬅️ LÓGICA DE DATOS 2: Obtener mascotas para el CARRUSEL (SU CÓDIGO)
+  // LÓGICA DE DATOS 2: Obtener mascotas para el CARRUSEL
   useEffect(() => {
     fetch(API_URL_MASCOTAS)
       .then((response) => response.json())
@@ -100,57 +105,82 @@ function HomeNew() {
       });
   }, []);
 
-  // 🚀 LÓGICA CLAVE: APLICAR EL BUSCADOR (FILTRO LOCAL)
-  // Filtra las publicaciones que YA fueron paginadas/filtradas por el backend.
-  const filteredPublicaciones = publicaciones.filter((publicacion) => {
-    if (!searchTerm || searchTerm.length < 2) return true;
+  // 🚀 NUEVO: BÚSQUEDA GLOBAL SOLO DESDE EL FRONT
+  useEffect(() => {
+    // Si no hay búsqueda o es muy corta, limpiamos resultados y listo
+    if (!isSearching) {
+      setSearchResults(null);
+      setSearchLoading(false);
+      return;
+    }
 
-    const q = normalize(searchTerm);
-    const nombreMascota = normalize(publicacion.mascota?.nombre);
-    const ciudad = normalize(publicacion.mascota?.ciudad);
-    const titulo = normalize(publicacion.titulo);
+    const fetchAllAndFilter = async () => {
+      try {
+        setSearchLoading(true);
 
-    return (
-      nombreMascota.includes(q) ||
-      ciudad.includes(q) ||
-      titulo.includes(q)
-    );
-  });
+        // 1️⃣ Traemos la primera página para saber cuántas hay
+        const firstRes = await axios.get(
+          `${API_URL_PUBLICACIONES}/1/${limit}`
+        );
+        const { rows: firstRows, count } = firstRes.data;
+
+        let all = [...firstRows];
+        const totalPagesFromServer = Math.ceil(count / limit);
+
+        // 2️⃣ Traemos el resto de las páginas
+        for (let p = 2; p <= totalPagesFromServer; p++) {
+          const resp = await axios.get(
+            `${API_URL_PUBLICACIONES}/${p}/${limit}`
+          );
+          all = all.concat(resp.data.rows);
+        }
+
+        // 3️⃣ Filtramos localmente todas las publicaciones
+        const q = normalize(searchTerm);
+        const filtered = all.filter((publicacion) => {
+          const nombreMascota = normalize(publicacion.mascota?.nombre);
+          const ciudad = normalize(publicacion.mascota?.ciudad);
+          const titulo = normalize(publicacion.titulo);
+
+          return (
+            nombreMascota.includes(q) ||
+            ciudad.includes(q) ||
+            titulo.includes(q)
+          );
+        });
+
+        setSearchResults(filtered);
+      } catch (err) {
+        console.log("Error en búsqueda global:", err);
+      } finally {
+        setSearchLoading(false);
+      }
+    };
+
+    fetchAllAndFilter();
+  }, [isSearching, searchTerm]); // se ejecuta cuando cambia el texto del buscador
 
   // 🛑 Manejo de estado de carga
-  if (publicaciones.length === 0 || loadingCarrusel) {
+  if ((publicaciones.length === 0 && !isSearching) || loadingCarrusel) {
     return <div className="text-center my-5">Cargando la aplicación...</div>;
   }
 
-  // 🚀 RENDERIZADO FINAL: Se renderiza el contenido de la página
+  // 👀 Lista que se va a renderizar:
+  // - si hay búsqueda (isSearching) y ya tenemos resultados ⇒ usamos searchResults
+  // - si no hay búsqueda ⇒ usamos las publicaciones paginadas normales
+  const listToRender =
+    isSearching && !searchLoading && searchResults !== null
+      ? searchResults
+      : !isSearching
+      ? publicaciones
+      : []; // mientras está cargando la búsqueda, mostramos vacío o un loader
+
+  // 🚀 RENDERIZADO FINAL
   return (
     <>
-      {/* El NavbarMain se renderiza en App.jsx */}
       <Principal />
 
-      {/* 2. Su Carrusel: Se inserta aquí */}
-      <CarruselMascotas mascotas={mascotasCarrusel} />
-
-{/* Texto informativo sobre adopciones */}
-<div
-  style={{
-    textAlign: "center",
-    marginTop: "40px",
-    marginBottom: "10px",
-    padding: "0 20px",
-  }}
->
-  <h2 style={{ fontWeight: "700" }}>
-    Todos estos animales en adopción necesitan una familia
-  </h2>
-
-  <p style={{ fontSize: "15px", color: "#555", maxWidth: "700px", margin: "10px auto" }}>
-    Consulta la ficha de los animales en adopción para conocerlos mejor.<br />
-    También puedes: <strong>Filtrar por Categoria, genero, edad y más.</strong>
-  </p>
-</div>
-
-            {/* Botón de Filtros del compañero */}
+      {/* Botón de Filtros del compañero */}
       <div
         style={{
           display: "flex",
@@ -171,18 +201,62 @@ function HomeNew() {
         <FiltroPublicaciones onChange={(newFilters) => setFilters(newFilters)} />
       )}
 
-      {/* 3. Cards Paginadas/Filtradas (Muestra los datos filtrados localmente) */}
+      {/* Carrusel */}
+      <CarruselMascotas mascotas={mascotasCarrusel} />
+
+      {/* Texto informativo */}
+      <div
+        style={{
+          textAlign: "center",
+          marginTop: "40px",
+          marginBottom: "10px",
+          padding: "0 20px",
+        }}
+      >
+        <h2 style={{ fontWeight: "700" }}>
+          Todos estos animales en adopción necesitan una familia
+        </h2>
+
+        <p
+          style={{
+            fontSize: "15px",
+            color: "#555",
+            maxWidth: "700px",
+            margin: "10px auto",
+          }}
+        >
+          Consulta la ficha de los animales en adopción para conocerlos mejor.
+          <br />
+          También puedes:{" "}
+          <strong>Filtrar por Categoria, genero, edad y más.</strong>
+        </p>
+      </div>
+
+      {/* Si estamos buscando, mostrar estado de búsqueda */}
+      {isSearching && (
+        <div style={{ textAlign: "center", marginTop: "10px" }}>
+          {searchLoading ? (
+            <span>Buscando coincidencias para &quot;{searchTerm}&quot;...</span>
+          ) : (
+            <span>
+              Mostrando {listToRender.length} resultado
+              {listToRender.length !== 1 && "s"} para &quot;{searchTerm}&quot;
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Cards (paginadas en modo normal, todas juntas en modo búsqueda) */}
       <div
         className="row w-100 g-3"
         style={{ padding: "1rem", margin: "0 auto" }}
       >
-        {filteredPublicaciones.map((publicacion) => (
+        {listToRender.map((publicacion) => (
           <div
             key={publicacion.id}
             className="col-12 col-sm-6 col-lg-4 d-flex"
           >
             <CardNew
-              key={publicacion.id}
               id={publicacion.id}
               titulo={publicacion.titulo}
               telefono={publicacion.telefono}
@@ -196,51 +270,53 @@ function HomeNew() {
         ))}
       </div>
 
-      {/* PAGINADO (Lógica del compañero) */}
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "15px",
-          margin: "25px",
-        }}
-      >
-        {/* Botón Anterior */}
-        <button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          style={{ padding: "8px 15px" }}
+      {/* PAGINADO: solo se muestra cuando NO hay búsqueda */}
+      {!isSearching && (
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            gap: "15px",
+            margin: "25px",
+          }}
         >
-          ◀ Anterior
-        </button>
-
-        {/* Numeración de páginas */}
-        {numeroPaginas.map((num) => (
+          {/* Botón Anterior */}
           <button
-            key={num}
-            onClick={() => setPage(num)}
-            style={{
-              padding: "8px 12px",
-              fontWeight: num === page ? "bold" : "normal",
-              backgroundColor: num === page ? "#ddd" : "white",
-              border: "1px solid #ccc",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            style={{ padding: "8px 15px" }}
           >
-            {num}
+            ◀ Anterior
           </button>
-        ))}
 
-        {/* Botón Siguiente */}
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={page === totalPages}
-          style={{ padding: "8px 15px" }}
-        >
-          Siguiente ▶
-        </button>
-      </div>
+          {/* Numeración de páginas */}
+          {numeroPaginas.map((num) => (
+            <button
+              key={num}
+              onClick={() => setPage(num)}
+              style={{
+                padding: "8px 12px",
+                fontWeight: num === page ? "bold" : "normal",
+                backgroundColor: num === page ? "#ddd" : "white",
+                border: "1px solid #ccc",
+                borderRadius: "5px",
+                cursor: "pointer",
+              }}
+            >
+              {num}
+            </button>
+          ))}
+
+          {/* Botón Siguiente */}
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={page === totalPages}
+            style={{ padding: "8px 15px" }}
+          >
+            Siguiente ▶
+          </button>
+        </div>
+      )}
 
       <Footer
         onLoginClick={() => setShowLogin(true)}
@@ -249,7 +325,6 @@ function HomeNew() {
         onContactoClick={() => setShowContacto(true)}
       />
 
-      {/* Modales */}
       <Login show={showLogin} onHide={() => setShowLogin(false)} />
       <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
       <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />
