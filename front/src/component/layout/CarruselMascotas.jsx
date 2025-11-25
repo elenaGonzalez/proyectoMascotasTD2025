@@ -4,6 +4,8 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './CarruselMascotas.css';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // URL de la API confirmada
 const API_URL = 'http://localhost:3000/api/mascotas';
@@ -11,7 +13,7 @@ const API_URL = 'http://localhost:3000/api/mascotas';
 function CarruselMascotas() {
   const [mascotas, setMascotas] = useState([]);
   const [loading, setLoading] = useState(true);
-
+  const navigate = useNavigate();
   useEffect(() => {
     fetch(API_URL)
       .then(response => response.json())
@@ -24,6 +26,17 @@ function CarruselMascotas() {
         setLoading(false);
       });
   }, []);
+
+  const handleClick = async(id) =>{
+    console.log("Soy mascota id ", id);
+    
+     axios.get(`http://localhost:3000/api/publicaciones/mascota/publicada/${id}`)
+     .then((res) => {
+      console.log("soy res.data ", res.data);
+      
+      navigate(`/detalle/publicacion/${res.data.id}`);
+    });
+  }
 
   const handleImgError = (e) => {
     if (e && e.target) {
@@ -97,7 +110,7 @@ function CarruselMascotas() {
                       Adoptar
                     </Button>
 
-                    <Button variant="outline-dark" className="ver-mas-btn">
+                    <Button variant="outline-dark" className="ver-mas-btn" onClick={()=>handleClick(mascota.id)}>
                       Ver más
                     </Button>
                   </div>
