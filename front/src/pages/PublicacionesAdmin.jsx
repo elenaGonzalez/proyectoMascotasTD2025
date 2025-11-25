@@ -1,44 +1,55 @@
-import axios from 'axios';
-import { useEffect} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useDispatch, useSelector } from "react-redux";
 import { setPublicaciones } from "../redux/adminSlice";
-import Table from 'react-bootstrap/Table';
-import Footer from '../component/layout/Footer';
-import { Button } from 'react-bootstrap';
-import Container from 'react-bootstrap/Container';
+import Table from "react-bootstrap/Table";
+import Footer from "../component/layout/Footer";
+import { Button } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
 import { Link } from 'react-router-dom';
 
-const PublicacionAdmin = () =>{
+const PublicacionAdmin = () => {
+  const dispatch = useDispatch();
+  const publicaciones = useSelector((state) => state.admin.publicaciones);
 
-    const dispatch = useDispatch();
-    const publicaciones = useSelector((state) => state.admin.publicaciones);
-     
-    useEffect(()=>{
-        const fetchPublicaciones = async () => {
-        try {
-        const res = await axios.get(`http://localhost:3000/api/publicaciones/1/100`);
-         dispatch(setPublicaciones(res.data));
-         
-        } catch (error) {
-        console.error('Error:', error);
-        }
+  useEffect(() => {
+    const fetchPublicaciones = async () => {
+      try {
+        const res = await axios({
+          method: "post",
+          url: "http://localhost:3000/api/publicaciones/admin/1/100",
+          data: {
+            role: "admin",
+          },
+        });
+        dispatch(setPublicaciones(res.data));
+      } catch (error) {
+        console.error("Error:", error);
+      }
     };
     fetchPublicaciones();
-  },[dispatch]);
-    
+  }, [dispatch]);
 
-    const handlerBajaLogica = async(id, activo) =>{
-      await axios({
+  const handlerBajaLogica = async (id, disponible) => {
+    await axios({
       method: "post",
-      url: "http://localhost:3000/api/publicaciones/cambiarstatus",
+      url: "http://localhost:3000/api/publicaciones/cambiar/status",
       data: {
-      id: id,
-      activo: activo,
-    }
-    }).then((res) => console.log(res.data))
-      const respuesta =await axios.get(`http://localhost:3000/api/publicacions`)
-      dispatch(setPublicaciones(respuesta.data));
-    }
+        id: id,
+        disponible: disponible,
+      },
+    }).then((res) => console.log(res.data));
+    const respuesta = await axios({
+      method: "post",
+      url: "http://localhost:3000/api/publicaciones/admin/1/100",
+      data: {
+        role: "admin",
+      },
+    });
+    console.log("En publi respuesta ", respuesta);
+    dispatch(setPublicaciones(respuesta.data));
+  };
 
 return (
   <div style={{ background: "#f5f7fa", minHeight: "100vh", paddingTop: "30px" }}>
@@ -97,7 +108,7 @@ return (
                     variant={publicacion.disponible ? "danger" : "success"}
                     size="sm"
                     onClick={() =>
-                      handlerBajaLogica(publicacion.id, !publicacion.activo)
+                      handlerBajaLogica(publicacion.id, !publicacion.disponible)
                     }
                   >
                     {publicacion.disponible ? "Desactivar" : "Reactivar"}
@@ -118,4 +129,4 @@ return (
 
   }
 
-  export default PublicacionAdmin;
+export default PublicacionAdmin;
