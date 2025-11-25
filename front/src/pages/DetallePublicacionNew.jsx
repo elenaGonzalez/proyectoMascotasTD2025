@@ -14,7 +14,7 @@ import Swal from "sweetalert2";
 function DetallePublicacionNew() {
   const { id } = useParams();
   const usuario = useSelector((state) => state.usuario);
-
+  const savedUsuarioId = JSON.parse(localStorage.getItem("usuario"));
   const [publicacion, setPublicacion] = useState();
   const [loading, setLoading] = useState(false);
   const [showLogin, setShowLogin] = useState(false);
@@ -38,7 +38,7 @@ function DetallePublicacionNew() {
     const duenioId = publicacion.mascota.usuarioId;
     const duenio = publicacion.mascota.usuario;
 
-    if (!usuario || !usuario.id) {
+    if (!usuario || !savedUsuarioId) {
       Swal.fire({
         icon: "warning",
         title: "Debes iniciar sesión",
@@ -47,7 +47,7 @@ function DetallePublicacionNew() {
       return;
     }
 
-    if (usuario.id === duenioId) {
+    if (savedUsuarioId === duenioId) {
       Swal.fire({
         icon: "info",
         title: "Esta publicación es tuya",
