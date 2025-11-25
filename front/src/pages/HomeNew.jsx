@@ -117,10 +117,11 @@ function HomeNew() {
     );
   });
 
-  // 🛑 Manejo de estado de carga
-  if (publicaciones.length === 0 || loadingCarrusel) {
+  // 🛑 Manejo de estado de carga SOLO del carrusel
+  if (loadingCarrusel) {
     return <div className="text-center my-5">Cargando la aplicación...</div>;
   }
+
 
   // 🚀 RENDERIZADO FINAL: Se renderiza el contenido de la página
   return (
@@ -176,6 +177,13 @@ function HomeNew() {
         className="row w-100 g-3"
         style={{ padding: "1rem", margin: "0 auto" }}
       >
+        {/* Mostrar mensaje si no hay resultados */}
+  {filteredPublicaciones.length === 0 && (
+    <div className="text-center my-5">
+      <h3>No se encontraron resultados</h3>
+      <p>Prueba ajustando los filtros.</p>
+    </div>
+  )}
         {filteredPublicaciones.map((publicacion) => (
           <div
             key={publicacion.id}

@@ -112,7 +112,26 @@ function PanelUsuarioNew() {
 
 
   if (error) return <div>Error: {error}</div>;
-  if (!datosUsuario) return <div><img src="https://illustcut.com/box/mark/hatena2/hatena01_27.png" alt="usuario no existe" /><h1>Usuario no existe</h1></div>;
+  if (!datosUsuario)
+    return (
+        <div
+            style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                marginTop: "40px"
+            }}
+        >
+            <img
+                src="https://illustcut.com/box/mark/hatena2/hatena01_27.png"
+                alt="usuario no existe"
+                style={{ width: "150px", marginBottom: "20px" }}
+            />
+            <h1>Usuario no existe</h1>
+        </div>
+    );
 
   return (
     <>
