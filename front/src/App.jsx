@@ -1,34 +1,62 @@
-import React from 'react';
-import { Routes, Route } from 'react-router-dom';
-import "bootstrap/dist/css/bootstrap.min.css"; 
-
-// Importaciones de Páginas y Componentes
-import HomeNew from './pages/HomeNew.jsx'; // Nuevo Home que usa Redux
-import DetallePublicacionNew from './pages/DetallePublicacionNew.jsx';
-import Publicar from "./pages/Publicar.jsx";
+import { Routes, Route } from "react-router-dom";
+import "bootstrap/dist/css/bootstrap.min.css";
+import HomeNew from "./pages/HomeNew.jsx";
+import "bootstrap/dist/css/bootstrap.min.css";
+import DetallePublicacionNew from "./pages/DetallePublicacionNew.jsx";
 import NavbarMain from './component/layout/Navbar.jsx'; // Navbar global
-import PanelUsuarioNew from './pages/PanelUsuarioNew.jsx'; // Componente de Perfil/Panel
+import Publicar from "./pages/Publicar.jsx";
+import PanelUsuarioNew from "./pages/PanelUsuarioNew.jsx";
+import PanelAdmin from "./pages/PanelAdmin.jsx";
+import PublicacionesAdmin from "./pages/PublicacionesAdmin.jsx";
+import RutaProtegidaAdmin from "./component/auth/RutaProtegidaAdmin.jsx";
+import RutaProtegida from "./component/auth/RutaProtegida.jsx";
 
 
 // El componente App es el encargado de envolver todas las rutas
 export default function App() {
   return (
     <>
-      {/* 1. Navbar con buscador (siempre visible) */}
-      <NavbarMain />
-
-      {/* 2. Contenido con TODAS las rutas */}
-      <Routes>
-        
-        {/* Ruta principal (/) apunta a HomeNew */}
-        <Route path="/" element={<HomeNew />} /> 
-        
-        {/* Rutas secundarias */}
-        <Route path="/home" element={<HomeNew />} />
-        <Route path="/detalle/publicacion/:id" element={<DetallePublicacionNew />} />
-        <Route path="/publicar" element={<Publicar />} />
-        <Route path="/panel/new" element={<PanelUsuarioNew />} /> 
-      </Routes>
+    <NavbarMain />
+    <Routes>
+      <Route path="/" element={<HomeNew />} />
+      <Route path="/home" element={<HomeNew />} />
+      <Route
+        path="/detalle/publicacion/:id"
+        element={<DetallePublicacionNew />}
+      />
+      <Route
+        path="/publicar"
+        element={
+          <RutaProtegida>
+            <Publicar />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/panel/new"
+        element={
+          <RutaProtegida>
+            <PanelUsuarioNew />
+          </RutaProtegida>
+        }
+      />
+      <Route
+        path="/panel/admin"
+        element={
+          <RutaProtegidaAdmin>
+            <PanelAdmin />
+          </RutaProtegidaAdmin>
+        }
+      />
+      <Route
+     path="/panel/publicaciones"
+     element={
+       <RutaProtegidaAdmin>
+          <PublicacionesAdmin />
+       </RutaProtegidaAdmin>
+     }
+     />
+    </Routes>
     </>
   );
 }

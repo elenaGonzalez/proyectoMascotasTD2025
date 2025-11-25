@@ -4,7 +4,9 @@ const {
    getUsuarioHandler,
    postUsuarioHandler,
    putUsuarioHandler,
-   deleteUsuarioHandler
+   deleteUsuarioHandler,
+   postReactivarUsuarioHandler,
+   postUsuarioCambioRolHandler
 } = require('../Handler/usuariosHandler');
 
 
@@ -14,6 +16,8 @@ const usuariosRoute = Router();
 usuariosRoute.get('/', getUsuariosHandler);
 usuariosRoute.get('/:id', getUsuarioHandler);
 usuariosRoute.post('/', postUsuarioHandler);
+usuariosRoute.post('/cambiarstatus', postReactivarUsuarioHandler);
+usuariosRoute.post('/promover/degradar', postUsuarioCambioRolHandler);
 usuariosRoute.put('/', putUsuarioHandler);
 usuariosRoute.delete('/', deleteUsuarioHandler);
 

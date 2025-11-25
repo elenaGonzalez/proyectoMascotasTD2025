@@ -5,8 +5,33 @@ const {
   postPublicacionController,
   putPublicacionController,
   deletePublicacionController,
-  postPublicacionesFilterController
+  postPublicacionesFilterController,
+  postCambiarStatusPublicacionController,
+  getPublicacionesParaAdminController
 } = require("../Controller/publicacionesController");
+
+
+const getPublicacionesParaAdminHandler = async(req, res) =>{
+  let limit = req.params.limit;
+  let page = req.params.page - 1;
+  const {role} = req.body;
+   try {
+    let offset = page * limit;
+    let publicaciones_admin = await getPublicacionesParaAdminController(limit, offset, role);
+     res.status(200).send(publicaciones_admin);
+   } catch (error) {
+     res.status(500).send({ Error: error.message });
+   }
+}
+const postCambiarStatusPublicacionHandler = async(req, res) =>{
+const {id, disponible} = req.body;
+   try{
+    let publicacionStatus = await postCambiarStatusPublicacionController(id, disponible);
+    res.status(200).send(publicacionStatus);
+  } catch (error) {
+    res.status(500).send({ Error: error.message });
+  }
+};
 
 const getPublicacionesFilterHandler = async (req, res) => {
   let limit = req.params.limit;
@@ -117,5 +142,7 @@ module.exports = {
   postPublicacionHandler,
   putPublicacionHandler,
   deletePublicacionHandler,
-  getPublicacionesFilterHandler 
+  getPublicacionesFilterHandler,
+  postCambiarStatusPublicacionHandler,
+  getPublicacionesParaAdminHandler, 
 };

@@ -36,6 +36,10 @@ const loginController = async (email, contrasena) => {
   if (!usuario) {
     throw new Error("El usuario no esta registrado");
   }
+  
+    if(!usuario.activo){
+      throw new Error("El usuario esta bloqueado.Contacta al administrador");
+    }
   const passMatch = await bcrypt.compare(contrasena, usuario.contrasena);
   if (!passMatch) {
     throw new Error("Contrasena incorrecta");

@@ -49,7 +49,6 @@ function PanelUsuarioNew() {
   };
 
   const handleDelete = async (data) => {
-    console.log("En handle Delete ", data);
     try {
       await axios({
         method: "delete",
@@ -64,7 +63,7 @@ function PanelUsuarioNew() {
       dispatch(getPublicaciones(publicaciones_sin_dog));
       navigate("/");
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
 
   }
@@ -117,11 +116,6 @@ function PanelUsuarioNew() {
 
   return (
     <>
-      <NavbarMain expand="lg"
-        onLoginClick={() => setShowLogin(true)}
-        onRegistroClick={() => setShowRegistro(true)}
-      />
-
       <Container className="my-5">
         <Row className="justify-content-center">
           <Col lg={8} md={10}>

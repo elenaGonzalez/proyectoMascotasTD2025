@@ -11,7 +11,7 @@ import { getPublicaciones } from "../redux/publicacionesSlice.js";
 import CardNew from "../component/layout/CardNew.jsx";
 import CarruselMascotas from '../component/layout/CarruselMascotas.jsx'; 
 import FiltroPublicaciones from "../component/filters/FiltroPublicaciones.jsx";
-import { useSearch } from '../context/SearchContext.jsx'; // ⬅️ RUTA CORREGIDA: SOLO sube un nivel
+import { useSearch } from '../context/SearchContext.jsx'; 
 
 // Rutas de la API (Mantener ambas)
 const API_URL_PUBLICACIONES = "http://localhost:3000/api/publicaciones";

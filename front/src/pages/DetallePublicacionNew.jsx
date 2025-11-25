@@ -1,102 +1,193 @@
-import React, { useEffect } from "react";
-// Importaciones de Redux y Router
-import { useSelector } from "react-redux"; // ⬅️ Usamos useSelector
-import { useParams } from "react-router-dom"; // ⬅️ Usamos useParams
-// Importaciones de Componentes de Layout (se mantienen para Modals)
+import Footer from "../component/layout/Footer.jsx";
 import Login from "../component/auth/Login.jsx";
 import Registro from "../component/auth/Registro.jsx";
 import Soporte from "../component/support/Soporte.jsx";
 import Contacto from "./Contacto.jsx";
-// Componentes de Bootstrap
+import { useParams } from "react-router";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
+import NavbarMain from "../component/layout/Navbar.jsx";
 import Image from "react-bootstrap/Image";
 import Card from "react-bootstrap/Card";
-import Container from "react-bootstrap/Container"; // Necesario para centrar
+import Swal from "sweetalert2";
 
 function DetallePublicacionNew() {
-  // 1. Obtener el ID de la URL
   const { id } = useParams();
+  const usuario = useSelector((state) => state.usuario);
 
-  // 2. Obtener el array completo de publicaciones desde Redux
-  const todasPublicaciones = useSelector((state) => state.publicaciones.rows) || [];
-  
-  // 3. Buscar la publicación específica localmente
-  const publicacion = todasPublicaciones.find(pub => pub.id === id);
+  const [publicacion, setPublicacion] = useState();
+  const [loading, setLoading] = useState(false);
+  const [showLogin, setShowLogin] = useState(false);
+  const [showRegistro, setShowRegistro] = useState(false);
+  const [showSoporte, setShowSoporte] = useState(false);
+  const [showContacto, setShowContacto] = useState(false);
 
-  // 4. Estados de modales (para botones de login/registro si se usan en la página)
-  const [showLogin, setShowLogin] = React.useState(false);
-  const [showRegistro, setShowRegistro] = React.useState(false);
-  const [showSoporte, setShowSoporte] = React.useState(false);
-  const [showContacto, setShowContacto] = React.useState(false);
 
-  // 🛑 Manejo de Carga y Errores
-  if (!publicacion) {
-    // Si la publicación aún no ha llegado de Redux, muestra un mensaje
-    return <div className="text-center my-5">Cargando detalles o publicación no encontrada...</div>;
-  }
+  useEffect(() => {
+    fetch(`http://localhost:3000/api/publicaciones/${id}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setPublicacion(data);
+      })
+      .catch((err) => console.error(err.message));
+  }, [id]);
 
-  // 🚀 RENDERIZADO PRINCIPAL
+  const handleContactar = () => {
+    if (!publicacion) return;
+
+    const duenioId = publicacion.mascota.usuarioId;
+    const duenio = publicacion.mascota.usuario;
+
+    if (!usuario || !usuario.id) {
+      Swal.fire({
+        icon: "warning",
+        title: "Debes iniciar sesión",
+        text: "Inicia sesión o registrate para poder contactar al dueño.",
+      });
+      return;
+    }
+
+    if (usuario.id === duenioId) {
+      Swal.fire({
+        icon: "info",
+        title: "Esta publicación es tuya",
+        text: "No puedes contactarte contigo mismo 😅",
+      });
+      return;
+    }
+
+    Swal.fire({
+      icon: "info",
+      title: "Datos del dueño",
+      html: `
+        <p><strong>Nombre:</strong> ${duenio.nombre} ${duenio.apellido}</p>
+        <p><strong>Email:</strong> ${duenio.email}</p>
+        ${
+          duenio.telefono
+            ? `<p><strong>Teléfono:</strong> ${duenio.telefono}</p>`
+            : ""
+        }
+      `,
+      confirmButtonText: "Cerrar",
+    });
+  };
+
+  if (loading) return <p>Cargando publicación...</p>;
+  if (!publicacion) return <p>No se encontró la publicación.</p>;
+
   return (
-    // Usamos un Container para que el contenido se vea centrado y limpio
-    <Container className="my-5"> 
-      {/* ❌ ELIMINADO: NavbarMain, Footer, y los modales duplicados de este return */}
-      
+    <>
+
+<div
+  style={{
+    maxWidth: "1100px",
+    margin: "2rem auto",
+    display: "flex",
+    gap: "2rem",
+    padding: "1rem",
+    alignItems: "stretch",
+    flexWrap: "nowrap",
+  }}
+  className="detalle-publicacion-layout"
+>
+
+  {/* COLUMNA IMAGEN */}
+  <div
+    style={{
+      flex: "1 1 450px",
+      maxWidth: "450px",
+      height: "100%",
+      borderRadius: "12px",
+      overflow: "hidden",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+    }}
+  >
+    <Image
+      src={publicacion.mascota.foto}
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: "500px",
+        objectFit: "cover",
+        objectPosition: "center",
+      }}
+    />
+  </div>
+
+  {/* COLUMNA DATOS */}
+  <Card
+    style={{
+      flex: "1 1 450px",
+      maxWidth: "550px",
+      borderRadius: "12px",
+      padding: "1rem",
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.12)",
+    }}
+  >
+    <Card.Header
+      style={{
+        fontWeight: "bold",
+        fontSize: "1.5rem",
+        textAlign: "center",
+      }}
+    >
+      {publicacion.mascota.nombre}
+    </Card.Header>
+
+    <Card.Body style={{ flexGrow: 1 }}>
+      <Card.Title style={{ fontSize: "1.2rem", marginBottom: "1rem" }}>
+        {publicacion.titulo}
+      </Card.Title>
+
+      <p style={{ fontSize: "1rem", marginBottom: "1rem" }}>
+        {publicacion.descripcion}
+      </p>
+
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "1rem",
-          justifyContent: "center",
-          padding: "1rem",
+          borderTop: "1px solid #ddd",
+          marginTop: "1rem",
+          paddingTop: "1rem",
+          fontSize: "1rem",
+          lineHeight: "1.8",
         }}
       >
-        {/* Usamos el objeto "publicacion" encontrado por el ID */}
-        <Image src={publicacion.mascota.foto} fluid style={{ maxWidth: '400px', borderRadius: '8px' }} />
-        
-        <Card style={{ maxWidth: '600px' }}>
-          <Card.Header>{publicacion.mascota.nombre}</Card.Header>
-          <Card.Body>
-            <Card.Title>{publicacion.titulo}</Card.Title>
-            <Card.Text>
-              <blockquote className="blockquote mb-0">
-                {publicacion.descripcion}
-              </blockquote>
-
-              <hr className="my-3" />
-              
-              {/* Bloque de Datos Detallados */}
-              <div>
-                Raza:{" "}
-                {publicacion.mascota.raza === ""
-                  ? "sin definir"
-                  : publicacion.mascota.raza}
-              </div>
-              <div>Edad : {publicacion.mascota.edad}</div>
-              <div>Genero : {publicacion.mascota.genero}</div>
-              {/* Nota: Aquí se asume que 'categoria' existe en la mascota */}
-              <div>Categoria : {publicacion.mascota.categoria}</div> 
-              <div>
-                Vacunado : {publicacion.mascota.vacunado ? "sí" : "no"}
-              </div>
-              <div>
-                Destetado : {publicacion.mascota.destetado ? "sí" : "no"}
-              </div>
-              <div>
-                Esterilizado :{" "}
-                {publicacion.mascota.esterilizado ? "sí" : "no"}
-              </div>
-              <div>Aprendizaje : {publicacion.mascota.aprendizaje}</div>
-              <div>Ciudad : {publicacion.mascota.ciudad}</div>
-            </Card.Text>
-          </Card.Body>
-        </Card>
+        <div>🐾 <strong>Raza:</strong> {publicacion.mascota.raza || "Sin definir"}</div>
+        <div>🎂 <strong>Edad:</strong> {publicacion.mascota.edad}</div>
+        <div>⚥ <strong>Género:</strong> {publicacion.mascota.genero}</div>
+        <div>📂 <strong>Categoría:</strong> {publicacion.mascota.categoria}</div>
+        <div>💉 <strong>Vacunado:</strong> {publicacion.mascota.vacunado ? "Sí" : "No"}</div>
+        <div>🍼 <strong>Destetado:</strong> {publicacion.mascota.destetado ? "Sí" : "No"}</div>
+        <div>✂️ <strong>Esterilizado:</strong> {publicacion.mascota.esterilizado ? "Sí" : "No"}</div>
+        <div>📘 <strong>Aprendizaje:</strong> {publicacion.mascota.aprendizaje}</div>
+        <div>🧭 <strong>Ciudad:</strong> {publicacion.mascota.ciudad}</div>
       </div>
+    </Card.Body>
 
-      {/* Se mantienen los modales, pero fuera del flujo principal de la página */}
+    {/* BOTÓN AL FINAL PARA QUE LA ALTURA SE EMPAREJE */}
+    <button className="btn btn-primary w-100 mt-3" onClick={handleContactar}>
+      Contactar Dueño
+    </button>
+  </Card>
+</div>
+
+
+
+      <Footer
+        onLoginClick={() => setShowLogin(true)}
+        onRegistroClick={() => setShowRegistro(true)}
+        onSoporteClick={() => setShowSoporte(true)}
+        onContactoClick={() => setShowContacto(true)}
+      />
+
       <Login show={showLogin} onHide={() => setShowLogin(false)} />
       <Registro show={showRegistro} onHide={() => setShowRegistro(false)} />
       <Soporte show={showSoporte} onHide={() => setShowSoporte(false)} />
       <Contacto show={showContacto} onHide={() => setShowContacto(false)} />
-    </Container>
+    </>
   );
 }
 

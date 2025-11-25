@@ -18,11 +18,22 @@ const parseBoolean = (value) => {
   return undefined;
 };
 
+const  postCambiarStatusPublicacionController = async (id, disponible) =>{
+  const buscar_publicacion= await Publicacion.findByPk(id);
+  if (!buscar_publicacion) {
+        throw new Error("Debes pasar un id valido")
+    }
+    buscar_publicacion.disponible = disponible;
+    await buscar_publicacion.save();
+ 
+   const publicacion_new = await Publicacion.findByPk(id);
+   
+   return publicacion_new;
+}
+
 const getPublicacionController = async (id) => {
   const publicacion_bus = await Publicacion.findOne({
-    where:{
-      id,
-    },
+    where: { id },
     include: [
       {
         model: Mascota,
@@ -44,6 +55,12 @@ const getPublicacionController = async (id) => {
           "aprendizaje",
           "usuarioId",
         ],
+        include: [
+          {
+            model: Usuario,
+            attributes: ["nombre", "apellido", "email", "telefono"]
+          }
+        ]
       },
     ],
   });
@@ -123,8 +140,51 @@ const vac = parseBoolean(vacunado);
   });
 };
 
+const getPublicacionesParaAdminController = async(limit, offset, role) =>{
+   return await Publicacion.findAndCountAll({
+    include: [
+      {
+        model: Mascota,
+        as: "mascota",
+        attributes: [
+          "id",
+          "nombre",
+          "genero",
+          "edad",
+          "vacunado",
+          "destetado",
+          "esterilizado",
+          "alimentacion",
+          "categoria",
+          "raza",
+          "foto",
+          "ciudad",
+          "antiparacitario",
+          "aprendizaje",
+          "usuarioId",
+        ],
+        include: [
+          {
+            model: Usuario,
+             attributes: [
+               "nombre",
+               "apellido",
+               "email",
+             ]
+          }
+        ]
+      },
+    ],
+    offset,
+    limit,
+  });
+}
+
 const getPublicacionesController = async (offset, limit) => {
   return await Publicacion.findAndCountAll({
+    where:{
+      disponible: true,
+    },
     include: [
       {
         model: Mascota,
@@ -332,4 +392,6 @@ module.exports = {
   putPublicacionController,
   deletePublicacionController,
   postPublicacionesFilterController,
+  postCambiarStatusPublicacionController,
+  getPublicacionesParaAdminController
 };
