@@ -4,6 +4,8 @@ import { useDispatch } from "react-redux";
 import { setUsuario } from "../../redux/usuarioSlice";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function Login({ show, onHide }) {
   const dispatch = useDispatch();
@@ -21,6 +23,8 @@ function Login({ show, onHide }) {
     },
     mode: "onBlur",
   });
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data) => {
     try {
@@ -102,50 +106,57 @@ function Login({ show, onHide }) {
           {/* Contraseña */}
           <Form.Group className="mb-3">
             <Form.Label>Contraseña *</Form.Label>
+
+          <div style={{ position: "relative" }}>
             <Controller
               name="contraseña"
               control={control}
               rules={{
-                required: "La contraseña es obligatoria",
-                minLength: {
+                  required: "La contraseña es obligatoria",
+                  minLength: {
                   value: 8,
                   message: "La contraseña debe tener al menos 8 caracteres",
-                },
-              }}
+                  },
+                }}
               render={({ field }) => (
                 <>
-                  <Form.Control
-                    {...field}
-                    type="password"
-                    placeholder="Ingresá tu contraseña"
-                    isInvalid={!!errors.contraseña}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.contraseña?.message}
-                  </Form.Control.Feedback>
-                </>
-              )}
+            <Form.Control
+              {...field}
+              type={showPassword ? "text" : "password"}
+              placeholder="Ingresá tu contraseña"
+              isInvalid={!!errors.contraseña}
             />
-          </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Controller
-              name="recuerdame"
-              control={control}
-              render={({ field }) => (
-                <Form.Check {...field} type="checkbox" label="Recuérdame" />
-              )}
-            />
-          </Form.Group>
+          {/* OJITO PARA VER LA CONTRASEÑA */}
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              cursor: "pointer",
+              opacity: 0.7,
+            }}
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </span>
+
+          <Form.Control.Feedback type="invalid">
+            {errors.contraseña?.message}
+          </Form.Control.Feedback>
+        </>
+      )}
+    />
+  </div>
+</Form.Group>
+
 
           <Button type="submit" variant="success" className="w-100 mb-2">
             Iniciar Sesión
           </Button>
         </Form>
 
-        <Button variant="link" className="w-100">
-          ¿Olvidaste tu contraseña?
-        </Button>
       </Modal.Body>
     </Modal>
   );
